@@ -47,6 +47,14 @@ dependencies {
     compileOnly 'org.projectlombok:lombok:1.18.4'
 }
 
+test {
+    if (System.properties['test.profile'] != 'integration') {
+        exclude '**/*integration*'
+    } else {
+        exclude '**/*com/*'
+    }
+}
+
 // Define the main class for the application
 mainClassName = 'App'
 
