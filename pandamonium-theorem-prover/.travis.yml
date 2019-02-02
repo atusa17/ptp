@@ -18,8 +18,8 @@ stages:
 jobs:
   include:
     - stage: build
-      script: ./gradlew build
+      script: ./pandamonium-theorem-prover/gradlew build
     - stage: unitTest
-      script: ./gradlew test
+      script: ./pandamonium-theorem-prover/gradlew test
     - stage: integrationTest
-      script: ./gradlew integrationTest
+      script: ./pandamonium-theorem-prover/gradlew integrationTest
