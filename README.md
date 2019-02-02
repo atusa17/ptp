@@ -1,1 +1,1 @@
-# tsp-main
+# Pandamonium Theorem Prover
