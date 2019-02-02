@@ -9,6 +9,7 @@ addons:
 
 before_install:
   - chmod +x pandamonium-theorem-prover/gradlew
+  - cd pandamonium-theorem-prover
 
 stages:
   - name: build
@@ -18,8 +19,8 @@ stages:
 jobs:
   include:
     - stage: build
-      script: ./pandamonium-theorem-prover/gradlew build
+      script: ./gradlew build
     - stage: unitTest
-      script: ./pandamonium-theorem-prover/gradlew test
+      script: ./gradlew test
     - stage: integrationTest
-      script: ./pandamonium-theorem-prover/gradlew integrationTest
+      script: ./gradlew integrationTest
