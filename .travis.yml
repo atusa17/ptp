@@ -13,14 +13,14 @@ before_install:
 
 stages:
   - name: build
-  - name: unitTest
-  - name: integrationTest
+  - name: unit tests
+  - name: integration tests
 
 jobs:
   include:
     - stage: build
       script: ./gradlew build
-    - stage: unitTest
+    - stage: unit tests
       script: ./gradlew test
-    - stage: integrationTest
+    - stage: integration tests
       script: ./gradlew integrationTest
