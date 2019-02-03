@@ -1,0 +1,46 @@
+# Ignore Eclipse files
+.classpath
+.project
+.settings/**
+
+# Ignore emacs temporary files
+\#*
+.\#*
+
+# vi temp files
+*~
+*.swp
+
+# Ignore intellij files
+.idea
+*.iml
+*.ipr
+*.iws
+*.ids
+
+# Generated files/directories
+target/**
+*.class
+build/**
+.gradle/**
+exploded
+*/build/
+*/out/
+
+# ivy/build
+build-ivycache
+.ant-targets-build.xml
+
+# Ignore files
+.svnignore
+*.orig
+dependency-reduced-pom.xml
+
+# Ignore netbeans
+nb-*
+
+# Apple directory artifacts
+.DS_Store
+
+.metadata
+META-INF/MANIFEST.MF
