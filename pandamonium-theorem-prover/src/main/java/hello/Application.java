@@ -21,7 +21,7 @@ public class Application {
     public CommandLineRunner commandLineRunner(final ApplicationContext ctx) {
         return args -> {
 
-            LOG.info("Beans provided by Spring Boot:");
+            LOG.debug("Beans provided by Spring Boot:");
 
             final String[] beanNames = ctx.getBeanDefinitionNames();
             Arrays.sort(beanNames);
