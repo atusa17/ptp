@@ -6,6 +6,6 @@ import org.springframework.stereotype.Component;
 
 @Component
 @AllArgsConstructor
-class DefinitionManager {
+public class DefinitionManager {
     final private DefinitionDao definitionDao;
 }

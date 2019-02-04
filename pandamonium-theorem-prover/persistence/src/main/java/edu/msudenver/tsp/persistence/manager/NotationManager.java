@@ -6,6 +6,6 @@ import org.springframework.stereotype.Component;
 
 @Component
 @AllArgsConstructor
-class NotationManager {
+public class NotationManager {
     final private NotationDao notationDao;
 }

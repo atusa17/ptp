@@ -6,6 +6,6 @@ import org.springframework.stereotype.Component;
 
 @Component
 @AllArgsConstructor
-class TheoremManager {
+public class TheoremManager {
     final private TheoremDao theoremDao;
 }
