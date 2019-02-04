@@ -1,4 +1,4 @@
-package hello;
+package edu.msudenver.tsp.website;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;

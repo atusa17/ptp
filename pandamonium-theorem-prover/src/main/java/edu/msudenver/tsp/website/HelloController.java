@@ -1,4 +1,4 @@
-package hello;
+package edu.msudenver.tsp.website;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;

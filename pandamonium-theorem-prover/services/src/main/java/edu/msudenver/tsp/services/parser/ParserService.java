@@ -1,6 +1,8 @@
 package edu.msudenver.tsp.services.parser;
 
-//@Service
+import org.springframework.stereotype.Service;
+
+@Service
 class ParserService {
 
 }

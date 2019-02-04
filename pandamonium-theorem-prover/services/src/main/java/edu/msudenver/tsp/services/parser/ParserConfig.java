@@ -1,7 +1,10 @@
 package edu.msudenver.tsp.services.parser;
 
-//@Configuration
-//@ComponentScan
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+
+@Configuration
+@ComponentScan
 //@PropertySource("classpath:development.properties")
 public class ParserConfig {
 
