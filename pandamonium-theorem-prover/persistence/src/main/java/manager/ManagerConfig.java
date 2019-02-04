@@ -1,6 +1,7 @@
 package manager;
 
 import dao.DefinitionDao;
+import dao.NotationDao;
 import dao.ProofDao;
 import dao.TheoremDao;
 import org.springframework.context.annotation.Bean;
@@ -26,5 +27,10 @@ public class ManagerConfig {
     @Bean
     public ProofManager proofManager() {
         return new ProofManager(new ProofDao());
+    }
+
+    @Bean
+    public NotationManager notationManager() {
+        return new NotationManager(new NotationDao());
     }
 }
