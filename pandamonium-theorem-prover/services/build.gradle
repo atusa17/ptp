@@ -17,8 +17,8 @@ dependencies {
 }
 
 test {
-    if (System.properties['test.profile'] != 'edu.msudenver.tsp.services.integrationTest') {
-        exclude '**/*edu.msudenver.tsp.services.integrationTest*'
+    if (System.properties['test.profile'] != 'integrationTest') {
+        exclude '**/*integrationTest*'
     } else {
         exclude '**/*edu/*'
     }
