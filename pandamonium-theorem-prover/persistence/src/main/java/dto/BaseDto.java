@@ -1,4 +1,9 @@
 package dto;
 
-public class BaseDto {
+import lombok.Data;
+
+@Data
+class BaseDto {
+    private String id;
+    private int version;
 }
