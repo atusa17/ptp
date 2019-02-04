@@ -1,6 +1,6 @@
 package edu.msudenver.tsp.website.integrationTest;
 
-import hello.Application;
+import edu.msudenver.tsp.website.Application;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
