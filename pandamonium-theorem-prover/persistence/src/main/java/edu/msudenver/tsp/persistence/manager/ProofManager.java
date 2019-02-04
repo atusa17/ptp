@@ -1,11 +1,13 @@
 package edu.msudenver.tsp.persistence.manager;
 
 import edu.msudenver.tsp.persistence.dao.ProofDao;
-import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component
-@AllArgsConstructor
 class ProofManager {
     final private ProofDao proofDao;
+
+    ProofManager(final ProofDao proofDao) {
+        this.proofDao = proofDao;
+    }
 }
