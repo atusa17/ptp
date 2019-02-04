@@ -15,3 +15,16 @@ dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
     compile fileTree(dir: 'lib', include: '**/*.jar')
 }
+
+test {
+    if (System.properties['test.profile'] != 'edu.msudenver.tsp.services.integrationTest') {
+        exclude '**/*edu.msudenver.tsp.services.integrationTest*'
+    } else {
+        exclude '**/*edu/*'
+    }
+}
+
+testSets {
+    unitTest
+    integrationTest
+}

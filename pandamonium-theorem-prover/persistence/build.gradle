@@ -14,3 +14,16 @@ repositories {
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
 }
+
+test {
+    if (System.properties['test.profile'] != 'edu.msudenver.tsp.persistence.integrationTest') {
+        exclude '**/*edu.msudenver.tsp.persistence.integrationTest*'
+    } else {
+        exclude '**/*edu/*'
+    }
+}
+
+testSets {
+    unitTest
+    integrationTest
+}
