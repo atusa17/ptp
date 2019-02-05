@@ -1,4 +1,4 @@
-package hello;
+package edu.msudenver.tsp.website;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -8,6 +8,6 @@ public class HelloController {
 
     @RequestMapping("/")
     public String index() {
-        return "Greetings from Spring Boot!";
+        return "Welcome to Project Pandamonium!";
     }
 }
