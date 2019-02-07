@@ -1,0 +1,20 @@
+create database pandamonium;
+use pandamonium;
+create table accounts {
+id int not null auto_increment primary key unique,
+username varchar(50) not null unique,
+password varchar(256) not null,
+administrator_status boolean default false,
+last_login date,
+version int default 0
+};
+insert into accounts (username, password, administrator_status)
+values ('admin', 'secret', true),
+('atusa', 'secret', true),
+('dantanxiaotian', 'secret', true),
+('BrittanyBi', 'secret', true),
+('lanlanzeliu', 'secret', true),
+('tramanh305', 'secret', true);
+create table definitions {
+
+}
