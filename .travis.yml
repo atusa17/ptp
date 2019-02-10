@@ -9,7 +9,7 @@ before_install:
   - cd pandamonium-theorem-prover
 
 before_script:
-  - mysql -u root pandamonium < pandamonium-theorem-prover/persistence/scripts/mysql/local_development.sql
+  - mysql -u root < pandamonium-theorem-prover/persistence/scripts/mysql/local_development.sql
 
 stages:
   - name: Load Database
