@@ -12,24 +12,24 @@ addons:
 
 before_install:
   - chmod +x pandamonium-theorem-prover/gradlew
+  - cd pandamonium-theorem-prover
 
 before_script:
-  - mysql -u root -e 'CREATE DATABASE pandamonium;'
   - mysql -u root pandamonium < pandamonium-theorem-prover/persistence/sql/local_development.sql
 
 stages:
-  - name: load database
-  - name: build
-  - name: unit Test
-  - name: integration Test
+  - name: Load Database
+  - name: Build
+  - name: Unit Tests
+  - name: Integration Tests
 
 jobs:
   include:
-    - stage: load database
+    - stage: Load Database
       script: ./pandamonium-theorem-prover/gradlew loaddb
-    - stage: build
-      script: ./pandamonium-theorem-prover/gradlew build
-    - stage: unit Test
-      script: ./pandamonium-theorem-prover/gradlew test
-    - stage: integration Test
-      script: ./pandamonium-theorem-prover/gradlew integrationTest
+    - stage: Build
+      script: ./gradlew build
+    - stage: Unit Tests
+      script: ./gradlew test
+    - stage: Integration Tests
+      script: ./gradlew integrationTest
