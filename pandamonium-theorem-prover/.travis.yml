@@ -1,4 +1,7 @@
 language: java
+services:
+  - mysql
+
 install: true
 
 sudo: false
@@ -9,6 +12,10 @@ addons:
 
 before_install:
   - chmod +x pandamonium-theorem-prover/gradlew
+
+before_script:
+  - mysql -u root -e 'CREATE DATABASE pandamonium;'
+  - mysql -u root pandamonium < pandamonium-theorem-prover/persistence/sql/local_development.sql
 
 stages:
   - name: build
