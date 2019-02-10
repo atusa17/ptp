@@ -1,3 +1,4 @@
+drop database if exists pandamonium;
 create database pandamonium;
 use pandamonium;
 create table accounts (
