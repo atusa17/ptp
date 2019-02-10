@@ -18,15 +18,18 @@ before_script:
   - mysql -u root pandamonium < pandamonium-theorem-prover/persistence/sql/local_development.sql
 
 stages:
+  - name: load database
   - name: build
-  - name: unitTest
-  - name: integrationTest
+  - name: unit Test
+  - name: integration Test
 
 jobs:
   include:
+    - stage: load database
+      script: ./pandamonium-theorem-prover/gradlew loaddb
     - stage: build
       script: ./pandamonium-theorem-prover/gradlew build
-    - stage: unitTest
+    - stage: unit Test
       script: ./pandamonium-theorem-prover/gradlew test
-    - stage: integrationTest
+    - stage: integration Test
       script: ./pandamonium-theorem-prover/gradlew integrationTest

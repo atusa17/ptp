@@ -28,6 +28,6 @@ dependencies {
 }
 
 task loadDb(type: Exec, group: 'Verification', description: 'Reloads the local database.') {
-    workingDir "$rootDir/scripts/mysql"
+    workingDir "./scripts/mysql"
     commandLine './loaddb.sh'
 }
