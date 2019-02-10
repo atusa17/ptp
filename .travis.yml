@@ -1,20 +1,35 @@
 language: java
+services:
+  - mysql
+
 install: true
+
+sudo: false
+addons:
+  apt:
+    packages:
+      - oracle-java8-installer
 
 before_install:
   - chmod +x pandamonium-theorem-prover/gradlew
   - cd pandamonium-theorem-prover
 
+before_script:
+  - mysql -u root pandamonium < pandamonium-theorem-prover/persistence/sql/local_development.sql
+
 stages:
-  - name: build
-  - name: unit tests
-  - name: integration tests
+  - name: Load Database
+  - name: Build
+  - name: Unit Tests
+  - name: Integration Tests
 
 jobs:
   include:
-    - stage: build
+    - stage: Load Database
+      script: ./pandamonium-theorem-prover/gradlew loaddb
+    - stage: Build
       script: ./gradlew build
-    - stage: unit tests
+    - stage: Unit Tests
       script: ./gradlew test
-    - stage: integration tests
+    - stage: Integration Tests
       script: ./gradlew integrationTest
