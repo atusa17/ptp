@@ -10,7 +10,7 @@ before_install:
 
 before_script:
   - mysql -u root -e 'CREATE DATABASE pandamonium;'
-  - mysql -u root pandamonium < pandamonium-theorem-prover/persistence/scripts/mysql/local_development.sql
+  - mysql -u root pandamonium < persistence/scripts/mysql/local_development.sql
 
 stages:
   - name: Load Database
