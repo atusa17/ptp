@@ -4,12 +4,6 @@ services:
 
 install: true
 
-sudo: false
-addons:
-  apt:
-    packages:
-      - oracle-java8-installer
-
 before_install:
   - chmod +x pandamonium-theorem-prover/gradlew
   - cd pandamonium-theorem-prover
