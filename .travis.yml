@@ -17,7 +17,7 @@ before_install:
   - cd pandamonium-theorem-prover
 
 before_script:
-  - mysql_upgrade --force -uroot -p
+  - mysql_upgrade --force -uroot
   - mysql -u root -e 'CREATE DATABASE IF NOT EXISTS pandamonium;'
   - mysql -u root -e "CREATE USER 'panda'@'localhost';"
   - mysql -u root -e "GRANT ALL PRIVILEGES ON *.* to 'panda'@'localhost';"
