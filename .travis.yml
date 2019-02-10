@@ -29,7 +29,7 @@ stages:
 jobs:
   include:
     - stage: Load Database
-      script: ./pandamonium-theorem-prover/gradlew loaddb
+      script: ./gradlew loaddb
     - stage: Build
       script: ./gradlew build
     - stage: Unit Tests
