@@ -1,20 +1,18 @@
-package edu.msudenver.tsp.persistence.entity;
+package edu.msudenver.tsp.persistence.dto;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Version;
+import javax.persistence.*;
 
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class BaseEntity {
+@MappedSuperclass
+public class BaseDto {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     Integer id;

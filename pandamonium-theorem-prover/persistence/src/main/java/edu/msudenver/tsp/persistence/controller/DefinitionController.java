@@ -1,21 +1,21 @@
-package edu.msudenver.tsp.persistence.manager;
+package edu.msudenver.tsp.persistence.controller;
 
-import edu.msudenver.tsp.persistence.entity.DefinitionEntity;
+import edu.msudenver.tsp.persistence.dto.DefinitionDto;
 import edu.msudenver.tsp.persistence.repository.DefinitionRepository;
 import lombok.AllArgsConstructor;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
-@Controller
+@RestController
 @AllArgsConstructor
 @RequestMapping(path = "/definitions/")
-public class DefinitionManager {
+public class DefinitionController {
     private final DefinitionRepository definitionRepository;
 
     @GetMapping("/all")
-    public @ResponseBody Iterable<DefinitionEntity> getAllDefinitions() {
+    public @ResponseBody Iterable<DefinitionDto> getAllDefinitions() {
         return definitionRepository.findAll();
     }
 }

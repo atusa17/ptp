@@ -1,4 +1,4 @@
-package edu.msudenver.tsp.persistence.entity;
+package edu.msudenver.tsp.persistence.dto;
 
 import java.io.Serializable;
 

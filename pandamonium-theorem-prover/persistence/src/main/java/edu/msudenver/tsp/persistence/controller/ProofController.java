@@ -1,4 +1,4 @@
-package edu.msudenver.tsp.persistence.manager;
+package edu.msudenver.tsp.persistence.controller;
 
 import edu.msudenver.tsp.persistence.repository.ProofRepository;
 import lombok.AllArgsConstructor;
@@ -6,6 +6,6 @@ import org.springframework.stereotype.Component;
 
 @Component
 @AllArgsConstructor
-public class ProofManager {
+public class ProofController {
     final private ProofRepository proofRepository;
 }
