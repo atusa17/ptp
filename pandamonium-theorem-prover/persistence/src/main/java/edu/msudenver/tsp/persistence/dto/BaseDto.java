@@ -14,6 +14,7 @@ import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.TypeDefs;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 
 @Data
@@ -28,10 +29,12 @@ import javax.persistence.*;
         @TypeDef(name = "jsonb-node", typeClass = JsonNodeBinaryType.class),
         @TypeDef(name = "json-node", typeClass = JsonNodeStringType.class),
 })
-public class BaseDto {
+public class BaseDto implements Serializable {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    Integer id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
     @Version
-    Integer version;
+    private Integer version;
+
+    public static final long serialVersionUID = -1686252381978213945L;
 }

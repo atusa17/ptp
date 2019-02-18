@@ -98,10 +98,11 @@ public class PersistenceApi {
 
     Properties additionalProperties() {
         final Properties properties = new Properties();
-        properties.setProperty("hibernate.ddl-auto", hibernateTablePolicy);
+        properties.setProperty("hibernate.hbm2ddl.auto", "update");
         properties.setProperty("hibernate.dialect", hibernateDialect);
         properties.setProperty("spring.jpa.show-sql", showSql);
         properties.setProperty("spring.datasource.tomcat.max-active", tomcatPoolMaxActive);
+        properties.setProperty("hibernate.id.new_generator_mappings","false");
 
         return properties;
     }
