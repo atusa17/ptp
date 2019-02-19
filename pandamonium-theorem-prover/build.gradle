@@ -78,8 +78,8 @@ subprojects {
     }
 }
 
-bootWar {
-    baseName = 'ptp-web-server'
+bootJar {
+    baseName = 'gs-spring-boot'
     version =  '0.1.0'
 }
 
