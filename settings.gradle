@@ -1,5 +1,0 @@
-rootProject.name = 'pandamonium-theorem-prover'
-include 'services'
-include 'persistence'
-include 'utilities'
-
