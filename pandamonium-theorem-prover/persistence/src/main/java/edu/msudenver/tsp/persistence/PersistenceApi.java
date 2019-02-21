@@ -80,7 +80,7 @@ public class PersistenceApi {
     @Bean(name = "sessionFactory")
     public SessionFactory getSessionFactory(final DataSource dataSource) {
         final LocalSessionFactoryBuilder sessionFactoryBuilder = new LocalSessionFactoryBuilder(dataSource);
-        sessionFactoryBuilder.scanPackages("edu.msudenver.tsp.persistence.entity");
+        sessionFactoryBuilder.scanPackages("edu.msudenver.tsp.persistence.dto");
         return sessionFactoryBuilder.buildSessionFactory();
     }
 
