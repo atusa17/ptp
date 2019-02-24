@@ -27,14 +27,14 @@ public class PersistenceTestConfig {
     @Bean
     @Primary
     public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
-        final LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
-        em.setJpaVendorAdapter(vendorAdapter());
-        em.setDataSource(getDataSource());
-        em.setPersistenceProviderClass(HibernatePersistenceProvider.class);
-        em.setPackagesToScan("edu.msudenver.tsp.persistence");
-        em.setJpaProperties(additionalProperties());
+        final LocalContainerEntityManagerFactoryBean entityManagerFactoryBean = new LocalContainerEntityManagerFactoryBean();
+        entityManagerFactoryBean.setJpaVendorAdapter(vendorAdapter());
+        entityManagerFactoryBean.setDataSource(getDataSource());
+        entityManagerFactoryBean.setPersistenceProviderClass(HibernatePersistenceProvider.class);
+        entityManagerFactoryBean.setPackagesToScan("edu.msudenver.tsp.persistence");
+        entityManagerFactoryBean.setJpaProperties(additionalProperties());
 
-        return em;
+        return entityManagerFactoryBean;
     }
 
     @Bean

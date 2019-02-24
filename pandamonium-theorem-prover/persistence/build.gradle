@@ -28,7 +28,6 @@ dependencies {
     compile group: 'org.hibernate', name: 'hibernate-core', version: '5.4.1.Final'
     compile group: 'com.vladmihalcea', name: 'hibernate-types-52', version: '2.4.1'
 
-
     compile fileTree(dir: 'lib', include: '**/*.jar')
 
     compile group: 'mysql', name: 'mysql-connector-java', version: '8.0.15'

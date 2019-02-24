@@ -11,6 +11,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+import javax.validation.groups.Default;
 import java.util.List;
 import java.util.Optional;
 
@@ -48,6 +50,7 @@ public class DefinitionController {
             LOG.error("ERROR: ID was null");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
+
         LOG.debug("Querying for definition with id " + id);
 
         final StopWatch stopWatch = new StopWatch();
@@ -70,14 +73,16 @@ public class DefinitionController {
     }
 
     @PostMapping("/")
+    @Validated({DefinitionDto.Insert.class, Default.class})
     public @ResponseBody ResponseEntity<DefinitionDto> insertDefinition(
-            @Validated(DefinitionDto.Insert.class) @RequestBody final DefinitionDto definitionDto,
+            @Valid @RequestBody final DefinitionDto definitionDto,
             final BindingResult bindingResult) {
         LOG.info("Received request to insert a new definition");
         if (bindingResult.hasErrors()) {
             LOG.error("Binding result is unprocessable");
             return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
         }
+
         if (definitionDto == null) {
             LOG.error("Passed entity is unprocessable");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
