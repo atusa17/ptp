@@ -48,6 +48,6 @@ task loadDb(type: Exec, group: 'Verification', description: 'Reloads the local d
         commandLine './loaddb.sh'
     } else {
         workingDir "./scripts/mysql"
-        commandLine 'loaddb.bat'
+        commandLine=['cmd','/c','loaddb.bat']
     }
 }
