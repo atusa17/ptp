@@ -1,5 +1,5 @@
-SET MYSQL_PWD=secret
-FOR /R %%s IN (.\*.sql) do (
+set mysql_pwd = secret
+FOR /R %%s IN (*.sql) do (
     echo **** %%s ****
-    echo mysql --batch --quick --raw --line-numbers --force --user=panda < %%s
+    mysql -u panda -psecret < %%s
 )
