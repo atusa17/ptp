@@ -118,7 +118,9 @@ test {
 
 testSets {
     unitTest
-    integrationTest
+    integrationTest {
+        dependsOn loadDb
+    }
 }
 
 compileKotlin {
