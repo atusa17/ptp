@@ -1,5 +1,6 @@
 package edu.msudenver.tsp.persistence;
 
+import edu.msudenver.tsp.persistence.dto.AccountsDto;
 import edu.msudenver.tsp.persistence.repository.AccountsRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -8,6 +9,8 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.Optional;
+
+import static org.junit.Assert.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = PersistenceTestConfig.class)
@@ -27,7 +30,6 @@ public class AccountsIntegrationTest {
         assertEquals("Test username", savedAccount.getUsername());
         assertEquals("test password", savedAccount.getPassword());
         assertTrue(savedAccount.isAdministratorStatus());
-        assertEquals(1, savedAccount.getVersion());
 
         savedAccount.setPassword("Test Update");
 
@@ -36,12 +38,11 @@ public class AccountsIntegrationTest {
         assertEquals("Test username", savedAccount.getUsername());
         assertEquals("Test Update", savedAccount.getPassword());
         assertTrue(savedAccount.isAdministratorStatus());
-        assertEquals(2, savedAccount.getVersion());
         assertEquals(updatedAccount.getId(), id);
 
-        accountsRepository.deleteById(id);
+        accountsRepository.delete(accountsDto);
         final Optional<AccountsDto> deletedAccount = accountsRepository.findById(id);
-        assertFalse(deletedDefinition.isPresent());
+        assertFalse(deletedAccount.isPresent());
     }
 
     private AccountsDto createAccount() {
