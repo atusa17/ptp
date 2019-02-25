@@ -125,6 +125,72 @@ public class DefinitionControllerTest {
     }
 
     @Test
+    public void testUpdateDefinition() {
+        final DefinitionDto existingDefinition = createDefinition();
+        existingDefinition.setId(1);
+        existingDefinition.setVersion(1);
+        final DefinitionDto definitionUpdate = new DefinitionDto();
+        definitionUpdate.setName("Test Update");
+        final DefinitionDto updatedDefinition = existingDefinition;
+        updatedDefinition.setName("Test Update");
+        when(definitionRepository.findById(anyInt())).thenReturn(Optional.of(existingDefinition));
+        when(definitionRepository.save(any(DefinitionDto.class))).thenReturn(updatedDefinition);
+
+        final ResponseEntity<DefinitionDto> responseEntity = definitionController.updateDefinition(1, definitionUpdate, bindingResult);
+
+        assertNotNull(responseEntity);
+        assertTrue(responseEntity.hasBody());
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        assertEquals(updatedDefinition, responseEntity.getBody());
+        verify(definitionRepository).findById(anyInt());
+        verify(definitionRepository).save(any(DefinitionDto.class));
+    }
+
+    @Test
+    public void testUpdateDefinition_bindingResultErrors() {
+        when(bindingResult.hasErrors()).thenReturn(true);
+
+        final ResponseEntity<DefinitionDto> responseEntity = definitionController.updateDefinition(1, createDefinition(), bindingResult);
+
+        assertNotNull(responseEntity);
+        assertFalse(responseEntity.hasBody());
+        assertEquals(HttpStatus.UNPROCESSABLE_ENTITY, responseEntity.getStatusCode());
+        verifyZeroInteractions(definitionRepository);
+    }
+
+    @Test
+    public void testUpdateDefinition_definitionDtoIsNull() {
+        final ResponseEntity<DefinitionDto> responseEntity = definitionController.updateDefinition(1, null, bindingResult);
+
+        assertNotNull(responseEntity);
+        assertFalse(responseEntity.hasBody());
+        assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
+        verifyZeroInteractions(definitionRepository);
+    }
+
+    @Test
+    public void testUpdateDefinition_idIsNull() {
+        final ResponseEntity<DefinitionDto> responseEntity = definitionController.updateDefinition(null, createDefinition(), bindingResult);
+
+        assertNotNull(responseEntity);
+        assertFalse(responseEntity.hasBody());
+        assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
+        verifyZeroInteractions(definitionRepository);
+    }
+
+    @Test
+    public void testUpdateDefinition_definitionDoesntExist() {
+        when(definitionRepository.findById(anyInt())).thenReturn(Optional.empty());
+
+        final ResponseEntity<DefinitionDto> responseEntity = definitionController.updateDefinition(1, createDefinition(), bindingResult);
+
+        assertNotNull(responseEntity);
+        assertFalse(responseEntity.hasBody());
+        assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
+        verify(definitionRepository, times(0)).save(any(DefinitionDto.class));
+    }
+
+    @Test
     public void testDeleteDefinitionById() {
         doNothing().when(definitionRepository).deleteById(anyInt());
 

@@ -104,7 +104,7 @@ public class DefinitionController {
     }
 
     @PatchMapping("/{id}")
-    public @ResponseBody ResponseEntity<DefinitionDto> updateAccount(
+    public @ResponseBody ResponseEntity<DefinitionDto> updateDefinition(
             @PathVariable("id") final Integer id,
             @RequestBody final DefinitionDto definitionDto, final BindingResult bindingResult) {
 
