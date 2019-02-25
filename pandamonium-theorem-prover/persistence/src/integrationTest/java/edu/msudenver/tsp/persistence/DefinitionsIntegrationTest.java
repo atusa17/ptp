@@ -23,7 +23,6 @@ public class DefinitionsIntegrationTest {
 
     @Test
     public void testCRUDFunctionality() {
-        // Create a new definition
         final DefinitionDto definitionDto = createDefinition();
         final DefinitionDto savedDefinition = definitionRepository.save(definitionDto);
 
