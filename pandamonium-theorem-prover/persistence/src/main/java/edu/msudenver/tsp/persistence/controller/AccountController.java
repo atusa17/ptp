@@ -1,6 +1,6 @@
 package edu.msudenver.tsp.persistence.controller;
 
-import edu.msudenver.tsp.persistence.dto.AccountsDto;
+import edu.msudenver.tsp.persistence.dto.AccountDto;
 import edu.msudenver.tsp.persistence.repository.AccountsRepository;
 import edu.msudenver.tsp.utilities.PersistenceUtilities;
 import lombok.AllArgsConstructor;
@@ -26,7 +26,7 @@ public class AccountController {
 
     @GetMapping("/")
     public @ResponseBody
-    ResponseEntity<Iterable<AccountsDto>> getListOfAccounts() {
+    ResponseEntity<Iterable<AccountDto>> getListOfAccounts() {
         LOG.info("Received request to list all accounts");
 
         LOG.debug("Querying for list of accounts");
@@ -34,7 +34,7 @@ public class AccountController {
         final StopWatch stopWatch = new StopWatch();
         stopWatch.start();
 
-        final List<AccountsDto> listOfAccounts = (List<AccountsDto>) accountsRepository.findAll();
+        final List<AccountDto> listOfAccounts = (List<AccountDto>) accountsRepository.findAll();
 
         stopWatch.stop();
 
@@ -46,7 +46,7 @@ public class AccountController {
 
     @GetMapping("/{id}")
     public @ResponseBody
-    ResponseEntity<AccountsDto> getAccountById(@PathVariable("id") final Integer id) {
+    ResponseEntity<AccountDto> getAccountById(@PathVariable("id") final Integer id) {
         LOG.info("Received request to query for account with id " + id);
         if (id == null) {
             LOG.error("ERROR: ID was null");
@@ -57,7 +57,7 @@ public class AccountController {
         final StopWatch stopWatch = new StopWatch();
         stopWatch.start();
 
-        final Optional<AccountsDto> account = accountsRepository.findById(id);
+        final Optional<AccountDto> account = accountsRepository.findById(id);
 
         stopWatch.stop();
 
@@ -74,9 +74,9 @@ public class AccountController {
     }
 
     @PostMapping("/")
-    @Validated({AccountsDto.Insert.class, Default.class})
-    public @ResponseBody ResponseEntity<AccountsDto> insertAccount(
-            @Valid @RequestBody final AccountsDto accountsDto, final BindingResult bindingResult) {
+    @Validated({AccountDto.Insert.class, Default.class})
+    public @ResponseBody ResponseEntity<AccountDto> insertAccount(
+            @Valid @RequestBody final AccountDto accountDto, final BindingResult bindingResult) {
 
         LOG.info("Received request to insert a new account");
         if (bindingResult.hasErrors()) {
@@ -84,7 +84,7 @@ public class AccountController {
             return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
         }
 
-        if (accountsDto == null) {
+        if (accountDto == null) {
             LOG.error("Passed account is unprocessable");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
@@ -94,7 +94,7 @@ public class AccountController {
         final StopWatch stopWatch = new StopWatch();
         stopWatch.start();
 
-        final AccountsDto savedAccount = accountsRepository.save(accountsDto);
+        final AccountDto savedAccount = accountsRepository.save(accountDto);
 
         stopWatch.stop();
 
@@ -104,9 +104,9 @@ public class AccountController {
     }
 
     @PatchMapping("/{id}")
-    public @ResponseBody ResponseEntity<AccountsDto> updateAccount(
+    public @ResponseBody ResponseEntity<AccountDto> updateAccount(
             @PathVariable("id") final Integer id,
-            @RequestBody final AccountsDto accountsDto, final BindingResult bindingResult) {
+            @RequestBody final AccountDto accountDto, final BindingResult bindingResult) {
 
         LOG.info("Received request to update an account");
         if (bindingResult.hasErrors()) {
@@ -114,7 +114,7 @@ public class AccountController {
             return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
         }
 
-        if (accountsDto == null) {
+        if (accountDto == null) {
             LOG.error("Passed entity is null");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
@@ -129,7 +129,7 @@ public class AccountController {
         final StopWatch stopWatch = new StopWatch();
         stopWatch.start();
 
-        final Optional<AccountsDto> existingAccount = accountsRepository.findById(id);
+        final Optional<AccountDto> existingAccount = accountsRepository.findById(id);
 
         stopWatch.stop();
 
@@ -140,7 +140,7 @@ public class AccountController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        PersistenceUtilities.copyNonNullProperties(accountsDto, existingAccount.get());
+        PersistenceUtilities.copyNonNullProperties(accountDto, existingAccount.get());
         existingAccount.get().setVersion(existingAccount.get().getVersion()+ 1);
 
         LOG.info("Updating account with id " + id);
@@ -148,7 +148,7 @@ public class AccountController {
 
         stopWatch.start();
 
-        final AccountsDto updatedAccount = accountsRepository.save(existingAccount.get());
+        final AccountDto updatedAccount = accountsRepository.save(existingAccount.get());
 
         stopWatch.stop();
 

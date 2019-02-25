@@ -19,7 +19,7 @@ import java.util.Date;
 @EntityListeners(AuditingEntityListener.class)
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class AccountsDto extends BaseDto implements Serializable {
+public class AccountDto extends BaseDto implements Serializable {
     @NotBlank(groups = Insert.class, message = "A username must be specified") @Size(max = 50) private String username;
     @NotBlank(groups = Insert.class, message = "A password must be specified") @Size(max = 256) private String password;
     @NotNull @JsonProperty("administrator_status") private boolean administratorStatus;

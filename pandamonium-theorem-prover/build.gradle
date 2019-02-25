@@ -45,6 +45,7 @@ allprojects {
 }
 
 subprojects {
+    apply plugin: 'java'
     repositories {
         mavenCentral()
     }
@@ -106,6 +107,12 @@ dependencies {
     compileOnly 'org.projectlombok:lombok:1.18.4'
 
     apt 'org.projectlombok:lombok:1.18.4'
+}
+
+project(':persistence') {
+    dependencies {
+        compile project(':utilities')
+    }
 }
 
 test {
