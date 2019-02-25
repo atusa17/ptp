@@ -27,5 +27,5 @@ public class AccountsDto extends BaseDto implements Serializable {
 
     public static final long serialVersionUID = 7095627971593953734L;
 
-    interface Insert {}
+    public interface Insert {}
 }
