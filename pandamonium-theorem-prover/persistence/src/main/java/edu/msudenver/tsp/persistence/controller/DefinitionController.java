@@ -2,6 +2,7 @@ package edu.msudenver.tsp.persistence.controller;
 
 import edu.msudenver.tsp.persistence.dto.DefinitionDto;
 import edu.msudenver.tsp.persistence.repository.DefinitionRepository;
+import edu.msudenver.tsp.utilities.PersistenceUtilities;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -100,6 +101,60 @@ public class DefinitionController {
 
         LOG.info("Returning the newly created definition with id " + savedDefinition.getId());
         return new ResponseEntity<>(savedDefinition, HttpStatus.CREATED);
+    }
+
+    @PatchMapping("/{id}")
+    public @ResponseBody ResponseEntity<DefinitionDto> updateDefinition(
+            @PathVariable("id") final Integer id,
+            @RequestBody final DefinitionDto definitionDto, final BindingResult bindingResult) {
+
+        LOG.info("Received request to update an account");
+        if (bindingResult.hasErrors()) {
+            LOG.error("Binding result is unprocessable");
+            return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
+        }
+
+        if (definitionDto == null) {
+            LOG.error("Passed entity is null");
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        if (id == null) {
+            LOG.error("Definition ID must be specified");
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        LOG.debug("Checking for existence of definition with id " + id);
+
+        final StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
+
+        final Optional<DefinitionDto> existingDefinition = definitionRepository.findById(id);
+
+        stopWatch.stop();
+
+        LOG.debug("Received response from server: query took " + stopWatch.getTotalTimeMillis() + "ms to complete");
+
+        if (!existingDefinition.isPresent()) {
+            LOG.error("No definition associated with id " + id);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        PersistenceUtilities.copyNonNullProperties(definitionDto, existingDefinition.get());
+        existingDefinition.get().setVersion(existingDefinition.get().getVersion()+ 1);
+
+        LOG.info("Updating definition with id " + id);
+        LOG.debug("Querying for definition with ID " + id);
+
+        stopWatch.start();
+
+        final DefinitionDto updatedDefinition = definitionRepository.save(existingDefinition.get());
+
+        stopWatch.stop();
+
+        LOG.debug("Received response from server: query took " + stopWatch.getTotalTimeMillis() + "ms to complete");
+
+        return new ResponseEntity<>(updatedDefinition, HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")

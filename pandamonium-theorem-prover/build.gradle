@@ -37,6 +37,14 @@ sonarqube {
 }
 
 allprojects {
+    sonarqube {
+        properties {
+            property "sonar.host.url", "https://sonarcloud.io"
+            property "sonar.projectKey", "atusa17_ptp"
+            property "sonar.organization", "atusa17-github"
+            property "sonar.login", "9dcc611cd79f175459248b053b25450e36e38463"
+        }
+    }
     apply plugin: 'java'
     apply plugin: 'jacoco'
     apply plugin: 'org.unbroken-dome.test-sets'
@@ -45,6 +53,7 @@ allprojects {
 }
 
 subprojects {
+    apply plugin: 'java'
     repositories {
         mavenCentral()
     }
@@ -106,6 +115,12 @@ dependencies {
     compileOnly 'org.projectlombok:lombok:1.18.4'
 
     apt 'org.projectlombok:lombok:1.18.4'
+}
+
+project(':persistence') {
+    dependencies {
+        compile project(':utilities')
+    }
 }
 
 test {

@@ -23,7 +23,6 @@ public class DefinitionsIntegrationTest {
 
     @Test
     public void testCRUDFunctionality() {
-        // Create a new definition
         final DefinitionDto definitionDto = createDefinition();
         final DefinitionDto savedDefinition = definitionRepository.save(definitionDto);
 
@@ -45,7 +44,25 @@ public class DefinitionsIntegrationTest {
         assertEquals("Test definition 2", definitionsList.get(1));
         assertEquals("\\testLaTeX", notationList.get(0));
 
-        definitionRepository.delete(savedDefinition);
+        savedDefinition.setName("Test Update");
+
+        final DefinitionDto updatedDefinition = definitionRepository.save(savedDefinition);
+
+        assertEquals("Test Update", updatedDefinition.getName());
+        assertNotNull(updatedDefinition.getDefinition());
+        assertNotNull(updatedDefinition.getNotation());
+
+        final List<String> updatedDefinitionsList = updatedDefinition.getDefinition().getDefinitions();
+        final List<String> updatedNotationsList = updatedDefinition.getNotation().getNotations();
+
+        assertEquals(2, updatedDefinitionsList.size());
+        assertEquals(1, updatedNotationsList.size());
+        assertEquals("Test definition 1", updatedDefinitionsList.get(0));
+        assertEquals("Test definition 2", updatedDefinitionsList.get(1));
+        assertEquals("\\testLaTeX", updatedNotationsList.get(0));
+        assertEquals(id, updatedDefinition.getId());
+
+        definitionRepository.delete(updatedDefinition);
         final Optional<DefinitionDto> deletedDefinition = definitionRepository.findById(id);
         assertFalse(deletedDefinition.isPresent());
     }
