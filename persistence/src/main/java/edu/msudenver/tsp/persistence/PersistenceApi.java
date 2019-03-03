@@ -105,6 +105,5 @@ public class PersistenceApi {
         properties.setProperty("hibernate.id.new_generator_mappings","false");
 
         return properties;
-
     }
 }
