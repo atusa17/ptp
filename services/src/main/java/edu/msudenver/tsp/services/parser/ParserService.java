@@ -41,12 +41,6 @@ class ParserService {
         // convert to the same case for easier processing
         input = input.toLowerCase();
 
-        // eliminate periods at the end of the input
-        /*if(input.charAt(input.length()-1) == '.')
-        {
-            input.substring(0, input.length()-1);
-        }*/
-
         root = new Node(input, null);
 
         // special case: nothing is submitted
