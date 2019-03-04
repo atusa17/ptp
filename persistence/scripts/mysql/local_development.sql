@@ -23,3 +23,13 @@ definition json not null,
 notation json,
 version int default 1
 );
+create table theorems (
+id int not null auto_increment primary key unique,
+name varchar(512) not null,
+theorem_type enum ('THEOREM', 'PROPOSITION', 'LEMMA', 'COROLLARY') not null,
+branch varchar(512) not null,
+referenced_definitions json,
+referenced_theorems json,
+proven_status boolean default false,
+version int default 1
+)
