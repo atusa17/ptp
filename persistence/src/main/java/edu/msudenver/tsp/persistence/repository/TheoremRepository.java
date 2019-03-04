@@ -1,7 +1,9 @@
 package edu.msudenver.tsp.persistence.repository;
 
 import edu.msudenver.tsp.persistence.dto.BaseDto;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-public interface TheoremRepository extends CrudRepository<BaseDto, Long> {
+@Repository
+public interface TheoremRepository extends JpaRepository<BaseDto, Long> {
 }
