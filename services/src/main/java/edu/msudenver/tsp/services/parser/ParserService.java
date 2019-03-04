@@ -29,7 +29,7 @@ class ParserService {
     public void driveParsingProcess(final String userInput)
     {
         final Node tree;
-        ArrayList<String> statements = new ArrayList<>();
+        final ArrayList<String> statements;
 
         tree = parseRawInput(userInput);
         statements = retrieveStatements(tree);
@@ -41,18 +41,18 @@ class ParserService {
         // convert to the same case for easier processing
         input = input.toLowerCase();
 
+        // eliminate periods at the end of the input
+        /*if(input.charAt(input.length()-1) == '.')
+        {
+            input.substring(0, input.length()-1);
+        }*/
+
         root = new Node(input, null);
 
         // special case: nothing is submitted
         if(input.equals(""))
         {
             return root;
-        }
-
-        // eliminate periods at the end of the input
-        if(input.charAt(input.length()-1) == '.')
-        {
-            input = input.substring(0, input.length()-1);
         }
 
         recurse(root);
@@ -68,7 +68,14 @@ class ParserService {
         {
             current.left = new Node("let",
                     current);
-            iContain = (current.statement.contains("if") ? current.statement.indexOf("if") : current.statement.length());
+
+            if(current.statement.contains("if")){
+                iContain = current.statement.indexOf("if");
+            } else if(current.statement.contains("then")){
+                iContain = current.statement.indexOf("then");
+            } else {
+                iContain = current.statement.length();
+            }
 
             current.left.center = new Node(current.statement.substring(current.statement.indexOf("let")+3,
                     iContain),
@@ -102,9 +109,9 @@ class ParserService {
 
     public ArrayList<String> retrieveStatements(final Node parsedTree)
     {
-        ArrayList<String> statementList = new ArrayList<>();
+        final ArrayList<String> statementList = new ArrayList<>();
 
-        statementList = traverse(parsedTree, statementList);
+        traverse(parsedTree, statementList);
 
         return statementList;
     }

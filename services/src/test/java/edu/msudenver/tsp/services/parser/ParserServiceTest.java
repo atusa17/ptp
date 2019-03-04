@@ -54,11 +54,48 @@ public class ParserServiceTest {
     }
 
     @Test
+    public void testLetXBeEvenThenXSquaredIsEven() {
+        final String expected = "0: let x be even. then x^2 is even.\n" +
+                "... 1: let\n" +
+                "... 2:  x be even. \n" +
+                "... 1: then\n" +
+                "... 2:  x^2 is even.\n\n";
+
+        final String testCase = "Let x be even. Then x^2 is even.";
+
+        assertEquals(expected, ps.parseRawInput(testCase).toString());
+    }
+
+    @Test
+    public void testLetIfThen() {
+        final String expected = "0: let a. if b, then c.\n" +
+                "... 1: let\n" +
+                "... 2:  a. \n" +
+                "... 1: if\n" +
+                "... 2:  b, \n" +
+                "... 1: then\n" +
+                "... 2:  c.\n\n";
+
+        final String testCase = "Let a. If b, then c.";
+
+        assertEquals(expected, ps.parseRawInput(testCase).toString());
+    }
+
+    @Test
+    public void testLetAlone() {
+        final String expected = "0: let a be equal to b.\n" +
+                "... 1: let\n" +
+                "... 2:  a be equal to b.\n\n";
+
+        final String testCase = "Let a be equal to b.";
+
+        assertEquals(expected, ps.parseRawInput(testCase).toString());
+    }
+
+    @Test
     public void testEmptyStringReturnsEmptyList() {
         final ArrayList<String> expectedList = new ArrayList<>();
         expectedList.add("");
-
-
 
         when(mps.parseRawInput(anyString())).thenReturn(new Node("", null));
 
@@ -79,5 +116,15 @@ public class ParserServiceTest {
         when(mps.parseRawInput(anyString())).thenReturn(ps.root);
 
         assertEquals(expectation, ps.retrieveStatements(mps.parseRawInput("baseCase")));
+    }
+
+    @Test
+    public void testDriveParsingProcess() {
+        mps.root = new Node("", null);
+        final ArrayList<String> testdummy = new ArrayList<>();
+        when(mps.parseRawInput(anyString())).thenReturn(mps.root);
+        when(mps.retrieveStatements(mps.root)).thenReturn(testdummy);
+
+        ps.driveParsingProcess("");
     }
 }
