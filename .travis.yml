@@ -13,8 +13,7 @@ addons:
       - mysql-client
 
 before_install:
-  - chmod +x pandamonium-theorem-prover/gradlew
-  - cd pandamonium-theorem-prover
+  - chmod +x gradlew
 
 before_script:
   - mysql_upgrade --force -uroot

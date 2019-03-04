@@ -20,7 +20,7 @@ import java.util.Optional;
 @Slf4j
 @RestController
 @AllArgsConstructor
-@RequestMapping(path = "/definitions/")
+@RequestMapping(path = "/definitions")
 public class DefinitionController {
     private final DefinitionRepository definitionRepository;
 
