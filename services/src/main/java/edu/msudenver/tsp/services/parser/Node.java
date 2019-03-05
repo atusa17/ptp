@@ -1,13 +1,16 @@
 package edu.msudenver.tsp.services.parser;
 
+import lombok.Getter;
+import lombok.Setter;
+
 public class Node
 {
-    String statement;
-    Node left;
-    Node right;
-    Node center;
-    Node parent;
-    int depth;
+    @Getter private final String statement;
+    @Getter @Setter private Node left;
+    @Getter @Setter private Node right;
+    @Getter @Setter private Node center;
+    @Getter private final Node parent;
+    @Getter private final int depth;
 
     public Node(final String statement, final Node parent)
     {

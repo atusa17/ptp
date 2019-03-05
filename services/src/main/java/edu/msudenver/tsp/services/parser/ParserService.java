@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Service
 class ParserService {
@@ -30,7 +31,7 @@ class ParserService {
     {
         try {
             final Node tree = parseRawInput(userInput);
-            final ArrayList<String> statements = retrieveStatements(tree);
+            final List<String> statements = retrieveStatements(tree);
 
             return true;
         } catch(final Exception e) {
@@ -58,72 +59,67 @@ class ParserService {
     {
         int wordBeginsHere;
 
-        if(current.statement.contains("let"))
+        if(current.getStatement().contains("let"))
         {
-            current.left = new Node("let",
-                    current);
+            current.setLeft(new Node("let", current));
 
-            if(current.statement.contains("if")){
-                wordBeginsHere = current.statement.indexOf("if");
-            } else if(current.statement.contains("then")){
-                wordBeginsHere = current.statement.indexOf("then");
+            if(current.getStatement().contains("if")){
+                wordBeginsHere = current.getStatement().indexOf("if");
+            } else if(current.getStatement().contains("then")){
+                wordBeginsHere = current.getStatement().indexOf("then");
             } else {
-                wordBeginsHere = current.statement.length();
+                wordBeginsHere = current.getStatement().length();
             }
 
-            current.left.center = new Node(current.statement.substring(current.statement.indexOf("let")+"let".length(),
+            current.getLeft().setCenter(new Node(current.getStatement().substring(current.getStatement().indexOf("let")+"let".length(),
                     wordBeginsHere),
-                    current.left);
-            recurse(current.left.center);
+                    current.getLeft()));
+            recurse(current.getLeft().getCenter());
         }
 
 
-        if(current.statement.contains("if"))
+        if(current.getStatement().contains("if"))
         {
-            current.center = new Node("if",
-                    current);
-            wordBeginsHere = (current.statement.contains("then") ? current.statement.indexOf("then") : current.statement.length());
+            current.setCenter(new Node("if", current));
+            wordBeginsHere = (current.getStatement().contains("then") ? current.getStatement().indexOf("then") : current.getStatement().length());
 
-            current.center.center = new Node(current.statement.substring(current.statement.indexOf("if")+"if".length(),
+            current.getCenter().setCenter(new Node(current.getStatement().substring(current.getStatement().indexOf("if")+"if".length(),
                     wordBeginsHere),
-                    current.center);
-            recurse(current.center.center);
+                    current.getCenter()));
+            recurse(current.getCenter().getCenter());
         }
 
 
-        if(current.statement.contains("then"))
+        if(current.getStatement().contains("then"))
         {
-            current.right = new Node("then",
-                    current);
-            current.right.center = new Node(current.statement.substring(current.statement.indexOf("then")+"then".length()),
-                    current.right);
-            recurse(current.right.center);
+            current.setRight(new Node("then", current));
+            current.getRight().setCenter(new Node(current.getStatement().substring(current.getStatement().indexOf("then")+"then".length()),
+                    current.getRight()));
+            recurse(current.getRight().getCenter());
         }
     }
 
-    public ArrayList<String> retrieveStatements(final Node parsedTree)
+    public List<String> retrieveStatements(final Node parsedTree)
     {
-        final ArrayList<String> statementList = new ArrayList<>();
-
-        traverse(parsedTree, statementList);
-
-        return statementList;
+        return populateStatementList(parsedTree, new ArrayList<>());
     }
 
-    private ArrayList<String> traverse(final Node node, final ArrayList<String> statementList)
+    private ArrayList<String> populateStatementList(final Node node, final ArrayList<String> statementList)
     {
-        if(node == null) return statementList;
-
-        if(!(node.statement.contains("let") || node.statement.contains("if") || node.statement.contains("then")))
+        if(node == null)
         {
-            statementList.add(node.statement.trim());
+            return statementList;
         }
 
-        traverse(node.left, statementList);
+        final String statement = node.getStatement().trim();
+        if(!(statement.contains("let") || statement.contains("if") || statement.contains("then")))
+        {
+            statementList.add(statement);
+        }
 
-        traverse(node.center, statementList);
-
-        traverse(node.right, statementList);
+        populateStatementList(node.getLeft(), statementList);
+        populateStatementList(node.getCenter(), statementList);
+        populateStatementList(node.getRight(), statementList);
 
         return statementList;
     }

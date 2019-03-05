@@ -7,6 +7,7 @@ import org.mockito.InjectMocks;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -102,29 +103,29 @@ public class ParserServiceTest {
 
     @Test
     public void testEmptyStringReturnsEmptyList() {
-        final ArrayList<String> expectedList = new ArrayList<>();
+        final List<String> expectedList = new ArrayList<>();
         expectedList.add("");
 
         when(mockParserService.parseRawInput(anyString())).thenReturn(new Node("", null));
-        final ArrayList<String> actualList = parserService.retrieveStatements(mockParserService.parseRawInput(""));
+        final List<String> actualList = parserService.retrieveStatements(mockParserService.parseRawInput(""));
 
         assertEquals(expectedList, actualList);
     }
 
     @Test
     public void testBaseCaseReturnsXIsEven() {
-        final ArrayList<String> expectedList = new ArrayList<>();
+        final List<String> expectedList = new ArrayList<>();
         expectedList.add("x is even");
         expectedList.add("x^2 is even");
 
         final Node testNode = new Node("if x is even then x^2 is even", null);
-        testNode.center = new Node("if", testNode);
-        testNode.center.center = new Node(" x is even ", testNode.center);
-        testNode.right = new Node("then", testNode);
-        testNode.right.center = new Node(" x^2 is even", testNode.right);
+        testNode.setCenter(new Node("if", testNode));
+        testNode.getCenter().setCenter(new Node(" x is even ", testNode.getCenter()));
+        testNode.setRight(new Node("then", testNode));
+        testNode.getRight().setCenter(new Node(" x^2 is even", testNode.getRight()));
 
         when(mockParserService.parseRawInput(anyString())).thenReturn(testNode);
-        final ArrayList<String> actualList = parserService.retrieveStatements(mockParserService.parseRawInput("baseCase"));
+        final List<String> actualList = parserService.retrieveStatements(mockParserService.parseRawInput("baseCase"));
 
         assertEquals(expectedList, actualList);
     }
