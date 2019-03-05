@@ -15,7 +15,7 @@ class ParserService {
     private final TheoremController theoremController;
     private final NotationController notationController;
     private final ProofController proofController;
-    Node root;
+    private Node root;
 
     @Autowired
     public ParserService(final DefinitionController definitionController, final TheoremController theoremController,
@@ -26,24 +26,24 @@ class ParserService {
         this.proofController = proofController;
     }
 
-    public void driveParsingProcess(final String userInput)
+    public boolean parseUserInput(final String userInput)
     {
-        final Node tree;
-        final ArrayList<String> statements;
+        try {
+            final Node tree = parseRawInput(userInput);
+            final ArrayList<String> statements = retrieveStatements(tree);
 
-        tree = parseRawInput(userInput);
-        statements = retrieveStatements(tree);
-        retrieveDefinitions(statements);
+            return true;
+        } catch(final Exception e) {
+            return false;
+        }
     }
 
     public Node parseRawInput(String input)
     {
-        // convert to the same case for easier processing
         input = input.toLowerCase();
 
         root = new Node(input, null);
 
-        // special case: nothing is submitted
         if(input.equals(""))
         {
             return root;
@@ -56,7 +56,7 @@ class ParserService {
 
     private void recurse(final Node current)
     {
-        int iContain;
+        int wordBeginsHere;
 
         if(current.statement.contains("let"))
         {
@@ -64,15 +64,15 @@ class ParserService {
                     current);
 
             if(current.statement.contains("if")){
-                iContain = current.statement.indexOf("if");
+                wordBeginsHere = current.statement.indexOf("if");
             } else if(current.statement.contains("then")){
-                iContain = current.statement.indexOf("then");
+                wordBeginsHere = current.statement.indexOf("then");
             } else {
-                iContain = current.statement.length();
+                wordBeginsHere = current.statement.length();
             }
 
-            current.left.center = new Node(current.statement.substring(current.statement.indexOf("let")+3,
-                    iContain),
+            current.left.center = new Node(current.statement.substring(current.statement.indexOf("let")+"let".length(),
+                    wordBeginsHere),
                     current.left);
             recurse(current.left.center);
         }
@@ -82,10 +82,10 @@ class ParserService {
         {
             current.center = new Node("if",
                     current);
-            iContain = (current.statement.contains("then") ? current.statement.indexOf("then") : current.statement.length());
+            wordBeginsHere = (current.statement.contains("then") ? current.statement.indexOf("then") : current.statement.length());
 
-            current.center.center = new Node(current.statement.substring(current.statement.indexOf("if")+2,
-                    iContain),
+            current.center.center = new Node(current.statement.substring(current.statement.indexOf("if")+"if".length(),
+                    wordBeginsHere),
                     current.center);
             recurse(current.center.center);
         }
@@ -95,7 +95,7 @@ class ParserService {
         {
             current.right = new Node("then",
                     current);
-            current.right.center = new Node(current.statement.substring(current.statement.indexOf("then")+4),
+            current.right.center = new Node(current.statement.substring(current.statement.indexOf("then")+"then".length()),
                     current.right);
             recurse(current.right.center);
         }
@@ -126,10 +126,5 @@ class ParserService {
         traverse(node.right, statementList);
 
         return statementList;
-    }
-
-    public void retrieveDefinitions(final ArrayList<String> list)
-    {
-        // stub
     }
 }

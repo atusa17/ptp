@@ -3,12 +3,13 @@ package edu.msudenver.tsp.services.parser;
 import edu.msudenver.tsp.persistence.controller.DefinitionController;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
+import org.mockito.InjectMocks;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import java.util.ArrayList;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -16,28 +17,35 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class ParserServiceTest {
 
-    @Mock
-    DefinitionController definitionControllerMock = mock(DefinitionController.class);
+    private final DefinitionController definitionControllerMock = mock(DefinitionController.class);
+    private final ParserService mockParserService = mock(ParserService.class);
 
-    @Mock
-    ParserService mps = mock(ParserService.class);
-
-    ParserService ps = new ParserService(definitionControllerMock, null,
+    @InjectMocks
+    private final ParserService parserService = new ParserService(definitionControllerMock, null,
             null,  null);
 
     @Test
     public void testEmptyStringEqualsEmptyString() {
-        assertEquals("0: \n", ps.parseRawInput("").toString());
+        final String expected = "0: \n";
+        final String actual = parserService.parseRawInput("").toString();
+
+        assertEquals(expected, actual);
     }
 
     @Test
     public void testUselessStringEqualsUselessString() {
-        assertEquals("0: cat\n", ps.parseRawInput("cat").toString());
+        final String expected = "0: cat\n";
+        final String actual = parserService.parseRawInput("cat").toString();
+
+        assertEquals(expected, actual);
     }
 
     @Test
     public void testSingleIfReturnsIfPlusEmptyString() {
-        assertEquals("0: if\n... 1: if\n... 2: \n\n", ps.parseRawInput("if").toString());
+        final String expected = "0: if\n... 1: if\n... 2: \n\n";
+        final String actual = parserService.parseRawInput("if").toString();
+
+        assertEquals(expected, actual);
     }
 
     @Test
@@ -48,9 +56,9 @@ public class ParserServiceTest {
                 "... 1: then\n" +
                 "... 2:  x^2 is even\n\n";
 
-        final String testCase = "if x is even then x^2 is even";
+        final String actual = parserService.parseRawInput("if x is even then x^2 is even").toString();
 
-        assertEquals(expected, ps.parseRawInput(testCase).toString());
+        assertEquals(expected, actual);
     }
 
     @Test
@@ -61,9 +69,9 @@ public class ParserServiceTest {
                 "... 1: then\n" +
                 "... 2:  x^2 is even.\n\n";
 
-        final String testCase = "Let x be even. Then x^2 is even.";
+        final String actual = parserService.parseRawInput("Let x be even. Then x^2 is even.").toString();
 
-        assertEquals(expected, ps.parseRawInput(testCase).toString());
+        assertEquals(expected, actual);
     }
 
     @Test
@@ -76,20 +84,20 @@ public class ParserServiceTest {
                 "... 1: then\n" +
                 "... 2:  c.\n\n";
 
-        final String testCase = "Let a. If b, then c.";
+        final String actual = parserService.parseRawInput("Let a. If b, then c.").toString();
 
-        assertEquals(expected, ps.parseRawInput(testCase).toString());
+        assertEquals(expected, actual);
     }
 
     @Test
-    public void testLetAlone() {
+    public void testLetStatementWithoutAnyIfOrThenStatements() {
         final String expected = "0: let a be equal to b.\n" +
                 "... 1: let\n" +
                 "... 2:  a be equal to b.\n\n";
 
-        final String testCase = "Let a be equal to b.";
+        final String actual = parserService.parseRawInput("Let a be equal to b.").toString();
 
-        assertEquals(expected, ps.parseRawInput(testCase).toString());
+        assertEquals(expected, actual);
     }
 
     @Test
@@ -97,34 +105,38 @@ public class ParserServiceTest {
         final ArrayList<String> expectedList = new ArrayList<>();
         expectedList.add("");
 
-        when(mps.parseRawInput(anyString())).thenReturn(new Node("", null));
+        when(mockParserService.parseRawInput(anyString())).thenReturn(new Node("", null));
+        final ArrayList<String> actualList = parserService.retrieveStatements(mockParserService.parseRawInput(""));
 
-        assertEquals(expectedList, ps.retrieveStatements(mps.parseRawInput("")));
+        assertEquals(expectedList, actualList);
     }
 
     @Test
     public void testBaseCaseReturnsXIsEven() {
-        final ArrayList<String> expectation = new ArrayList<>();
-        expectation.add("x is even");
-        expectation.add("x^2 is even");
+        final ArrayList<String> expectedList = new ArrayList<>();
+        expectedList.add("x is even");
+        expectedList.add("x^2 is even");
 
-        ps.root = new Node("if x is even then x^2 is even", null);
-        ps.root.center = new Node("if", ps.root);
-        ps.root.center.center = new Node(" x is even ", ps.root.center);
-        ps.root.right = new Node("then", ps.root);
-        ps.root.right.center = new Node(" x^2 is even", ps.root.right);
-        when(mps.parseRawInput(anyString())).thenReturn(ps.root);
+        final Node testNode = new Node("if x is even then x^2 is even", null);
+        testNode.center = new Node("if", testNode);
+        testNode.center.center = new Node(" x is even ", testNode.center);
+        testNode.right = new Node("then", testNode);
+        testNode.right.center = new Node(" x^2 is even", testNode.right);
 
-        assertEquals(expectation, ps.retrieveStatements(mps.parseRawInput("baseCase")));
+        when(mockParserService.parseRawInput(anyString())).thenReturn(testNode);
+        final ArrayList<String> actualList = parserService.retrieveStatements(mockParserService.parseRawInput("baseCase"));
+
+        assertEquals(expectedList, actualList);
     }
 
     @Test
-    public void testDriveParsingProcess() {
-        mps.root = new Node("", null);
-        final ArrayList<String> testdummy = new ArrayList<>();
-        when(mps.parseRawInput(anyString())).thenReturn(mps.root);
-        when(mps.retrieveStatements(mps.root)).thenReturn(testdummy);
+    public void testDriveParseUserInput() {
+        final Node testNode = new Node("", null);
+        when(mockParserService.parseRawInput(anyString())).thenReturn(testNode);
+        when(mockParserService.retrieveStatements(testNode)).thenReturn(new ArrayList<>());
 
-        ps.driveParsingProcess("");
+        final boolean successfulTestDrive = parserService.parseUserInput("");
+
+        assertTrue(successfulTestDrive);
     }
 }
