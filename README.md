@@ -51,3 +51,4 @@ To run the integration tests with IntelliJ, browse to any `*Test.java` file resi
 * [Gradle](https://gradle.org/) - Dependency management
 * [JUnit](http://junit.org/junit4/) - Unit tests
 * [Mockito](http://site.mockito.org/) - Mock objects library
+* [Lombok](https://projectlombok.org/) - Boilerplate Code Generator
