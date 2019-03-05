@@ -15,19 +15,19 @@ This project contains several different modules for different parts of the syste
 This project is unit tested with JUnit and Mockito. You can run the unit tests with IntelliJ or Gradle. To run them with IntelliJ, browse to any `*Test.java` file and use IntelliJ's built-in test runner to run or debug the test. To run all the unit tests with Gradle:
 
 * On a Linux or Macintosh machine:
-  $ ./gradlew test
+    $ ./gradlew test
 * On a Windows machine:
-  $ gradlew.bat test
+    $ gradlew.bat test
 
 You can also test modules individually:
 
 * On a Linux or Macintosh machine:
 
-  $ ./gradlew persistence:test
+    $ ./gradlew persistence:test
   
 * On a Windows machine:
 
-  $ gradlew.bat persistence:test
+    $ gradlew.bat persistence:test
 
 ## Integration Tests
 
@@ -35,11 +35,11 @@ To run the integration tests with IntelliJ, browse to any `*Test.java` file resi
 
 * On a Linux or Macintosh machine:
 
-  $ ./gradlew integrationTest
+    $ ./gradlew integrationTest
   
 * On a Windows machine
 
-  $ gradlew.bat integrationTest
+    $ gradlew.bat integrationTest
   
 ## Built with
 
