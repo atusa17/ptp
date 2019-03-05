@@ -1,7 +1,7 @@
 # Pandamonium Theorem Prover
 This project contains several different modules for different parts of the system.
 
-* [psersistence](persistence/README.md)
+* [persistence](persistence/README.md)
 * [web-server](src/README.md)
 
 ## Getting Started
