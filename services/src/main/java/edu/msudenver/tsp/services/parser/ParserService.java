@@ -57,35 +57,46 @@ class ParserService {
 
     private void recurse(final Node current)
     {
-        int wordBeginsHere;
+        int startIndex;
+        int endIndex;
+        final String statement = current.getStatement();
+        String nextStatement;
 
-        if(current.getStatement().contains("let"))
+        if(statement.equals(""))
+        {
+            return;
+        }
+
+        if(statement.contains("let"))
         {
             current.setLeft(new Node("let", current));
 
-            if(current.getStatement().contains("if")){
-                wordBeginsHere = current.getStatement().indexOf("if");
-            } else if(current.getStatement().contains("then")){
-                wordBeginsHere = current.getStatement().indexOf("then");
+            startIndex = statement.indexOf("let")+"let".length();
+
+            if(statement.contains("if")){
+                endIndex = statement.indexOf("if");
+            } else if(statement.contains("then")){
+                endIndex = statement.indexOf("then");
             } else {
-                wordBeginsHere = current.getStatement().length();
+                endIndex = statement.length();
             }
 
-            current.getLeft().setCenter(new Node(current.getStatement().substring(current.getStatement().indexOf("let")+"let".length(),
-                    wordBeginsHere),
-                    current.getLeft()));
+            nextStatement = statement.substring(startIndex, endIndex);
+
+            current.getLeft().setCenter(new Node(nextStatement, current.getLeft()));
             recurse(current.getLeft().getCenter());
         }
 
 
-        if(current.getStatement().contains("if"))
+        if(statement.contains("if"))
         {
             current.setCenter(new Node("if", current));
-            wordBeginsHere = (current.getStatement().contains("then") ? current.getStatement().indexOf("then") : current.getStatement().length());
 
-            current.getCenter().setCenter(new Node(current.getStatement().substring(current.getStatement().indexOf("if")+"if".length(),
-                    wordBeginsHere),
-                    current.getCenter()));
+            startIndex = statement.indexOf("if")+"if".length();
+            endIndex = (statement.contains("then") ? statement.indexOf("then") : statement.length());
+            nextStatement = statement.substring(startIndex, endIndex);
+
+            current.getCenter().setCenter(new Node(nextStatement, current.getCenter()));
             recurse(current.getCenter().getCenter());
         }
 
@@ -93,8 +104,11 @@ class ParserService {
         if(current.getStatement().contains("then"))
         {
             current.setRight(new Node("then", current));
-            current.getRight().setCenter(new Node(current.getStatement().substring(current.getStatement().indexOf("then")+"then".length()),
-                    current.getRight()));
+
+            startIndex = statement.indexOf("then")+"then".length();
+            nextStatement = statement.substring(startIndex);
+
+            current.getRight().setCenter(new Node(nextStatement, current.getRight()));
             recurse(current.getRight().getCenter());
         }
     }
