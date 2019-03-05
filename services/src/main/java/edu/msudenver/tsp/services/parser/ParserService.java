@@ -35,8 +35,9 @@ class ParserService {
 
             return true;
         } catch(final Exception e) {
-            return false;
+            e.printStackTrace();
         }
+        return false;
     }
 
     public Node parseRawInput(String input)
@@ -59,13 +60,15 @@ class ParserService {
     {
         int startIndex;
         int endIndex;
-        final String statement = current.getStatement();
-        String nextStatement;
+        final String statement;
 
-        if(statement.equals(""))
-        {
+        if (current != null) {
+            statement = current.getStatement();
+        } else {
             return;
         }
+
+        String nextStatement;
 
         if(statement.contains("let"))
         {
