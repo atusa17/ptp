@@ -5,12 +5,18 @@
   Time: 8:03 PM
   To change this template use File | Settings | File Templates.
 --%>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@taglib uri = "http://www.springframework.org/tags/form" prefix = "form"%>
 <html>
-  <head>
-    <title>$Title$</title>
-  </head>
-  <body>
-  $END$
-  </body>
+<head>
+  <title>Test page</title>
+</head>
+
+<body>
+<h3>Test stuffs</h3>
+<a href="http://localhost:8080/login.html">test hyperlink </a>
+<form action="http://www.google.com">
+  <input type="submit" value="Redirect Page"/>
+</form>
+</body>
 </html>
+
