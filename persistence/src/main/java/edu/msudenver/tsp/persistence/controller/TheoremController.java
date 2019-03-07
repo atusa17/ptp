@@ -2,17 +2,18 @@ package edu.msudenver.tsp.persistence.controller;
 
 import edu.msudenver.tsp.persistence.dto.TheoremDto;
 import edu.msudenver.tsp.persistence.repository.TheoremRepository;
+import edu.msudenver.tsp.utilities.PersistenceUtilities;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StopWatch;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @RestController
@@ -38,5 +39,140 @@ public class TheoremController {
         LOG.info("Returning list of all theorems with size " + listOfTheorems.size());
 
         return new ResponseEntity<>(listOfTheorems, HttpStatus.OK);
+    }
+
+    @GetMapping("/{id}")
+    public @ResponseBody
+    ResponseEntity<TheoremDto> getTheoremById(@PathVariable("id") final Integer id) {
+        LOG.info("Received request to query for theorem with id " + id);
+        if (id == null) {
+            LOG.error("ERROR: ID was null");
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        LOG.debug("Querying for theorem with id " + id);
+
+        final StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
+
+        final Optional<TheoremDto> theorem = theoremRepository.findById(id);
+
+        stopWatch.stop();
+
+        LOG.debug("Received response from server: query took " + stopWatch.getTotalTimeMillis() + "ms to complete");
+        return theorem.map(theoremDto -> {
+            LOG.info("Returning theorem with id " + id);
+            return new ResponseEntity<>(theoremDto, HttpStatus.OK);
+        }).orElseGet(
+                () -> {
+                    LOG.warn("No theorem was found with id " + id);
+                    return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+                });
+
+    }
+
+    @PostMapping("/")
+    public @ResponseBody ResponseEntity<TheoremDto> insertTheorem(
+            @Valid @RequestBody final TheoremDto theoremDto,
+            final BindingResult bindingResult) {
+        LOG.info("Received request to insert a new theorem");
+        if (bindingResult.hasErrors()) {
+            LOG.error("Binding result is unprocessable");
+            return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
+        }
+
+        if (theoremDto == null) {
+            LOG.error("Passed entity is unprocessable");
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        LOG.debug("Saving new theorem");
+
+        final StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
+
+        final TheoremDto savedTheorem = theoremRepository.save(theoremDto);
+
+        stopWatch.stop();
+        LOG.debug("Received response from server: query took " + stopWatch.getTotalTimeMillis() + "ms to complete");
+
+        LOG.info("Returning the newly created theorem with id " + savedTheorem.getId());
+        return new ResponseEntity<>(savedTheorem, HttpStatus.CREATED);
+    }
+
+    @PatchMapping("/{id}")
+    public @ResponseBody ResponseEntity<TheoremDto> updateTheorem(
+            @PathVariable("id") final Integer id,
+            @RequestBody final TheoremDto theoremDto, final BindingResult bindingResult) {
+
+        LOG.info("Received request to update an account");
+        if (bindingResult.hasErrors()) {
+            LOG.error("Binding result is unprocessable");
+            return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
+        }
+
+        if (theoremDto == null) {
+            LOG.error("Passed entity is null");
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        if (id == null) {
+            LOG.error("Theorem ID must be specified");
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        LOG.debug("Checking for existence of theorem with id " + id);
+
+        final StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
+
+        final Optional<TheoremDto> existingTheorem = theoremRepository.findById(id);
+
+        stopWatch.stop();
+
+        LOG.debug("Received response from server: query took " + stopWatch.getTotalTimeMillis() + "ms to complete");
+
+        if (!existingTheorem.isPresent()) {
+            LOG.error("No theorem associated with id " + id);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        PersistenceUtilities.copyNonNullProperties(theoremDto, existingTheorem.get());
+        existingTheorem.get().setVersion(existingTheorem.get().getVersion()+ 1);
+
+        LOG.info("Updating theorem with id " + id);
+        LOG.debug("Querying for theorem with ID " + id);
+
+        stopWatch.start();
+
+        final TheoremDto updatedTheorem = theoremRepository.save(existingTheorem.get());
+
+        stopWatch.stop();
+
+        LOG.debug("Received response from server: query took " + stopWatch.getTotalTimeMillis() + "ms to complete");
+
+        return new ResponseEntity<>(updatedTheorem, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{id}")
+    public @ResponseBody ResponseEntity<Void> deleteTheoremById(@PathVariable("id") final Integer id) {
+        LOG.info("Received request to delete theorem with id " + id);
+        if (id == null) {
+            LOG.error("Specified id is null");
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        LOG.debug("Deleting theorem with id " + id);
+
+        final StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
+
+        theoremRepository.deleteById(id);
+
+        stopWatch.stop();
+
+        LOG.debug("Received response from server: query took " + stopWatch.getTotalTimeMillis() + "ms to complete");
+
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }
