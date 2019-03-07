@@ -13,5 +13,5 @@ import java.util.List;
 public class Definition implements Serializable {
     private List<String> definitions;
 
-    public static final long serialVersionUID = -2208496232532214840L;
+    private static final long serialVersionUID = -2208496232532214840L;
 }

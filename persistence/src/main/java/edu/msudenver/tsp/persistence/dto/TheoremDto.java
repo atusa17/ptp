@@ -26,5 +26,5 @@ public class TheoremDto extends BaseDto implements Serializable {
     @Type(type = "json") @Column(columnDefinition = "jsonb") private List<String> referenced_theorems;
     @NotNull private boolean proven_status;
 
-    public static final long serialVersionUID = 1545568391140364425L;
+    private static final long serialVersionUID = 1545568391140364425L;
 }

@@ -4,10 +4,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import javax.persistence.Entity;
-import javax.persistence.EntityListeners;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -24,7 +21,12 @@ public class AccountDto extends BaseDto implements Serializable {
     @NotNull private boolean administrator_status;
     @Temporal(TemporalType.DATE) private Date last_login;
 
-    public static final long serialVersionUID = 7095627971593953734L;
+    private static final long serialVersionUID = 7095627971593953734L;
 
     public interface Insert {}
+
+    @PrePersist
+    public void prePersist() {
+        last_login = new Date();
+    }
 }

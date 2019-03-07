@@ -4,6 +4,10 @@ import edu.msudenver.tsp.persistence.dto.TheoremDto;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface TheoremRepository extends JpaRepository<TheoremDto, Integer> {
+
+    public List<TheoremDto> findByBranch(String branch);
 }

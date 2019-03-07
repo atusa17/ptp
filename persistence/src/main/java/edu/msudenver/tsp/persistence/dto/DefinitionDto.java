@@ -28,7 +28,7 @@ public class DefinitionDto extends BaseDto implements Serializable {
 
     @Type(type = "json") @Column(columnDefinition = "jsonb") private Notation notation;
 
-    public static final long serialVersionUID = -5314619286352932857L;
+    private static final long serialVersionUID = -5314619286352932857L;
 
     public interface Insert {}
 }

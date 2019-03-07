@@ -41,6 +41,30 @@ public class TheoremController {
         return new ResponseEntity<>(listOfTheorems, HttpStatus.OK);
     }
 
+    @GetMapping("/{branch}")
+    public @ResponseBody
+    ResponseEntity<List<TheoremDto>> getAllTheoremsByBranch(@PathVariable("branch") final String branch) {
+        LOG.info("Received request to query for theorems related to the " + branch + " branch of mathematics");
+        if (branch == null) {
+            LOG.error("ERROR: branch was null");
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        LOG.debug("Querying for theorems with branch " + branch);
+
+        final StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
+
+        final List<TheoremDto> listOfTheorems = theoremRepository.findByBranch(branch);
+
+        stopWatch.stop();
+
+        LOG.debug("Received response from server: query took " + stopWatch.getTotalTimeMillis() + "ms to complete");
+        LOG.info("Returning list of all theorems with size " + listOfTheorems.size());
+
+        return new ResponseEntity<>(listOfTheorems, HttpStatus.OK);
+    }
+
     @GetMapping("/{id}")
     public @ResponseBody
     ResponseEntity<TheoremDto> getTheoremById(@PathVariable("id") final Integer id) {
