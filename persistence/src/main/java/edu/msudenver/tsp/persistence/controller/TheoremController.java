@@ -65,6 +65,30 @@ public class TheoremController {
         return new ResponseEntity<>(listOfTheorems, HttpStatus.OK);
     }
 
+    @GetMapping("/{proven_status}")
+    public @ResponseBody
+    ResponseEntity<List<TheoremDto>> getAllTheoremsByBranch(@PathVariable("proven_status") final Boolean proven_status) {
+        LOG.info("Received request to query for theorems whose proven status is " + proven_status);
+        if (proven_status == null) {
+            LOG.error("ERROR: branch was null");
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        LOG.debug("Querying for theorems with proven status " + proven_status);
+
+        final StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
+
+        final List<TheoremDto> listOfTheorems = theoremRepository.findByProven_status(proven_status);
+
+        stopWatch.stop();
+
+        LOG.debug("Received response from server: query took " + stopWatch.getTotalTimeMillis() + "ms to complete");
+        LOG.info("Returning list of all theorems with size " + listOfTheorems.size());
+
+        return new ResponseEntity<>(listOfTheorems, HttpStatus.OK);
+    }
+
     @GetMapping("/{id}")
     public @ResponseBody
     ResponseEntity<TheoremDto> getTheoremById(@PathVariable("id") final Integer id) {

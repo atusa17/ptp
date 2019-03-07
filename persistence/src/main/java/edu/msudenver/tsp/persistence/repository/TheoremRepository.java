@@ -9,5 +9,7 @@ import java.util.List;
 @Repository
 public interface TheoremRepository extends JpaRepository<TheoremDto, Integer> {
 
-    public List<TheoremDto> findByBranch(String branch);
+    List<TheoremDto> findByBranch(String branch);
+
+    List<TheoremDto> findByProven_status(Boolean proven_status);
 }
