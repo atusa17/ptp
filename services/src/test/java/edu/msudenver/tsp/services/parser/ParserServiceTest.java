@@ -1,9 +1,8 @@
 package edu.msudenver.tsp.services.parser;
 
-import edu.msudenver.tsp.persistence.controller.DefinitionController;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
+import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import java.util.ArrayList;
@@ -12,18 +11,12 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ParserServiceTest {
 
-    private final DefinitionController definitionControllerMock = mock(DefinitionController.class);
-    private final ParserService mockParserService = mock(ParserService.class);
-
-    @InjectMocks
-    private final ParserService parserService = new ParserService(definitionControllerMock, null,
-            null,  null);
+    @Spy private ParserService parserService;
 
     @Test
     public void testEmptyStringEqualsEmptyString() {
@@ -106,8 +99,8 @@ public class ParserServiceTest {
         final List<String> expectedList = new ArrayList<>();
         expectedList.add("");
 
-        when(mockParserService.parseRawInput(anyString())).thenReturn(new Node("", null));
-        final List<String> actualList = parserService.retrieveStatements(mockParserService.parseRawInput(""));
+        when(parserService.parseRawInput(anyString())).thenReturn(new Node("", null));
+        final List<String> actualList = parserService.retrieveStatements(parserService.parseRawInput(""));
 
         assertEquals(expectedList, actualList);
     }
@@ -124,8 +117,8 @@ public class ParserServiceTest {
         testNode.setRight(new Node("then", testNode));
         testNode.getRight().setCenter(new Node(" x^2 is even", testNode.getRight()));
 
-        when(mockParserService.parseRawInput(anyString())).thenReturn(testNode);
-        final List<String> actualList = parserService.retrieveStatements(mockParserService.parseRawInput("baseCase"));
+        when(parserService.parseRawInput(anyString())).thenReturn(testNode);
+        final List<String> actualList = parserService.retrieveStatements(parserService.parseRawInput("baseCase"));
 
         assertEquals(expectedList, actualList);
     }
@@ -133,8 +126,8 @@ public class ParserServiceTest {
     @Test
     public void testDriveParseUserInput() {
         final Node testNode = new Node("", null);
-        when(mockParserService.parseRawInput(anyString())).thenReturn(testNode);
-        when(mockParserService.retrieveStatements(testNode)).thenReturn(new ArrayList<>());
+        when(parserService.parseRawInput(anyString())).thenReturn(testNode);
+        when(parserService.retrieveStatements(testNode)).thenReturn(new ArrayList<>());
 
         final boolean successfulTestDrive = parserService.parseUserInput("");
 
