@@ -2,6 +2,7 @@ package edu.msudenver.tsp.services.dto;
 
 import com.google.gson.annotations.SerializedName;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -11,6 +12,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 @Data
+@EqualsAndHashCode(callSuper = true)
 public class Account extends BaseDto implements Serializable {
     @Size(max = 50) private String username;
     @Size(max = 256) private String password;

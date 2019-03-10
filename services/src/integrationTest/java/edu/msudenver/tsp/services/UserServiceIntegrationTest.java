@@ -1,7 +1,6 @@
 package edu.msudenver.tsp.services;
 
 import edu.msudenver.tsp.services.dto.Account;
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +13,7 @@ import java.text.ParseException;
 import java.util.Date;
 import java.util.Optional;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = ServicesTestConfig.class)
@@ -36,8 +35,8 @@ public class UserServiceIntegrationTest {
 
         assertTrue(testCreatedAccount.isPresent());
         final Account returnedAccount = testCreatedAccount.get();
-        Assert.assertEquals("test user", returnedAccount.getUsername());
-        Assert.assertEquals("test password", returnedAccount.getPassword());
-        Assert.assertEquals(false, returnedAccount.isAdministratorStatus());
+        assertEquals("test user", returnedAccount.getUsername());
+        assertEquals("test password", returnedAccount.getPassword());
+        assertFalse(returnedAccount.isAdministratorStatus());
     }
 }
