@@ -7,5 +7,5 @@ import org.springframework.stereotype.Component;
 @Component
 @AllArgsConstructor
 public class TheoremController {
-    final private TheoremRepository theoremRepository;
+    private final TheoremRepository theoremRepository;
 }
