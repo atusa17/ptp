@@ -34,8 +34,8 @@ public class UserService {
 
         try {
             final TypeToken<Account> typeToken = new TypeToken<Account>() {};
-            final Optional<Account> persistenceApiResponse = restService.post(persistenceApiBaseUrl + "/accounts/",
-                    new GsonBuilder().create().toJson(account),
+            final Optional<Account> persistenceApiResponse = restService.post(persistenceApiBaseUrl + "accounts/",
+                    new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").create().toJson(account),
                     typeToken,
                     connectionTimeoutMilliseconds,
                     socketTimeoutMilliseconds);
