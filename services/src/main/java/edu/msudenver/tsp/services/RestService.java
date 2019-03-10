@@ -2,6 +2,7 @@ package edu.msudenver.tsp.services;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import edu.msudenver.tsp.services.factory.RequestFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpResponse;
@@ -21,7 +22,7 @@ public class RestService {
     private final RequestFactory requestFactory;
 
     @Autowired
-    public RestClient(final RequestFactory requestFactory) {
+    public RestService(final RequestFactory requestFactory) {
         this.requestFactory = requestFactory;
     }
 
