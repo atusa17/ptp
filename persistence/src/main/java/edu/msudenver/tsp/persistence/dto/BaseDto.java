@@ -36,5 +36,5 @@ public class BaseDto implements Serializable {
     @Version
     private Integer version;
 
-    public static final long serialVersionUID = -1686252381978213945L;
+    private static final long serialVersionUID = -1686252381978213945L;
 }

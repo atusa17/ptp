@@ -7,5 +7,5 @@ import org.springframework.stereotype.Component;
 @Component
 @AllArgsConstructor
 public class ProofController {
-    final private ProofRepository proofRepository;
+    private final ProofRepository proofRepository;
 }
