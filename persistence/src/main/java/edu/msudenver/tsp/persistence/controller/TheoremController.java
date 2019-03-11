@@ -67,7 +67,7 @@ public class TheoremController {
 
     @GetMapping("/{proven_status}")
     public @ResponseBody
-    ResponseEntity<List<TheoremDto>> getAllTheoremsByBranch(@PathVariable("proven_status") final Boolean provenStatus) {
+    ResponseEntity<List<TheoremDto>> getAllTheoremsByProvenStatus(@PathVariable("proven_status") final Boolean provenStatus) {
         LOG.info("Received request to query for theorems whose proven status is " + provenStatus);
         if (provenStatus == null) {
             LOG.error("ERROR: branch was null");

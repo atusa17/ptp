@@ -47,7 +47,7 @@ public class AccountControllerTest {
         assertTrue(responseEntity.hasBody());
         assertNotNull(responseEntity.getBody());
 
-        responseEntity.getBody().forEach(account -> assertEquals(account, accountDto));
+        responseEntity.getBody().forEach(account -> assertEquals(accountDto, account));
     }
 
     @Test
@@ -166,10 +166,10 @@ public class AccountControllerTest {
 
     @Test
     public void testInsertAccount_bindingResultHasErrors() {
-        final AccountDto definitionDto = createAccount();
+        final AccountDto accountDto = createAccount();
         when(bindingResult.hasErrors()).thenReturn(true);
 
-        final ResponseEntity responseEntity = accountController.insertAccount(definitionDto, bindingResult);
+        final ResponseEntity responseEntity = accountController.insertAccount(accountDto, bindingResult);
 
         assertNotNull(responseEntity);
         assertFalse(responseEntity.hasBody());

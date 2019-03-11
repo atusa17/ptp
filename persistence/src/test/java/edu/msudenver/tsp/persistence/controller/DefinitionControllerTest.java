@@ -46,7 +46,7 @@ public class DefinitionControllerTest {
         assertTrue(responseEntity.hasBody());
         assertNotNull(responseEntity.getBody());
 
-        responseEntity.getBody().forEach(definition -> assertEquals(definition, definitionDto));
+        responseEntity.getBody().forEach(definition -> assertEquals(definitionDto, definition));
     }
 
     @Test

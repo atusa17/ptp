@@ -56,7 +56,7 @@ public class PersistenceTestConfig {
                 .create()
                 .username("panda")
                 .password("secret")
-                .url("jdbc:mysql://127.0.0.1:3306/pandamonium?autoReconnect=true&useSSL=false")
+                .url("jdbc:mysql://127.0.0.1:3306/pandamonium?autoReconnect=true&useSSL=false&serverTimezone=UTC")
                 .driverClassName("com.mysql.cj.jdbc.Driver")
                 .build();
     }
