@@ -1,6 +1,20 @@
+import java.util.concurrent.Callable
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executors
+
+class RunAsyncTask extends DefaultTask {
+    String taskToExecute = ':persistence:startPersistenceApi'
+    @TaskAction
+    def startAsync() {
+        ExecutorService es = Executors.newSingleThreadExecutor()
+        es.submit({taskToExecute.execute()} as Callable)
+    }
+}
+
 buildscript {
     repositories {
         mavenCentral()
+        maven { url 'http://dl.bintray.com/vermeulen-mp/gradle-plugins' }
     }
     dependencies {
         classpath("org.springframework.boot:spring-boot-gradle-plugin:2.0.5.RELEASE")
@@ -15,6 +29,7 @@ plugins {
     id "org.sonarqube" version "2.6"
     id 'org.unbroken-dome.test-sets' version '1.4.5'
     id 'war'
+    id "com.wiredforcode.spawn" version "0.8.2"
 }
 
 apply plugin: 'org.springframework.boot'
@@ -87,11 +102,6 @@ subprojects {
     }
 }
 
-bootJar {
-    baseName = 'gs-spring-boot'
-    version =  '0.1.0'
-}
-
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
@@ -134,6 +144,12 @@ test {
 testSets {
     unitTest
     integrationTest
+}
+
+task startApi(type: RunAsyncTask) {
+    dependsOn ':persistence:loadDb'
+    dependsOn 'build'
+    taskToExecute = ':persistence:startPersistenceApi'
 }
 
 compileKotlin {
