@@ -32,7 +32,7 @@ public class TheoremsIntegrationTest {
 
         assertEquals("Test theorem", savedTheorem.getName());
         assertEquals("Test branch", savedTheorem.getBranch());
-        assertTrue(savedTheorem.isProvenStatus());
+        assertTrue(savedTheorem.getProvenStatus());
         assertEquals(2, savedTheorem.getReferencedTheorems().size());
         assertEquals(2, savedTheorem.getReferencedDefinitions().size());
         assertEquals("test theorem 1", savedTheorem.getReferencedTheorems().get(0));
@@ -48,7 +48,7 @@ public class TheoremsIntegrationTest {
         assertEquals(Integer.valueOf(0), updatedTheorem.getVersion());
         assertEquals("Test theorem", updatedTheorem.getName());
         assertEquals("Test Update", updatedTheorem.getBranch());
-        assertTrue(updatedTheorem.isProvenStatus());
+        assertTrue(updatedTheorem.getProvenStatus());
         assertEquals(2, updatedTheorem.getReferencedTheorems().size());
         assertEquals(2, updatedTheorem.getReferencedDefinitions().size());
         assertEquals("test theorem 1", updatedTheorem.getReferencedTheorems().get(0));
@@ -56,12 +56,6 @@ public class TheoremsIntegrationTest {
         assertEquals("test definition 1", updatedTheorem.getReferencedDefinitions().get(0));
         assertEquals("test definition 2", updatedTheorem.getReferencedDefinitions().get(1));
         assertEquals(updatedTheorem.getId(), id);
-
-        final List<TheoremDto> listOfTheoremsByBranch = theoremRepository.findByBranch("Test Update");
-
-        assertNotNull(listOfTheoremsByBranch);
-        assertEquals(1, listOfTheoremsByBranch.size());
-        assertEquals(updatedTheorem, listOfTheoremsByBranch.get(0));
 
         theoremRepository.delete(theoremDto);
         final Optional<TheoremDto> deletedTheorem = theoremRepository.findById(id);

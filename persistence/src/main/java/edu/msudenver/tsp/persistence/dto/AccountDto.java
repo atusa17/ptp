@@ -19,8 +19,8 @@ import java.util.Date;
 public class AccountDto extends BaseDto implements Serializable {
     @NotBlank(groups = Insert.class, message = "A username must be specified") @Size(max = 50) private String username;
     @NotBlank(groups = Insert.class, message = "A password must be specified") @Size(max = 256) private String password;
-    @NotNull private boolean administratorStatus;
-    @Temporal(TemporalType.DATE) private Date lastLogin;
+    @NotNull @Column(name = "administrator_status") private boolean administratorStatus;
+    @Temporal(TemporalType.DATE) @Column(name = "last_login") private Date lastLogin;
 
     private static final long serialVersionUID = 7095627971593953734L;
 
