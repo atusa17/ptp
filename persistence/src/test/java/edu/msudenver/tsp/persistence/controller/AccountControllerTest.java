@@ -88,9 +88,47 @@ public class AccountControllerTest {
     }
 
     @Test
+    public void testGetAccountByUsername() {
+        final AccountDto accountDto = createAccount();
+        when(accountsRepository.findByUsername(anyString())).thenReturn(Optional.ofNullable(accountDto));
+
+        final ResponseEntity<AccountDto> responseEntity = accountController.getAccountByUsername("Test username");
+
+        assertNotNull(responseEntity);
+        assertTrue(responseEntity.hasBody());
+        assertNotNull(responseEntity.getBody());
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        assertEquals(accountDto, responseEntity.getBody());
+        verify(accountsRepository).findByUsername(anyString());
+    }
+
+    @Test
+    public void testGetAccountById_nullUsername() {
+        final ResponseEntity responseEntity = accountController.getAccountByUsername(null);
+
+        assertNotNull(responseEntity);
+        assertFalse(responseEntity.hasBody());
+        assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
+        verifyZeroInteractions(accountsRepository);
+    }
+
+    @Test
+    public void testGetAccountByUsername_noAccountFound() {
+        when(accountsRepository.findByUsername(anyString())).thenReturn(Optional.empty());
+
+        final ResponseEntity responseEntity = accountController.getAccountByUsername("Test username");
+
+        assertNotNull(responseEntity);
+        assertFalse(responseEntity.hasBody());
+        assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
+        verify(accountsRepository).findByUsername(anyString());
+    }
+
+    @Test
     public void testInsertAccount() {
         final AccountDto accountDto = createAccount();
         when(accountsRepository.save(any(AccountDto.class))).thenReturn(accountDto);
+        when(accountsRepository.findByUsername(anyString())).thenReturn(Optional.empty());
 
         final ResponseEntity<AccountDto> responseEntity = accountController.insertAccount(accountDto, bindingResult);
 
@@ -100,6 +138,20 @@ public class AccountControllerTest {
         assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode());
         assertEquals(accountDto, responseEntity.getBody());
         verify(accountsRepository).save(any(AccountDto.class));
+    }
+
+    @Test
+    public void testInsertAccount_usernameAlreadyExists() {
+        final AccountDto accountDto = createAccount();
+        when(accountsRepository.findByUsername(anyString())).thenReturn(Optional.of(accountDto));
+
+        final ResponseEntity<AccountDto> responseEntity = accountController.insertAccount(accountDto, bindingResult);
+
+        assertNotNull(responseEntity);
+        assertFalse(responseEntity.hasBody());
+        assertEquals(HttpStatus.CONFLICT, responseEntity.getStatusCode());
+        verify(accountsRepository).findByUsername(anyString());
+        verify(accountsRepository, times(0)).save(any(AccountDto.class));
     }
 
     @Test
