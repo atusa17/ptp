@@ -101,6 +101,36 @@ public class TheoremController {
         return new ResponseEntity<>(listOfTheorems, HttpStatus.OK);
     }
 
+    @GetMapping("/{name}")
+    public @ResponseBody
+    ResponseEntity<List<TheoremDto>> getAllTheoremsByName(@PathVariable("name") final String name) {
+        LOG.info("Received request to query for theorems whose name is " + name);
+        if (name == null) {
+            LOG.error("ERROR: name was null");
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        LOG.debug("Querying for theorems with name " + name);
+
+        final StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
+
+        final List<TheoremDto> listOfTheorems = theoremRepository.findByName(name);
+
+        stopWatch.stop();
+
+        LOG.debug("Received response from server: query took " + stopWatch.getTotalTimeMillis() + "ms to complete");
+        LOG.info("Returning list of all theorems with size " + listOfTheorems.size());
+
+        if (listOfTheorems.isEmpty()) {
+            LOG.warn("No theorems were found with name {}", name);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        LOG.info("Returning list of theorems with name {}", name);
+        return new ResponseEntity<>(listOfTheorems, HttpStatus.OK);
+    }
+
     @GetMapping("/{id}")
     public @ResponseBody
     ResponseEntity<TheoremDto> getTheoremById(@PathVariable("id") final Integer id) {

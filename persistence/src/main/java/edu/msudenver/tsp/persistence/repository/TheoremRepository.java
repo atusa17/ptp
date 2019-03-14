@@ -12,4 +12,6 @@ public interface TheoremRepository extends JpaRepository<TheoremDto, Integer> {
     List<TheoremDto> findByBranch(String branch);
 
     List<TheoremDto> findByProvenStatus(Boolean provenStatus);
+
+    List<TheoremDto> findByName(String name);
 }

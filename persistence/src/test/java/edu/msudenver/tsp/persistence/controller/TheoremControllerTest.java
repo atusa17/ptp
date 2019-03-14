@@ -167,6 +167,46 @@ public class TheoremControllerTest {
     }
 
     @Test
+    public void testGetAllTheoremsByName() {
+        final TheoremDto theoremDto = createTheorem();
+        final List<TheoremDto> listOfTheorems = new ArrayList<>();
+        listOfTheorems.add(theoremDto);
+        listOfTheorems.add(theoremDto);
+
+        when(theoremRepository.findByName(anyString())).thenReturn(listOfTheorems);
+
+        final ResponseEntity<List<TheoremDto>> responseEntity = theoremController.getAllTheoremsByName("Test Theorem");
+
+        assertNotNull(responseEntity);
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        assertTrue(responseEntity.hasBody());
+        assertNotNull(responseEntity.getBody());
+
+        responseEntity.getBody().forEach(theorem -> assertEquals(theoremDto, theorem));
+    }
+
+    @Test
+    public void testGetAllTheoremsByName_nullName() {
+        final ResponseEntity<List<TheoremDto>> responseEntity = theoremController.getAllTheoremsByName(null);
+
+        assertNotNull(responseEntity);
+        assertFalse(responseEntity.hasBody());
+        assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
+        verifyZeroInteractions(theoremRepository);
+    }
+
+    @Test
+    public void testGetAllTheoremsByName_noNameFound() {
+        when(theoremRepository.findByName(anyString())).thenReturn(Collections.emptyList());
+
+        final ResponseEntity<List<TheoremDto>> responseEntity = theoremController.getAllTheoremsByName("No name");
+
+        assertNotNull(responseEntity);
+        assertFalse(responseEntity.hasBody());
+        assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
+    }
+
+    @Test
     public void testInsertTheorem() {
         final TheoremDto theoremDto = createTheorem();
         when(theoremRepository.save(any(TheoremDto.class))).thenReturn(theoremDto);

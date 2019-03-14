@@ -35,13 +35,15 @@ version int default 1
 );
 CREATE TABLE proofs
 (
-  id                       INT NOT NULL AUTO_INCREMENT,
-  name                     VARCHAR(512) NOT NULL,
-  branch                   VARCHAR(512) NOT NULL,
-  referenced_definitions   JSON,
-  referenced_theorems      JSON,
-  date_added               DATE,
-  last_updated             DATE,
-  version                  INT DEFAULT 1,
+  id        INT NOT NULL AUTO_INCREMENT,
+  name      VARCHAR(512) NOT NULL,
+  branch    VARCHAR(512) NOT NULL,
+  theorem   INT NOT NULL,
+  FOREIGN KEY fk_theorem (theorem) REFERENCES theorems (id) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  referenced_definitions JSON,
+  referenced_theorems JSON,
+  date_added DATE,
+  last_updated DATE,
+  version INT DEFAULT 1,
   PRIMARY KEY (id)
-)
+);
