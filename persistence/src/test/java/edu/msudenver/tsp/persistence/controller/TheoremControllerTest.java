@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -115,6 +116,17 @@ public class TheoremControllerTest {
     }
 
     @Test
+    public void testGetAllTheoremsByBranch_noTheoremsFound() {
+       when(theoremRepository.findByBranch(anyString())).thenReturn(Collections.emptyList());
+
+       final ResponseEntity<List<TheoremDto>> responseEntity = theoremController.getAllTheoremsByBranch("test nonexistent branch");
+
+       assertNotNull(responseEntity);
+       assertFalse(responseEntity.hasBody());
+       assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
+    }
+
+    @Test
     public void testGetAllTheoremsByProvenStatus() {
         final TheoremDto theoremDto = createTheorem();
         final List<TheoremDto> listOfTheorems = new ArrayList<>();
@@ -141,6 +153,17 @@ public class TheoremControllerTest {
         assertFalse(responseEntity.hasBody());
         assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
         verifyZeroInteractions(theoremRepository);
+    }
+
+    @Test
+    public void testGetAllTheoremsByProvenStatus_noTheoremsFound() {
+        when(theoremRepository.findByProvenStatus(anyBoolean())).thenReturn(Collections.emptyList());
+
+        final ResponseEntity<List<TheoremDto>> responseEntity = theoremController.getAllTheoremsByProvenStatus(false);
+
+        assertNotNull(responseEntity);
+        assertFalse(responseEntity.hasBody());
+        assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
     }
 
     @Test

@@ -62,6 +62,12 @@ public class TheoremController {
         LOG.debug("Received response from server: query took " + stopWatch.getTotalTimeMillis() + "ms to complete");
         LOG.info("Returning list of all theorems with size " + listOfTheorems.size());
 
+        if (listOfTheorems.isEmpty()) {
+            LOG.warn("No theorems were found for branch {}", branch);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        LOG.info("Returning list of theorems with branch {}", branch);
         return new ResponseEntity<>(listOfTheorems, HttpStatus.OK);
     }
 
@@ -86,6 +92,12 @@ public class TheoremController {
         LOG.debug("Received response from server: query took " + stopWatch.getTotalTimeMillis() + "ms to complete");
         LOG.info("Returning list of all theorems with size " + listOfTheorems.size());
 
+        if (listOfTheorems.isEmpty()) {
+            LOG.warn("No theorems were found for proven status {}", provenStatus);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        LOG.info("Returning list of theorems with proven status {}", provenStatus);
         return new ResponseEntity<>(listOfTheorems, HttpStatus.OK);
     }
 
