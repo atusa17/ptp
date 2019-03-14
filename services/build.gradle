@@ -7,11 +7,7 @@ version '1.0'
 
 sourceCompatibility = 1.8
 
-sonarqube {
-    properties {
-        property "sonar.projectName", 'Theorem Prover Services'
-    }
-}
+
 
 repositories {
     mavenCentral()
