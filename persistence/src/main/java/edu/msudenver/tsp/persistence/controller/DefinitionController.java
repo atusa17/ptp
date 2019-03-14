@@ -20,7 +20,7 @@ import java.util.Optional;
 @Slf4j
 @RestController
 @AllArgsConstructor
-@RequestMapping(path = "/definitions/")
+@RequestMapping(path = "/definitions")
 public class DefinitionController {
     private final DefinitionRepository definitionRepository;
 
@@ -85,7 +85,7 @@ public class DefinitionController {
         }
 
         if (definitionDto == null) {
-            LOG.error("Passed entity is unprocessable");
+            LOG.error("Passed entity is null");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 

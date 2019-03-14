@@ -1,7 +1,15 @@
 package edu.msudenver.tsp.persistence.repository;
 
-import edu.msudenver.tsp.persistence.dto.BaseDto;
-import org.springframework.data.repository.CrudRepository;
+import edu.msudenver.tsp.persistence.dto.TheoremDto;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-public interface TheoremRepository extends CrudRepository<BaseDto, Long> {
+import java.util.List;
+
+@Repository
+public interface TheoremRepository extends JpaRepository<TheoremDto, Integer> {
+
+    List<TheoremDto> findByBranch(String branch);
+
+    List<TheoremDto> findByProvenStatus(Boolean provenStatus);
 }

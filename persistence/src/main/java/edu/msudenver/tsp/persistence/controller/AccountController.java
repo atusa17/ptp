@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.groups.Default;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 
@@ -73,6 +75,35 @@ public class AccountController {
         );
     }
 
+    @GetMapping("/{username}")
+    public @ResponseBody
+    ResponseEntity<AccountDto> getAccountByUsername(@PathVariable("username") final String username) {
+        LOG.info("Received request to query for account with username " + username);
+        if (username == null) {
+            LOG.error("ERROR: username was null");
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        LOG.debug("Querying for account with username " + username);
+        final StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
+
+        final Optional<AccountDto> account = accountsRepository.findByUsername(username);
+
+        stopWatch.stop();
+
+        LOG.debug("Received response from server: query took " + stopWatch.getTotalTimeMillis() + "ms to complete");
+        return account.map(accountDto -> {
+            LOG.info("Returning account with username " + username);
+            return new ResponseEntity<>(accountDto, HttpStatus.OK);
+        }).orElseGet(
+                () -> {
+                    LOG.warn("No account was found with username " + username);
+                    return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+                }
+        );
+    }
+
     @PostMapping("/")
     @Validated({AccountDto.Insert.class, Default.class})
     public @ResponseBody ResponseEntity<AccountDto> insertAccount(
@@ -87,6 +118,21 @@ public class AccountController {
         if (accountDto == null) {
             LOG.error("Passed account is unprocessable");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        LOG.info("Checking for any existing users with username {}", accountDto.getUsername());
+
+        final Instant start = Instant.now();
+
+        LOG.debug("Querying for existing accounts");
+
+        final Optional<AccountDto> existingAccount = accountsRepository.findByUsername(accountDto.getUsername());
+
+        LOG.debug("Received response from the server: query took {} ms", Duration.between(start, Instant.now()).toMillis());
+
+        if (existingAccount.isPresent()) {
+            LOG.warn("An account already exists with username {}", accountDto.getUsername());
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
 
         LOG.debug("Saving new account");
