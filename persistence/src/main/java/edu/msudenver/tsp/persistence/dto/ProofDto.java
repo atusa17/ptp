@@ -11,6 +11,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 @Entity(name = "proofs")
 @EntityListeners(AuditingEntityListener.class)
@@ -18,31 +19,34 @@ import java.util.Date;
 @EqualsAndHashCode(callSuper = true)
 public class ProofDto extends BaseDto implements Serializable {
     @NotBlank(groups = Insert.class)
+    @Size(min = 1, max = 512, message = "The name must be at least 1 character and at most 512 characters")
+    private String name;
+    @NotBlank(groups = Insert.class)
     @Size(min = 1, max = 512, message = "The branch must be at least 1 character and at most 512 characters")
     private String branch;
-    @Type(type = "json") @Column(name = "referenced_definitions", columnDefinition = "jsonb") private String referencedDefinitions;
-    @Type(type = "json") @Column(name = "referenced_theorems", columnDefinition = "jsonb") private String referencedTheorems;
+    @Type(type = "json") @Column(name = "referenced_definitions", columnDefinition = "jsonb") private List<String> referencedDefinitions;
+    @Type(type = "json") @Column(name = "referenced_theorems", columnDefinition = "jsonb") private List<String> referencedTheorems;
     @Temporal(TemporalType.DATE) @Column(name = "date_created") private Date dateCreated;
     @Temporal(TemporalType.DATE) @Column(name = "last_updated") private Date lastUpdated;
 
 
     @JsonProperty("referenced_definitions")
-    public String getReferencedDefinitions() {
+    public List<String> getReferencedDefinitions() {
         return referencedDefinitions;
     }
 
     @JsonProperty("referenced_definitions")
-    public void setReferencedDefinitions(final String referencedDefinitions) {
+    public void setReferencedDefinitions(final List<String> referencedDefinitions) {
         this.referencedDefinitions = referencedDefinitions;
     }
 
     @JsonProperty("referenced_theorems")
-    public String getReferencedTheorems() {
+    public List<String> getReferencedTheorems() {
         return referencedTheorems;
     }
 
     @JsonProperty("referenced_theorems")
-    public void setReferencedTheorems(final String referencedTheorems) {
+    public void setReferencedTheorems(final List<String> referencedTheorems) {
         this.referencedTheorems = referencedTheorems;
     }
 

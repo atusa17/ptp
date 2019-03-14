@@ -36,6 +36,7 @@ version int default 1
 CREATE TABLE proofs
 (
   id                       INT NOT NULL AUTO_INCREMENT,
+  name                     VARCHAR(512) NOT NULL,
   branch                   VARCHAR(512) NOT NULL,
   referenced_definitions   JSON,
   referenced_theorems      JSON,
