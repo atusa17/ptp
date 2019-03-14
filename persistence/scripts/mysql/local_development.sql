@@ -32,4 +32,16 @@ referenced_definitions json,
 referenced_theorems json,
 proven_status boolean default false,
 version int default 1
+);
+CREATE TABLE proofs
+(
+  id                       INT NOT NULL AUTO_INCREMENT,
+  username                 VARCHAR(50) NOT NULL,
+  branch                   VARCHAR(512) NOT NULL,
+  referenced_definitions   JSON,
+  referenced_theorems      JSON,
+  date_added               DATE,
+  last_updated             DATE,
+  version                  INT DEFAULT 1,
+  PRIMARY KEY (id)
 )
