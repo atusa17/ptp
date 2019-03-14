@@ -130,7 +130,7 @@ public class TheoremController {
         }
 
         if (theoremDto == null) {
-            LOG.error("Passed entity is unprocessable");
+            LOG.error("Passed entity is null");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
