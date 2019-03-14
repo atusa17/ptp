@@ -70,7 +70,7 @@ public class TheoremController {
     ResponseEntity<List<TheoremDto>> getAllTheoremsByProvenStatus(@PathVariable("proven_status") final Boolean provenStatus) {
         LOG.info("Received request to query for theorems whose proven status is " + provenStatus);
         if (provenStatus == null) {
-            LOG.error("ERROR: branch was null");
+            LOG.error("ERROR: status was null");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
