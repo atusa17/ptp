@@ -10,6 +10,7 @@ import org.springframework.util.StopWatch;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @RestController
@@ -35,6 +36,36 @@ public class ProofController {
         LOG.info("Returning list of all theorems with size " + listOfProofs.size());
 
         return new ResponseEntity<>(listOfProofs, HttpStatus.OK);
+    }
+
+    @GetMapping("/{id}")
+    public @ResponseBody
+    ResponseEntity<ProofDto> getProofById(@PathVariable("id") final Integer id) {
+        LOG.info("Received request to query for proof with id " + id);
+        if (id == null) {
+            LOG.error("ERROR: ID was null");
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        LOG.debug("Querying for proof with id " + id);
+
+        final StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
+
+        final Optional<ProofDto> proof = proofRepository.findById(id);
+
+        stopWatch.stop();
+
+        LOG.debug("Received response from server: query took " + stopWatch.getTotalTimeMillis() + "ms to complete");
+        return proof.map(proofDto -> {
+            LOG.info("Returning proof with id " + id);
+            return new ResponseEntity<>(proofDto, HttpStatus.OK);
+        }).orElseGet(
+                () -> {
+                    LOG.warn("No proof was found with id " + id);
+                    return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+                });
+
     }
 
     @GetMapping("/{branch}")

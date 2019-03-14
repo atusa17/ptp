@@ -11,16 +11,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.*;
+import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.verifyZeroInteractions;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ProofControllerTest {
@@ -85,6 +82,43 @@ public class ProofControllerTest {
         assertNotNull(responseEntity);
         assertFalse(responseEntity.hasBody());
         assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
+    }
+
+    @Test
+    public void testGetProofById() {
+        final ProofDto proofDto = createProof();
+        when(proofRepository.findById(anyInt())).thenReturn(Optional.ofNullable(proofDto));
+
+        final ResponseEntity<ProofDto> responseEntity = proofController.getProofById(1);
+
+        assertNotNull(responseEntity);
+        assertTrue(responseEntity.hasBody());
+        assertNotNull(responseEntity.getBody());
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        assertEquals(proofDto, responseEntity.getBody());
+        verify(proofRepository).findById(anyInt());
+    }
+
+    @Test
+    public void testGetProofById_nullId() {
+        final ResponseEntity responseEntity = proofController.getProofById(null);
+
+        assertNotNull(responseEntity);
+        assertFalse(responseEntity.hasBody());
+        assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
+        verifyZeroInteractions(proofRepository);
+    }
+
+    @Test
+    public void testGetProofById_noProofFound() {
+        when(proofRepository.findById(anyInt())).thenReturn(Optional.empty());
+
+        final ResponseEntity responseEntity = proofController.getProofById(1);
+
+        assertNotNull(responseEntity);
+        assertFalse(responseEntity.hasBody());
+        assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
+        verify(proofRepository).findById(anyInt());
     }
 
     private ProofDto createProof() {
