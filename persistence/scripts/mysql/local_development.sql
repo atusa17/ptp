@@ -36,7 +36,7 @@ version int default 1
 CREATE TABLE proofs
 (
   id        INT NOT NULL AUTO_INCREMENT,
-  name      VARCHAR(512) NOT NULL,
+  theorem_name      VARCHAR(512) NOT NULL,
   branch    VARCHAR(512) NOT NULL,
   theorem   INT NOT NULL,
   FOREIGN KEY fk_theorem (theorem) REFERENCES theorems (id) ON DELETE NO ACTION ON UPDATE NO ACTION,

@@ -9,5 +9,5 @@ public interface ProofRepository extends JpaRepository<ProofDto, Integer> {
 
     List<ProofDto> findByBranch(String branch);
 
-    List<ProofDto> findByName(String name);
+    List<ProofDto> findByTheoremName(String name);
 }

@@ -20,12 +20,12 @@ import java.util.List;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class TheoremDto extends BaseDto implements Serializable {
-    @NotBlank @Size(min = 1, max = 512, message = "theorem name must be between 1 and 512 characters") private String name;
-    @NotNull @Column(name = "theorem_type") private TheoremType theoremType;
-    @NotNull(message = "a branch of mathematics that this theorem is associated with must be specified") private String branch;
+    @NotBlank(groups = Insert.class) @Size(min = 1, max = 512, message = "theorem name must be between 1 and 512 characters") private String name;
+    @NotNull(groups = Insert.class) @Column(name = "theorem_type") private TheoremType theoremType;
+    @NotNull(groups = Insert.class, message = "a branch of mathematics that this theorem is associated with must be specified") private String branch;
     @Type(type = "json") @Column(name = "referenced_definitions", columnDefinition = "jsonb") private List<String> referencedDefinitions;
     @Type(type = "json") @Column(name = "referenced_theorems", columnDefinition = "jsonb") private List<String> referencedTheorems;
-    @NotNull @Column(name = "proven_status") private boolean provenStatus;
+    @NotNull(groups = Insert.class) @Column(name = "proven_status") private boolean provenStatus;
 
     @JsonProperty("theorem_type")
     public TheoremType getTheoremType() {
@@ -68,4 +68,7 @@ public class TheoremDto extends BaseDto implements Serializable {
     }
 
     private static final long serialVersionUID = 1545568391140364425L;
+
+    public interface Insert {}
+
 }

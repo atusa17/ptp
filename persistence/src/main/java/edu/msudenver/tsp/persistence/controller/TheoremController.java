@@ -9,9 +9,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StopWatch;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.validation.groups.Default;
 import java.util.List;
 import java.util.Optional;
 
@@ -162,6 +164,7 @@ public class TheoremController {
     }
 
     @PostMapping("/")
+    @Validated({TheoremDto.Insert.class, Default.class})
     public @ResponseBody ResponseEntity<TheoremDto> insertTheorem(
             @Valid @RequestBody final TheoremDto theoremDto,
             final BindingResult bindingResult) {
@@ -195,7 +198,7 @@ public class TheoremController {
             @PathVariable("id") final Integer id,
             @RequestBody final TheoremDto theoremDto, final BindingResult bindingResult) {
 
-        LOG.info("Received request to update an account");
+        LOG.info("Received request to update a theorem");
         if (bindingResult.hasErrors()) {
             LOG.error("Binding result is unprocessable");
             return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);

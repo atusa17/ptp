@@ -20,7 +20,8 @@ import java.util.List;
 public class ProofDto extends BaseDto implements Serializable {
     @NotBlank(groups = Insert.class)
     @Size(min = 1, max = 512, message = "The name must be at least 1 character and at most 512 characters")
-    private String name;
+    @Column(name = "theorem_name")
+    private String theoremName;
     @NotBlank(groups = Insert.class)
     @Size(min = 1, max = 512, message = "The branch must be at least 1 character and at most 512 characters")
     private String branch;
@@ -29,6 +30,15 @@ public class ProofDto extends BaseDto implements Serializable {
     @Temporal(TemporalType.DATE) @Column(name = "date_created") private Date dateCreated;
     @Temporal(TemporalType.DATE) @Column(name = "last_updated") private Date lastUpdated;
 
+    @JsonProperty("theorem_name")
+    public String getTheoremName() {
+        return theoremName;
+    }
+
+    @JsonProperty("theorem_name")
+    public void setTheoremName(final String theoremName) {
+        this.theoremName = theoremName;
+    }
 
     @JsonProperty("referenced_definitions")
     public List<String> getReferencedDefinitions() {
