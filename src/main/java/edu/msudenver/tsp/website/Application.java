@@ -4,9 +4,6 @@ package edu.msudenver.tsp.website;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-
-//import lombok.extern.slf4j.Slf4j;
-
 @SpringBootApplication
 public class Application {
 
@@ -15,20 +12,5 @@ public class Application {
     }
 }
 
-    /*@Bean
-    public CommandLineRunner commandLineRunner(final ApplicationContext ctx) {
-        return args -> {
-
-            LOG.info("Beans provided by Spring Boot:");
-
-            final String[] beanNames = ctx.getBeanDefinitionNames();
-            Arrays.sort(beanNames);
-            for (final String beanName : beanNames) {
-                LOG.info(beanName);
-            }
-        }
-    }
-}
-*/
 
 
