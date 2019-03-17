@@ -37,8 +37,8 @@ public class ProofController {
 
         stopWatch.stop();
 
-        LOG.debug("Successfully completed query. Query took " + stopWatch.getTotalTimeMillis() + "ms to complete");
-        LOG.info("Returning list of all theorems with size " + listOfProofs.size());
+        LOG.debug("Successfully completed query. Query took {}ms to complete", stopWatch.getTotalTimeMillis());
+        LOG.info("Returning list of all theorems with size {}", listOfProofs.size());
 
         return new ResponseEntity<>(listOfProofs, HttpStatus.OK);
     }
@@ -46,13 +46,13 @@ public class ProofController {
     @GetMapping("/{id}")
     public @ResponseBody
     ResponseEntity<ProofDto> getProofById(@PathVariable("id") final Integer id) {
-        LOG.info("Received request to query for proof with id " + id);
+        LOG.info("Received request to query for proof with id {}", id);
         if (id == null) {
             LOG.error("ERROR: ID was null");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        LOG.debug("Querying for proof with id " + id);
+        LOG.debug("Querying for proof with id {}", id);
 
         final StopWatch stopWatch = new StopWatch();
         stopWatch.start();
@@ -61,13 +61,13 @@ public class ProofController {
 
         stopWatch.stop();
 
-        LOG.debug("Received response from server: query took " + stopWatch.getTotalTimeMillis() + "ms to complete");
+        LOG.debug("Received response from server: query took {}ms to complete", stopWatch.getTotalTimeMillis());
         return proof.map(proofDto -> {
-            LOG.info("Returning proof with id " + id);
+            LOG.info("Returning proof with id {}", id);
             return new ResponseEntity<>(proofDto, HttpStatus.OK);
         }).orElseGet(
                 () -> {
-                    LOG.warn("No proof was found with id " + id);
+                    LOG.warn("No proof was found with id {}", id);
                     return new ResponseEntity<>(HttpStatus.NOT_FOUND);
                 });
 
@@ -76,13 +76,13 @@ public class ProofController {
     @GetMapping("/{branch}")
     public @ResponseBody
     ResponseEntity<List<ProofDto>> getAllProofsByBranch(@PathVariable("branch") final String branch) {
-        LOG.info("Received request to query for proofs related to the " + branch + " branch of mathematics");
+        LOG.info("Received request to query for proofs related to the {} branch of mathematics", branch);
         if (branch == null) {
             LOG.error("ERROR: branch was null");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        LOG.debug("Querying for proofs with branch " + branch);
+        LOG.debug("Querying for proofs with branch {}", branch);
 
         final StopWatch stopWatch = new StopWatch();
         stopWatch.start();
@@ -91,8 +91,8 @@ public class ProofController {
 
         stopWatch.stop();
 
-        LOG.debug("Received response from server: query took " + stopWatch.getTotalTimeMillis() + "ms to complete");
-        LOG.info("Returning list of all proofs with size " + listOfProofs.size());
+        LOG.debug("Received response from server: query took {}ms to complete", stopWatch.getTotalTimeMillis());
+        LOG.info("Returning list of all proofs with size {}", listOfProofs.size());
 
         if (listOfProofs.isEmpty()) {
             LOG.warn("No proofs were found for branch {}", branch);
@@ -121,8 +121,8 @@ public class ProofController {
 
         stopWatch.stop();
 
-        LOG.debug("Received response from server: query took " + stopWatch.getTotalTimeMillis() + "ms to complete");
-        LOG.info("Returning list of all proofs with size " + listOfProofs.size());
+        LOG.debug("Received response from server: query took {}ms to complete", stopWatch.getTotalTimeMillis());
+        LOG.info("Returning list of all proofs with size {}", listOfProofs.size());
 
         if (listOfProofs.isEmpty()) {
             LOG.warn("No proofs were found of the theorem {}", theoremName);
@@ -184,7 +184,7 @@ public class ProofController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        LOG.debug("Checking for existence of proof with id " + id);
+        LOG.debug("Checking for existence of proof with id {}", id);
 
         final StopWatch stopWatch = new StopWatch();
         stopWatch.start();

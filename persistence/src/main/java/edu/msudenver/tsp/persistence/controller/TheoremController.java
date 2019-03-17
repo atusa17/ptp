@@ -37,8 +37,8 @@ public class TheoremController {
 
         stopWatch.stop();
 
-        LOG.debug("Successfully completed query. Query took " + stopWatch.getTotalTimeMillis() + "ms to complete");
-        LOG.info("Returning list of all theorems with size " + listOfTheorems.size());
+        LOG.debug("Successfully completed query. Query took {}ms to complete", stopWatch.getTotalTimeMillis());
+        LOG.info("Returning list of all theorems with size {}", listOfTheorems.size());
 
         return new ResponseEntity<>(listOfTheorems, HttpStatus.OK);
     }
@@ -46,13 +46,13 @@ public class TheoremController {
     @GetMapping("/{branch}")
     public @ResponseBody
     ResponseEntity<List<TheoremDto>> getAllTheoremsByBranch(@PathVariable("branch") final String branch) {
-        LOG.info("Received request to query for theorems related to the " + branch + " branch of mathematics");
+        LOG.info("Received request to query for theorems related to the {} branch of mathematics", branch);
         if (branch == null) {
             LOG.error("ERROR: branch was null");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        LOG.debug("Querying for theorems with branch " + branch);
+        LOG.debug("Querying for theorems with branch {}", branch);
 
         final StopWatch stopWatch = new StopWatch();
         stopWatch.start();
@@ -61,8 +61,8 @@ public class TheoremController {
 
         stopWatch.stop();
 
-        LOG.debug("Received response from server: query took " + stopWatch.getTotalTimeMillis() + "ms to complete");
-        LOG.info("Returning list of all theorems with size " + listOfTheorems.size());
+        LOG.debug("Received response from server: query took {}ms to complete", stopWatch.getTotalTimeMillis());
+        LOG.info("Returning list of all theorems with size {}", listOfTheorems.size());
 
         if (listOfTheorems.isEmpty()) {
             LOG.warn("No theorems were found for branch {}", branch);
@@ -76,13 +76,13 @@ public class TheoremController {
     @GetMapping("/{proven_status}")
     public @ResponseBody
     ResponseEntity<List<TheoremDto>> getAllTheoremsByProvenStatus(@PathVariable("proven_status") final Boolean provenStatus) {
-        LOG.info("Received request to query for theorems whose proven status is " + provenStatus);
+        LOG.info("Received request to query for theorems whose proven status is {}", provenStatus);
         if (provenStatus == null) {
             LOG.error("ERROR: status was null");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        LOG.debug("Querying for theorems with proven status " + provenStatus);
+        LOG.debug("Querying for theorems with proven status {}", provenStatus);
 
         final StopWatch stopWatch = new StopWatch();
         stopWatch.start();
@@ -91,8 +91,8 @@ public class TheoremController {
 
         stopWatch.stop();
 
-        LOG.debug("Received response from server: query took " + stopWatch.getTotalTimeMillis() + "ms to complete");
-        LOG.info("Returning list of all theorems with size " + listOfTheorems.size());
+        LOG.debug("Received response from server: query took {}ms to complete", stopWatch.getTotalTimeMillis());
+        LOG.info("Returning list of all theorems with size {}", listOfTheorems.size());
 
         if (listOfTheorems.isEmpty()) {
             LOG.warn("No theorems were found for proven status {}", provenStatus);
@@ -106,13 +106,13 @@ public class TheoremController {
     @GetMapping("/{name}")
     public @ResponseBody
     ResponseEntity<List<TheoremDto>> getAllTheoremsByName(@PathVariable("name") final String name) {
-        LOG.info("Received request to query for theorems whose name is " + name);
+        LOG.info("Received request to query for theorems whose name is {}", name);
         if (name == null) {
             LOG.error("ERROR: name was null");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        LOG.debug("Querying for theorems with name " + name);
+        LOG.debug("Querying for theorems with name {}", name);
 
         final StopWatch stopWatch = new StopWatch();
         stopWatch.start();
@@ -121,8 +121,8 @@ public class TheoremController {
 
         stopWatch.stop();
 
-        LOG.debug("Received response from server: query took " + stopWatch.getTotalTimeMillis() + "ms to complete");
-        LOG.info("Returning list of all theorems with size " + listOfTheorems.size());
+        LOG.debug("Received response from server: query took {}ms to complete", stopWatch.getTotalTimeMillis());
+        LOG.info("Returning list of all theorems with size {}", listOfTheorems.size());
 
         if (listOfTheorems.isEmpty()) {
             LOG.warn("No theorems were found with name {}", name);
@@ -136,13 +136,13 @@ public class TheoremController {
     @GetMapping("/{id}")
     public @ResponseBody
     ResponseEntity<TheoremDto> getTheoremById(@PathVariable("id") final Integer id) {
-        LOG.info("Received request to query for theorem with id " + id);
+        LOG.info("Received request to query for theorem with id {}", id);
         if (id == null) {
             LOG.error("ERROR: ID was null");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        LOG.debug("Querying for theorem with id " + id);
+        LOG.debug("Querying for theorem with id {}", id);
 
         final StopWatch stopWatch = new StopWatch();
         stopWatch.start();
@@ -151,13 +151,13 @@ public class TheoremController {
 
         stopWatch.stop();
 
-        LOG.debug("Received response from server: query took " + stopWatch.getTotalTimeMillis() + "ms to complete");
+        LOG.debug("Received response from server: query took {}ms to complete", stopWatch.getTotalTimeMillis());
         return theorem.map(theoremDto -> {
-            LOG.info("Returning theorem with id " + id);
+            LOG.info("Returning theorem with id {}", id);
             return new ResponseEntity<>(theoremDto, HttpStatus.OK);
         }).orElseGet(
                 () -> {
-                    LOG.warn("No theorem was found with id " + id);
+                    LOG.warn("No theorem was found with id {}", id);
                     return new ResponseEntity<>(HttpStatus.NOT_FOUND);
                 });
 
@@ -187,9 +187,9 @@ public class TheoremController {
         final TheoremDto savedTheorem = theoremRepository.save(theoremDto);
 
         stopWatch.stop();
-        LOG.debug("Received response from server: query took " + stopWatch.getTotalTimeMillis() + "ms to complete");
+        LOG.debug("Received response from server: query took {}ms to complete", stopWatch.getTotalTimeMillis());
 
-        LOG.info("Returning the newly created theorem with id " + savedTheorem.getId());
+        LOG.info("Returning the newly created theorem with id {}", savedTheorem.getId());
         return new ResponseEntity<>(savedTheorem, HttpStatus.CREATED);
     }
 
@@ -214,7 +214,7 @@ public class TheoremController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        LOG.debug("Checking for existence of theorem with id " + id);
+        LOG.debug("Checking for existence of theorem with id {}", id);
 
         final StopWatch stopWatch = new StopWatch();
         stopWatch.start();
@@ -223,18 +223,18 @@ public class TheoremController {
 
         stopWatch.stop();
 
-        LOG.debug("Received response from server: query took " + stopWatch.getTotalTimeMillis() + "ms to complete");
+        LOG.debug("Received response from server: query took {}ms to complete", stopWatch.getTotalTimeMillis());
 
         if (!existingTheorem.isPresent()) {
-            LOG.error("No theorem associated with id " + id);
+            LOG.error("No theorem associated with id {}", id);
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
         PersistenceUtilities.copyNonNullProperties(theoremDto, existingTheorem.get());
         existingTheorem.get().setVersion(existingTheorem.get().getVersion()+ 1);
 
-        LOG.info("Updating theorem with id " + id);
-        LOG.debug("Querying for theorem with ID " + id);
+        LOG.info("Updating theorem with id {}", id);
+        LOG.debug("Querying for theorem with id {}", id);
 
         stopWatch.start();
 
@@ -242,20 +242,20 @@ public class TheoremController {
 
         stopWatch.stop();
 
-        LOG.debug("Received response from server: query took " + stopWatch.getTotalTimeMillis() + "ms to complete");
+        LOG.debug("Received response from server: query took {}ms to complete", stopWatch.getTotalTimeMillis());
 
         return new ResponseEntity<>(updatedTheorem, HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
     public @ResponseBody ResponseEntity<Void> deleteTheoremById(@PathVariable("id") final Integer id) {
-        LOG.info("Received request to delete theorem with id " + id);
+        LOG.info("Received request to delete theorem with id {}", id);
         if (id == null) {
             LOG.error("Specified id is null");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        LOG.debug("Deleting theorem with id " + id);
+        LOG.debug("Deleting theorem with id {}", id);
 
         final StopWatch stopWatch = new StopWatch();
         stopWatch.start();
@@ -264,7 +264,7 @@ public class TheoremController {
 
         stopWatch.stop();
 
-        LOG.debug("Received response from server: query took " + stopWatch.getTotalTimeMillis() + "ms to complete");
+        LOG.debug("Received response from server: query took {}ms to complete", stopWatch.getTotalTimeMillis());
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

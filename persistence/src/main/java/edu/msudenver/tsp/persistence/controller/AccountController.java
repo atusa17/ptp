@@ -40,8 +40,8 @@ public class AccountController {
 
         stopWatch.stop();
 
-        LOG.debug("Successfully completed query. Query took " + stopWatch.getTotalTimeMillis() + "ms to complete");
-        LOG.info("Returning list of all accounts with size of " + listOfAccounts.size());
+        LOG.debug("Successfully completed query. Query took {}ms to complete", stopWatch.getTotalTimeMillis());
+        LOG.info("Returning list of all accounts with size of {}", listOfAccounts.size());
 
         return new ResponseEntity<>(listOfAccounts, HttpStatus.OK);
     }
@@ -49,13 +49,13 @@ public class AccountController {
     @GetMapping("/{id}")
     public @ResponseBody
     ResponseEntity<AccountDto> getAccountById(@PathVariable("id") final Integer id) {
-        LOG.info("Received request to query for account with id " + id);
+        LOG.info("Received request to query for account with id {}", id);
         if (id == null) {
             LOG.error("ERROR: ID was null");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        LOG.debug("Querying for account with id " + id);
+        LOG.debug("Querying for account with id {}", id);
         final StopWatch stopWatch = new StopWatch();
         stopWatch.start();
 
@@ -63,13 +63,13 @@ public class AccountController {
 
         stopWatch.stop();
 
-        LOG.debug("Received response from server: query took " + stopWatch.getTotalTimeMillis() + "ms to complete");
+        LOG.debug("Received response from server: query took {}ms to complete", stopWatch.getTotalTimeMillis());
         return account.map(accountDto -> {
-            LOG.info("Returning account with id " + id);
+            LOG.info("Returning account with id {}", id);
             return new ResponseEntity<>(accountDto, HttpStatus.OK);
         }).orElseGet(
                 () -> {
-                    LOG.warn("No account was found with id " + id);
+                    LOG.warn("No account was found with id {}", id);
                     return new ResponseEntity<>(HttpStatus.NOT_FOUND);
                 }
         );
@@ -78,13 +78,13 @@ public class AccountController {
     @GetMapping("/{username}")
     public @ResponseBody
     ResponseEntity<AccountDto> getAccountByUsername(@PathVariable("username") final String username) {
-        LOG.info("Received request to query for account with username " + username);
+        LOG.info("Received request to query for account with username {}", username);
         if (username == null) {
             LOG.error("ERROR: username was null");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        LOG.debug("Querying for account with username " + username);
+        LOG.debug("Querying for account with username {}", username);
         final StopWatch stopWatch = new StopWatch();
         stopWatch.start();
 
@@ -92,13 +92,13 @@ public class AccountController {
 
         stopWatch.stop();
 
-        LOG.debug("Received response from server: query took " + stopWatch.getTotalTimeMillis() + "ms to complete");
+        LOG.debug("Received response from server: query took {}ms to complete", stopWatch.getTotalTimeMillis());
         return account.map(accountDto -> {
-            LOG.info("Returning account with username " + username);
+            LOG.info("Returning account with username {}", username);
             return new ResponseEntity<>(accountDto, HttpStatus.OK);
         }).orElseGet(
                 () -> {
-                    LOG.warn("No account was found with username " + username);
+                    LOG.warn("No account was found with username {}", username);
                     return new ResponseEntity<>(HttpStatus.NOT_FOUND);
                 }
         );
@@ -144,7 +144,7 @@ public class AccountController {
 
         stopWatch.stop();
 
-        LOG.debug("Received response from server: query took " + stopWatch.getTotalTimeMillis() + "ms to complete");
+        LOG.debug("Received response from server: query took {}ms to complete", stopWatch.getTotalTimeMillis());
         LOG.info("Returning the newly created account");
         return new ResponseEntity<>(savedAccount, HttpStatus.CREATED);
     }
@@ -170,7 +170,7 @@ public class AccountController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        LOG.debug("Checking for existence of account with id " + id);
+        LOG.debug("Checking for existence of account with id {}", id);
 
         final StopWatch stopWatch = new StopWatch();
         stopWatch.start();
@@ -179,18 +179,18 @@ public class AccountController {
 
         stopWatch.stop();
 
-        LOG.debug("Received response from server: query took " + stopWatch.getTotalTimeMillis() + "ms to complete");
+        LOG.debug("Received response from server: query took {}ms to complete", stopWatch.getTotalTimeMillis());
 
         if (!existingAccount.isPresent()) {
-            LOG.error("No account associated with id " + id);
+            LOG.error("No account associated with id {}", id);
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
         PersistenceUtilities.copyNonNullProperties(accountDto, existingAccount.get());
         existingAccount.get().setVersion(existingAccount.get().getVersion()+ 1);
 
-        LOG.info("Updating account with id " + id);
-        LOG.debug("Querying for account with ID " + id);
+        LOG.info("Updating account with id {}", id);
+        LOG.debug("Querying for account with id {}", id);
 
         stopWatch.start();
 
@@ -198,20 +198,20 @@ public class AccountController {
 
         stopWatch.stop();
 
-        LOG.debug("Received response from server: query took " + stopWatch.getTotalTimeMillis() + "ms to complete");
+        LOG.debug("Received response from server: query took {}ms to complete", stopWatch.getTotalTimeMillis());
 
         return new ResponseEntity<>(updatedAccount, HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
     public @ResponseBody ResponseEntity<Void> deleteAccountById(@PathVariable("id") final Integer id) {
-        LOG.info("Received request to delete account with id " + id);
+        LOG.info("Received request to delete account with id {}", id);
         if (id == null) {
             LOG.error("Specified Id is null");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        LOG.debug("Deleting account with id " + id);
+        LOG.debug("Deleting account with id {}", id);
 
         final StopWatch stopWatch = new StopWatch();
         stopWatch.start();
@@ -220,7 +220,7 @@ public class AccountController {
 
         stopWatch.stop();
 
-        LOG.debug("Received response from server: query took " + stopWatch.getTotalTimeMillis() + "ms to complete");
+        LOG.debug("Received response from server: query took {}ms to complete", stopWatch.getTotalTimeMillis());
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
