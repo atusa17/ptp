@@ -6,7 +6,6 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @ComponentScan
-//@PropertySource("classpath:development.properties")
 public class ScoringConfig {
 
     @Bean
