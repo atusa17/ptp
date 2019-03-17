@@ -1,6 +1,6 @@
 package edu.msudenver.tsp.persistence;
 
-import edu.msudenver.tsp.persistence.dto.ProofDto;
+import edu.msudenver.tsp.persistence.dto.Proof;
 import edu.msudenver.tsp.persistence.repository.ProofRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -23,8 +23,8 @@ public class ProofsIntegrationTest {
 
     @Test
     public void testCRUDFunctionality() {
-        final ProofDto proofDto = createProof();
-        final ProofDto savedProof = proofRepository.save(proofDto);
+        final Proof proof = createProof();
+        final Proof savedProof = proofRepository.save(proof);
 
         assertNotNull(savedProof);
         assertEquals(Integer.valueOf(0), savedProof.getVersion());
@@ -44,7 +44,7 @@ public class ProofsIntegrationTest {
 
         savedProof.setBranch("Test Update");
 
-        final ProofDto updatedProof = proofRepository.save(savedProof);
+        final Proof updatedProof = proofRepository.save(savedProof);
 
         assertNotNull(updatedProof);
         assertEquals(Integer.valueOf(0), updatedProof.getVersion());
@@ -61,12 +61,12 @@ public class ProofsIntegrationTest {
         assertEquals("test definition 2", updatedProof.getReferencedDefinitions().get(1));
         assertEquals(updatedProof.getId(), id);
 
-        proofRepository.delete(proofDto);
-        final Optional<ProofDto> deletedProof = proofRepository.findById(id);
+        proofRepository.delete(proof);
+        final Optional<Proof> deletedProof = proofRepository.findById(id);
         assertFalse(deletedProof.isPresent());
     }
 
-    private ProofDto createProof() {
+    private Proof createProof() {
         final List<String> referencedTheoremsList = new ArrayList<>();
         referencedTheoremsList.add("test theorem 1");
         referencedTheoremsList.add("test theorem 2");
@@ -75,13 +75,13 @@ public class ProofsIntegrationTest {
         referencedDefinitionsList.add("test definition 1");
         referencedDefinitionsList.add("test definition 2");
 
-        final ProofDto proofDto = new ProofDto();
-        proofDto.setTheoremName("Test proof");
-        proofDto.setBranch("Test branch");
-        proofDto.setDateCreated(new Date());
-        proofDto.setReferencedTheorems(referencedTheoremsList);
-        proofDto.setReferencedDefinitions(referencedDefinitionsList);
+        final Proof proof = new Proof();
+        proof.setTheoremName("Test proof");
+        proof.setBranch("Test branch");
+        proof.setDateCreated(new Date());
+        proof.setReferencedTheorems(referencedTheoremsList);
+        proof.setReferencedDefinitions(referencedDefinitionsList);
 
-        return proofDto;
+        return proof;
     }
 }

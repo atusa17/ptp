@@ -1,9 +1,9 @@
 package edu.msudenver.tsp.services.parser;
 
-import edu.msudenver.tsp.persistence.controller.DefinitionController;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import java.util.ArrayList;
@@ -12,18 +12,14 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ParserServiceTest {
 
-    private final DefinitionController definitionControllerMock = mock(DefinitionController.class);
-    private final ParserService mockParserService = mock(ParserService.class);
+    @Mock private ParserService mockParserService;
 
-    @InjectMocks
-    private final ParserService parserService = new ParserService(definitionControllerMock, null,
-            null,  null);
+    @InjectMocks private ParserService parserService;
 
     @Test
     public void testEmptyStringEqualsEmptyString() {

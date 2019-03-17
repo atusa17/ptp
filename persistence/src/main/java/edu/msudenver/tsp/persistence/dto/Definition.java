@@ -19,7 +19,7 @@ import java.util.List;
 @EntityListeners(AuditingEntityListener.class)
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class DefinitionDto extends BaseDto implements Serializable {
+public class Definition extends BaseDto implements Serializable {
     @NotBlank(groups = Insert.class, message = "A name must be specified")
     @Size(min = 1, max = 200, message = "Must be between 1 and 200 characters")
     private String name;

@@ -1,13 +1,13 @@
 package edu.msudenver.tsp.persistence.repository;
 
-import edu.msudenver.tsp.persistence.dto.ProofDto;
+import edu.msudenver.tsp.persistence.dto.Proof;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface ProofRepository extends JpaRepository<ProofDto, Integer> {
+public interface ProofRepository extends JpaRepository<Proof, Integer> {
 
-    List<ProofDto> findByBranch(String branch);
+    List<Proof> findByBranch(String branch);
 
-    List<ProofDto> findByTheoremName(String name);
+    List<Proof> findByTheoremName(String name);
 }

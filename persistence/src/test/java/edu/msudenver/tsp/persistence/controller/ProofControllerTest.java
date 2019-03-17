@@ -1,6 +1,6 @@
 package edu.msudenver.tsp.persistence.controller;
 
-import edu.msudenver.tsp.persistence.dto.ProofDto;
+import edu.msudenver.tsp.persistence.dto.Proof;
 import edu.msudenver.tsp.persistence.repository.ProofRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -27,14 +27,14 @@ public class ProofControllerTest {
 
     @Test
     public void testGetAllProofs() {
-        final ProofDto proofDto = createProof();
-        final List<ProofDto> listOfProofs = new ArrayList<>();
+        final Proof proofDto = createProof();
+        final List<Proof> listOfProofs = new ArrayList<>();
         listOfProofs.add(proofDto);
         listOfProofs.add(proofDto);
 
         when(proofRepository.findAll()).thenReturn(listOfProofs);
 
-        final ResponseEntity<Iterable<ProofDto>> responseEntity = proofController.getAllProofs();
+        final ResponseEntity<Iterable<Proof>> responseEntity = proofController.getAllProofs();
 
         assertNotNull(responseEntity);
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
@@ -46,14 +46,14 @@ public class ProofControllerTest {
 
     @Test
     public void testGetAllProofsByBranch() {
-        final ProofDto proofDto = createProof();
-        final List<ProofDto> listOfProofs = new ArrayList<>();
+        final Proof proofDto = createProof();
+        final List<Proof> listOfProofs = new ArrayList<>();
         listOfProofs.add(proofDto);
         listOfProofs.add(proofDto);
 
         when(proofRepository.findByBranch(anyString())).thenReturn(listOfProofs);
 
-        final ResponseEntity<List<ProofDto>> responseEntity = proofController.getAllProofsByBranch("test");
+        final ResponseEntity<List<Proof>> responseEntity = proofController.getAllProofsByBranch("test");
 
         assertNotNull(responseEntity);
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
@@ -65,7 +65,7 @@ public class ProofControllerTest {
 
     @Test
     public void testGetAllProfsByBranch_nullBranch() {
-        final ResponseEntity<List<ProofDto>> responseEntity = proofController.getAllProofsByBranch(null);
+        final ResponseEntity<List<Proof>> responseEntity = proofController.getAllProofsByBranch(null);
 
         assertNotNull(responseEntity);
         assertFalse(responseEntity.hasBody());
@@ -77,7 +77,7 @@ public class ProofControllerTest {
     public void testGetAllProofsByBranch_noProofsFound() {
         when(proofRepository.findByBranch(anyString())).thenReturn(Collections.emptyList());
 
-        final ResponseEntity<List<ProofDto>> responseEntity = proofController.getAllProofsByBranch("test nonexistent branch");
+        final ResponseEntity<List<Proof>> responseEntity = proofController.getAllProofsByBranch("test nonexistent branch");
 
         assertNotNull(responseEntity);
         assertFalse(responseEntity.hasBody());
@@ -86,14 +86,14 @@ public class ProofControllerTest {
 
     @Test
     public void testGetAllProofsByTheoremName() {
-        final ProofDto proofDto = createProof();
-        final List<ProofDto> listOfProofs = new ArrayList<>();
+        final Proof proofDto = createProof();
+        final List<Proof> listOfProofs = new ArrayList<>();
         listOfProofs.add(proofDto);
         listOfProofs.add(proofDto);
 
         when(proofRepository.findByTheoremName(anyString())).thenReturn(listOfProofs);
 
-        final ResponseEntity<List<ProofDto>> responseEntity = proofController.getAllProofsByTheoremName("test");
+        final ResponseEntity<List<Proof>> responseEntity = proofController.getAllProofsByTheoremName("test");
 
         assertNotNull(responseEntity);
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
@@ -105,7 +105,7 @@ public class ProofControllerTest {
 
     @Test
     public void testGetAllProfsByTheoremName_nullTheoremName() {
-        final ResponseEntity<List<ProofDto>> responseEntity = proofController.getAllProofsByTheoremName(null);
+        final ResponseEntity<List<Proof>> responseEntity = proofController.getAllProofsByTheoremName(null);
 
         assertNotNull(responseEntity);
         assertFalse(responseEntity.hasBody());
@@ -117,7 +117,7 @@ public class ProofControllerTest {
     public void testGetAllProofsByTheoremName_noProofsFound() {
         when(proofRepository.findByTheoremName(anyString())).thenReturn(Collections.emptyList());
 
-        final ResponseEntity<List<ProofDto>> responseEntity = proofController.getAllProofsByTheoremName("test nonexistent branch");
+        final ResponseEntity<List<Proof>> responseEntity = proofController.getAllProofsByTheoremName("test nonexistent branch");
 
         assertNotNull(responseEntity);
         assertFalse(responseEntity.hasBody());
@@ -126,16 +126,16 @@ public class ProofControllerTest {
 
     @Test
     public void testGetProofById() {
-        final ProofDto proofDto = createProof();
-        when(proofRepository.findById(anyInt())).thenReturn(Optional.ofNullable(proofDto));
+        final Proof proof = createProof();
+        when(proofRepository.findById(anyInt())).thenReturn(Optional.ofNullable(proof));
 
-        final ResponseEntity<ProofDto> responseEntity = proofController.getProofById(1);
+        final ResponseEntity<Proof> responseEntity = proofController.getProofById(1);
 
         assertNotNull(responseEntity);
         assertTrue(responseEntity.hasBody());
         assertNotNull(responseEntity.getBody());
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-        assertEquals(proofDto, responseEntity.getBody());
+        assertEquals(proof, responseEntity.getBody());
         verify(proofRepository).findById(anyInt());
     }
 
@@ -163,17 +163,17 @@ public class ProofControllerTest {
 
     @Test
     public void testInsertProof() {
-        final ProofDto proofDto = createProof();
-        when(proofRepository.save(any(ProofDto.class))).thenReturn(proofDto);
+        final Proof proof = createProof();
+        when(proofRepository.save(any(Proof.class))).thenReturn(proof);
 
-        final ResponseEntity<ProofDto> responseEntity = proofController.insertProof(proofDto, bindingResult);
+        final ResponseEntity<Proof> responseEntity = proofController.insertProof(proof, bindingResult);
 
         assertNotNull(responseEntity);
         assertTrue(responseEntity.hasBody());
         assertNotNull(responseEntity.getBody());
         assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode());
-        assertEquals(proofDto, responseEntity.getBody());
-        verify(proofRepository).save(any(ProofDto.class));
+        assertEquals(proof, responseEntity.getBody());
+        verify(proofRepository).save(any(Proof.class));
     }
 
     @Test
@@ -188,10 +188,10 @@ public class ProofControllerTest {
 
     @Test
     public void testInsertProof_bindingResultHasErrors() {
-        final ProofDto proofDto = createProof();
+        final Proof proof = createProof();
         when(bindingResult.hasErrors()).thenReturn(true);
 
-        final ResponseEntity responseEntity = proofController.insertProof(proofDto, bindingResult);
+        final ResponseEntity responseEntity = proofController.insertProof(proof, bindingResult);
 
         assertNotNull(responseEntity);
         assertFalse(responseEntity.hasBody());
@@ -201,31 +201,31 @@ public class ProofControllerTest {
 
     @Test
     public void testUpdateProof() {
-        final ProofDto existingProof = createProof();
+        final Proof existingProof = createProof();
         existingProof.setId(1);
         existingProof.setVersion(1);
-        final ProofDto proofUpdate = new ProofDto();
+        final Proof proofUpdate = new Proof();
         proofUpdate.setTheoremName("Test Update");
-        final ProofDto updatedProof = existingProof;
+        final Proof updatedProof = existingProof;
         updatedProof.setTheoremName("Test Update");
         when(proofRepository.findById(anyInt())).thenReturn(Optional.of(existingProof));
-        when(proofRepository.save(any(ProofDto.class))).thenReturn(updatedProof);
+        when(proofRepository.save(any(Proof.class))).thenReturn(updatedProof);
 
-        final ResponseEntity<ProofDto> responseEntity = proofController.updateProof(1, proofUpdate, bindingResult);
+        final ResponseEntity<Proof> responseEntity = proofController.updateProof(1, proofUpdate, bindingResult);
 
         assertNotNull(responseEntity);
         assertTrue(responseEntity.hasBody());
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         assertEquals(updatedProof, responseEntity.getBody());
         verify(proofRepository).findById(anyInt());
-        verify(proofRepository).save(any(ProofDto.class));
+        verify(proofRepository).save(any(Proof.class));
     }
 
     @Test
     public void testUpdateProof_bindingResultHasErrors() {
         when(bindingResult.hasErrors()).thenReturn(true);
 
-        final ResponseEntity<ProofDto> responseEntity = proofController.updateProof(1, createProof(), bindingResult);
+        final ResponseEntity<Proof> responseEntity = proofController.updateProof(1, createProof(), bindingResult);
 
         assertNotNull(responseEntity);
         assertFalse(responseEntity.hasBody());
@@ -235,7 +235,7 @@ public class ProofControllerTest {
 
     @Test
     public void testUpdateProof_proofDtoIsNull() {
-        final ResponseEntity<ProofDto> responseEntity = proofController.updateProof(1, null, bindingResult);
+        final ResponseEntity<Proof> responseEntity = proofController.updateProof(1, null, bindingResult);
 
         assertNotNull(responseEntity);
         assertFalse(responseEntity.hasBody());
@@ -245,7 +245,7 @@ public class ProofControllerTest {
 
     @Test
     public void testUpdateProof_idIsNull() {
-        final ResponseEntity<ProofDto> responseEntity = proofController.updateProof(null, createProof(), bindingResult);
+        final ResponseEntity<Proof> responseEntity = proofController.updateProof(null, createProof(), bindingResult);
 
         assertNotNull(responseEntity);
         assertFalse(responseEntity.hasBody());
@@ -257,12 +257,12 @@ public class ProofControllerTest {
     public void testUpdateProof_theoremDoesNotExist() {
         when(proofRepository.findById(anyInt())).thenReturn(Optional.empty());
 
-        final ResponseEntity<ProofDto> responseEntity = proofController.updateProof(1, createProof(), bindingResult);
+        final ResponseEntity<Proof> responseEntity = proofController.updateProof(1, createProof(), bindingResult);
 
         assertNotNull(responseEntity);
         assertFalse(responseEntity.hasBody());
         assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
-        verify(proofRepository, times(0)).save(any(ProofDto.class));
+        verify(proofRepository, times(0)).save(any(Proof.class));
     }
 
     @Test
@@ -287,7 +287,7 @@ public class ProofControllerTest {
         verifyZeroInteractions(proofRepository);
     }
 
-    private ProofDto createProof() {
+    private Proof createProof() {
         final List<String> referencedTheoremsList = new ArrayList<>();
         referencedTheoremsList.add("test theorem 1");
         referencedTheoremsList.add("test theorem 2");
@@ -296,13 +296,13 @@ public class ProofControllerTest {
         referencedDefinitionsList.add("test definition 1");
         referencedDefinitionsList.add("test definition 2");
 
-        final ProofDto proofDto = new ProofDto();
-        proofDto.setTheoremName("Test proof");
-        proofDto.setBranch("Test branch");
-        proofDto.setDateCreated(new Date());
-        proofDto.setReferencedTheorems(referencedTheoremsList);
-        proofDto.setReferencedDefinitions(referencedDefinitionsList);
+        final Proof proof = new Proof();
+        proof.setTheoremName("Test proof");
+        proof.setBranch("Test branch");
+        proof.setDateCreated(new Date());
+        proof.setReferencedTheorems(referencedTheoremsList);
+        proof.setReferencedDefinitions(referencedDefinitionsList);
 
-        return proofDto;
+        return proof;
     }
 }

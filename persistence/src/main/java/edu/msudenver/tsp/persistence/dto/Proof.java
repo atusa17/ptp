@@ -17,7 +17,7 @@ import java.util.List;
 @EntityListeners(AuditingEntityListener.class)
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class ProofDto extends BaseDto implements Serializable {
+public class Proof extends BaseDto implements Serializable {
     @NotBlank(groups = Insert.class)
     @Size(min = 1, max = 512, message = "The name must be at least 1 character and at most 512 characters")
     @Column(name = "theorem_name")

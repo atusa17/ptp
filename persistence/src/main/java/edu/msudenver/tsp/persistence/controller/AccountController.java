@@ -1,6 +1,6 @@
 package edu.msudenver.tsp.persistence.controller;
 
-import edu.msudenver.tsp.persistence.dto.AccountDto;
+import edu.msudenver.tsp.persistence.dto.Account;
 import edu.msudenver.tsp.persistence.repository.AccountsRepository;
 import edu.msudenver.tsp.utilities.PersistenceUtilities;
 import lombok.AllArgsConstructor;
@@ -28,7 +28,7 @@ public class AccountController {
 
     @GetMapping({"","/"})
     public @ResponseBody
-    ResponseEntity<Iterable<AccountDto>> getListOfAccounts() {
+    ResponseEntity<Iterable<Account>> getListOfAccounts() {
         LOG.info("Received request to list all accounts");
 
         LOG.debug("Querying for list of accounts");
@@ -36,7 +36,7 @@ public class AccountController {
         final StopWatch stopWatch = new StopWatch();
         stopWatch.start();
 
-        final List<AccountDto> listOfAccounts = (List<AccountDto>) accountsRepository.findAll();
+        final List<Account> listOfAccounts = (List<Account>) accountsRepository.findAll();
 
         stopWatch.stop();
 
@@ -48,7 +48,7 @@ public class AccountController {
 
     @GetMapping("/id")
     public @ResponseBody
-    ResponseEntity<AccountDto> getAccountById(@RequestParam("id") final Integer id) {
+    ResponseEntity<Account> getAccountById(@RequestParam("id") final Integer id) {
         LOG.info("Received request to query for account with id {}", id);
         if (id == null) {
             LOG.error("ERROR: ID was null");
@@ -59,7 +59,7 @@ public class AccountController {
         final StopWatch stopWatch = new StopWatch();
         stopWatch.start();
 
-        final Optional<AccountDto> account = accountsRepository.findById(id);
+        final Optional<Account> account = accountsRepository.findById(id);
 
         stopWatch.stop();
 
@@ -77,7 +77,7 @@ public class AccountController {
 
     @GetMapping("/username")
     public @ResponseBody
-    ResponseEntity<AccountDto> getAccountByUsername(@RequestParam("username") final String username) {
+    ResponseEntity<Account> getAccountByUsername(@RequestParam("username") final String username) {
         LOG.info("Received request to query for account with username {}", username);
         if (username == null) {
             LOG.error("ERROR: username was null");
@@ -88,7 +88,7 @@ public class AccountController {
         final StopWatch stopWatch = new StopWatch();
         stopWatch.start();
 
-        final Optional<AccountDto> account = accountsRepository.findByUsername(username);
+        final Optional<Account> account = accountsRepository.findByUsername(username);
 
         stopWatch.stop();
 
@@ -105,9 +105,9 @@ public class AccountController {
     }
 
     @PostMapping({"","/"})
-    @Validated({AccountDto.Insert.class, Default.class})
-    public @ResponseBody ResponseEntity<AccountDto> insertAccount(
-            @Valid @RequestBody final AccountDto accountDto, final BindingResult bindingResult) {
+    @Validated({Account.Insert.class, Default.class})
+    public @ResponseBody ResponseEntity<Account> insertAccount(
+            @Valid @RequestBody final Account account, final BindingResult bindingResult) {
 
         LOG.info("Received request to insert a new account");
         if (bindingResult.hasErrors()) {
@@ -115,23 +115,23 @@ public class AccountController {
             return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
         }
 
-        if (accountDto == null) {
+        if (account == null) {
             LOG.error("Passed account is unprocessable");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        LOG.info("Checking for any existing users with username {}", accountDto.getUsername());
+        LOG.info("Checking for any existing users with username {}", account.getUsername());
 
         final Instant start = Instant.now();
 
         LOG.debug("Querying for existing accounts");
 
-        final Optional<AccountDto> existingAccount = accountsRepository.findByUsername(accountDto.getUsername());
+        final Optional<Account> existingAccount = accountsRepository.findByUsername(account.getUsername());
 
         LOG.debug("Received response from the server: query took {} ms", Duration.between(start, Instant.now()).toMillis());
 
         if (existingAccount.isPresent()) {
-            LOG.warn("An account already exists with username {}", accountDto.getUsername());
+            LOG.warn("An account already exists with username {}", account.getUsername());
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
 
@@ -140,7 +140,7 @@ public class AccountController {
         final StopWatch stopWatch = new StopWatch();
         stopWatch.start();
 
-        final AccountDto savedAccount = accountsRepository.save(accountDto);
+        final Account savedAccount = accountsRepository.save(account);
 
         stopWatch.stop();
 
@@ -150,9 +150,9 @@ public class AccountController {
     }
 
     @PatchMapping("/{id}")
-    public @ResponseBody ResponseEntity<AccountDto> updateAccount(
+    public @ResponseBody ResponseEntity<Account> updateAccount(
             @PathVariable("id") final Integer id,
-            @RequestBody final AccountDto accountDto, final BindingResult bindingResult) {
+            @RequestBody final Account account, final BindingResult bindingResult) {
 
         LOG.info("Received request to update an account");
         if (bindingResult.hasErrors()) {
@@ -160,7 +160,7 @@ public class AccountController {
             return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
         }
 
-        if (accountDto == null) {
+        if (account == null) {
             LOG.error("Passed entity is null");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
@@ -175,7 +175,7 @@ public class AccountController {
         final StopWatch stopWatch = new StopWatch();
         stopWatch.start();
 
-        final Optional<AccountDto> existingAccount = accountsRepository.findById(id);
+        final Optional<Account> existingAccount = accountsRepository.findById(id);
 
         stopWatch.stop();
 
@@ -186,7 +186,7 @@ public class AccountController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        PersistenceUtilities.copyNonNullProperties(accountDto, existingAccount.get());
+        PersistenceUtilities.copyNonNullProperties(account, existingAccount.get());
         existingAccount.get().setVersion(existingAccount.get().getVersion()+ 1);
 
         LOG.info("Updating account with id {}", id);
@@ -194,7 +194,7 @@ public class AccountController {
 
         stopWatch.start();
 
-        final AccountDto updatedAccount = accountsRepository.save(existingAccount.get());
+        final Account updatedAccount = accountsRepository.save(existingAccount.get());
 
         stopWatch.stop();
 

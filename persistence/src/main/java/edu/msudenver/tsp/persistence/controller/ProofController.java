@@ -1,6 +1,6 @@
 package edu.msudenver.tsp.persistence.controller;
 
-import edu.msudenver.tsp.persistence.dto.ProofDto;
+import edu.msudenver.tsp.persistence.dto.Proof;
 import edu.msudenver.tsp.persistence.repository.ProofRepository;
 import edu.msudenver.tsp.utilities.PersistenceUtilities;
 import lombok.AllArgsConstructor;
@@ -26,14 +26,14 @@ public class ProofController {
 
     @GetMapping({"","/"})
     public @ResponseBody
-    ResponseEntity<Iterable<ProofDto>> getAllProofs() {
+    ResponseEntity<Iterable<Proof>> getAllProofs() {
         LOG.info("Received request to list all theorems");
 
         LOG.debug("Querying for list of all theorems");
         final StopWatch stopWatch = new StopWatch();
         stopWatch.start();
 
-        final List<ProofDto> listOfProofs = proofRepository.findAll();
+        final List<Proof> listOfProofs = proofRepository.findAll();
 
         stopWatch.stop();
 
@@ -45,7 +45,7 @@ public class ProofController {
 
     @GetMapping("/id")
     public @ResponseBody
-    ResponseEntity<ProofDto> getProofById(@RequestParam("id") final Integer id) {
+    ResponseEntity<Proof> getProofById(@RequestParam("id") final Integer id) {
         LOG.info("Received request to query for proof with id {}", id);
         if (id == null) {
             LOG.error("ERROR: ID was null");
@@ -57,7 +57,7 @@ public class ProofController {
         final StopWatch stopWatch = new StopWatch();
         stopWatch.start();
 
-        final Optional<ProofDto> proof = proofRepository.findById(id);
+        final Optional<Proof> proof = proofRepository.findById(id);
 
         stopWatch.stop();
 
@@ -75,7 +75,7 @@ public class ProofController {
 
     @GetMapping("/branch")
     public @ResponseBody
-    ResponseEntity<List<ProofDto>> getAllProofsByBranch(@RequestParam("branch") final String branch) {
+    ResponseEntity<List<Proof>> getAllProofsByBranch(@RequestParam("branch") final String branch) {
         LOG.info("Received request to query for proofs related to the {} branch of mathematics", branch);
         if (branch == null) {
             LOG.error("ERROR: branch was null");
@@ -87,7 +87,7 @@ public class ProofController {
         final StopWatch stopWatch = new StopWatch();
         stopWatch.start();
 
-        final List<ProofDto> listOfProofs = proofRepository.findByBranch(branch);
+        final List<Proof> listOfProofs = proofRepository.findByBranch(branch);
 
         stopWatch.stop();
 
@@ -105,7 +105,7 @@ public class ProofController {
 
     @GetMapping("/theorem_name")
     public @ResponseBody
-    ResponseEntity<List<ProofDto>> getAllProofsByTheoremName(@PathVariable("theorem_name") final String theoremName) {
+    ResponseEntity<List<Proof>> getAllProofsByTheoremName(@PathVariable("theorem_name") final String theoremName) {
         LOG.info("Received request to query for proofs of the theorem {}", theoremName);
         if (theoremName == null) {
             LOG.error("ERROR: theorem name was null");
@@ -117,7 +117,7 @@ public class ProofController {
         final StopWatch stopWatch = new StopWatch();
         stopWatch.start();
 
-        final List<ProofDto> listOfProofs = proofRepository.findByTheoremName(theoremName);
+        final List<Proof> listOfProofs = proofRepository.findByTheoremName(theoremName);
 
         stopWatch.stop();
 
@@ -134,9 +134,9 @@ public class ProofController {
     }
 
     @PostMapping({"","/"})
-    @Validated({ProofDto.Insert.class, Default.class})
-    public @ResponseBody ResponseEntity<ProofDto> insertProof(
-            @Valid @RequestBody final ProofDto proofDto,
+    @Validated({Proof.Insert.class, Default.class})
+    public @ResponseBody ResponseEntity<Proof> insertProof(
+            @Valid @RequestBody final Proof proof,
             final BindingResult bindingResult) {
         LOG.info("Received request to insert a new proof");
         if (bindingResult.hasErrors()) {
@@ -144,7 +144,7 @@ public class ProofController {
             return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
         }
 
-        if (proofDto == null) {
+        if (proof == null) {
             LOG.error("Passed entity is null");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
@@ -154,7 +154,7 @@ public class ProofController {
         final StopWatch stopWatch = new StopWatch();
         stopWatch.start();
 
-        final ProofDto savedProof = proofRepository.save(proofDto);
+        final Proof savedProof = proofRepository.save(proof);
 
         stopWatch.stop();
         LOG.debug("Received response from server: query took {}ms to complete", stopWatch.getTotalTimeMillis());
@@ -164,9 +164,9 @@ public class ProofController {
     }
 
     @PatchMapping("/{id}")
-    public @ResponseBody ResponseEntity<ProofDto> updateProof(
+    public @ResponseBody ResponseEntity<Proof> updateProof(
             @PathVariable("id") final Integer id,
-            @RequestBody final ProofDto proofDto, final BindingResult bindingResult) {
+            @RequestBody final Proof proof, final BindingResult bindingResult) {
 
         LOG.info("Received request to update a proof");
         if (bindingResult.hasErrors()) {
@@ -174,7 +174,7 @@ public class ProofController {
             return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
         }
 
-        if (proofDto == null) {
+        if (proof == null) {
             LOG.error("Passed entity is null");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
@@ -189,7 +189,7 @@ public class ProofController {
         final StopWatch stopWatch = new StopWatch();
         stopWatch.start();
 
-        final Optional<ProofDto> existingProof = proofRepository.findById(id);
+        final Optional<Proof> existingProof = proofRepository.findById(id);
 
         stopWatch.stop();
 
@@ -200,7 +200,7 @@ public class ProofController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        PersistenceUtilities.copyNonNullProperties(proofDto, existingProof.get());
+        PersistenceUtilities.copyNonNullProperties(proof, existingProof.get());
         existingProof.get().setVersion(existingProof.get().getVersion()+ 1);
 
         LOG.info("Updating proof with id {}", id);
@@ -208,7 +208,7 @@ public class ProofController {
 
         stopWatch.start();
 
-        final ProofDto updatedProof = proofRepository.save(existingProof.get());
+        final Proof updatedProof = proofRepository.save(existingProof.get());
 
         stopWatch.stop();
 

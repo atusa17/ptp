@@ -1,6 +1,6 @@
 package edu.msudenver.tsp.persistence;
 
-import edu.msudenver.tsp.persistence.dto.DefinitionDto;
+import edu.msudenver.tsp.persistence.dto.Definition;
 import edu.msudenver.tsp.persistence.repository.DefinitionRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,8 +21,8 @@ public class DefinitionsIntegrationTest {
 
     @Test
     public void testCRUDFunctionality() {
-        final DefinitionDto definitionDto = createDefinition();
-        final DefinitionDto savedDefinition = definitionRepository.save(definitionDto);
+        final Definition definition = createDefinition();
+        final Definition savedDefinition = definitionRepository.save(definition);
 
         assertNotNull(savedDefinition);
         assertEquals(Integer.valueOf(0), savedDefinition.getVersion());
@@ -44,7 +44,7 @@ public class DefinitionsIntegrationTest {
 
         savedDefinition.setName("Test Update");
 
-        final DefinitionDto updatedDefinition = definitionRepository.save(savedDefinition);
+        final Definition updatedDefinition = definitionRepository.save(savedDefinition);
 
         assertEquals("Test Update", updatedDefinition.getName());
         assertNotNull(updatedDefinition.getDefinition());
@@ -61,11 +61,11 @@ public class DefinitionsIntegrationTest {
         assertEquals(id, updatedDefinition.getId());
 
         definitionRepository.delete(updatedDefinition);
-        final Optional<DefinitionDto> deletedDefinition = definitionRepository.findById(id);
+        final Optional<Definition> deletedDefinition = definitionRepository.findById(id);
         assertFalse(deletedDefinition.isPresent());
     }
 
-    private DefinitionDto createDefinition() {
+    private Definition createDefinition() {
         final List<String> definitionList = new ArrayList<>();
         definitionList.add("Test definition 1");
         definitionList.add("Test definition 2");
@@ -73,11 +73,11 @@ public class DefinitionsIntegrationTest {
         final List<String> notationList = new ArrayList<>();
         notationList.add("\\testLaTeX");
 
-        final DefinitionDto definitionDto = new DefinitionDto();
-        definitionDto.setName("Test Name");
-        definitionDto.setDefinition(definitionList);
-        definitionDto.setNotation(notationList);
+        final Definition definition = new Definition();
+        definition.setName("Test Name");
+        definition.setDefinition(definitionList);
+        definition.setNotation(notationList);
 
-        return definitionDto;
+        return definition;
     }
 }

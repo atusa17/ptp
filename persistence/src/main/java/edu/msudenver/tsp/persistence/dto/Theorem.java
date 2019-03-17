@@ -19,7 +19,7 @@ import java.util.List;
 @EntityListeners(AuditingEntityListener.class)
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class TheoremDto extends BaseDto implements Serializable {
+public class Theorem extends BaseDto implements Serializable {
     @NotBlank(groups = Insert.class) @Size(min = 1, max = 512, message = "theorem name must be between 1 and 512 characters") private String name;
     @NotNull(groups = Insert.class) @Column(name = "theorem_type") private TheoremType theoremType;
     @NotNull(groups = Insert.class, message = "a branch of mathematics that this theorem is associated with must be specified") private String branch;

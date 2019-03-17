@@ -1,41 +1,24 @@
 package edu.msudenver.tsp.services.parser;
 
-import edu.msudenver.tsp.persistence.controller.DefinitionController;
-import edu.msudenver.tsp.persistence.controller.NotationController;
-import edu.msudenver.tsp.persistence.controller.ProofController;
-import edu.msudenver.tsp.persistence.controller.TheoremController;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 @Service
 class ParserService {
-    private final DefinitionController definitionController;
-    private final TheoremController theoremController;
-    private final NotationController notationController;
-    private final ProofController proofController;
-    private Node root;
-
-    @Autowired
-    public ParserService(final DefinitionController definitionController, final TheoremController theoremController,
-                         final NotationController notationController, final ProofController proofController) {
-        this.definitionController = definitionController;
-        this.theoremController = theoremController;
-        this.notationController = notationController;
-        this.proofController = proofController;
-    }
 
     public boolean parseUserInput(final String userInput)
     {
         try {
             final Node tree = parseRawInput(userInput);
-            final List<String> statements = retrieveStatements(tree);
+            retrieveStatements(tree);
 
             return true;
         } catch(final Exception e) {
-            e.printStackTrace();
+            LOG.error(e.getMessage());
         }
         return false;
     }
@@ -44,7 +27,7 @@ class ParserService {
     {
         input = input.toLowerCase();
 
-        root = new Node(input, null);
+        final Node root = new Node(input, null);
 
         if(input.equals(""))
         {

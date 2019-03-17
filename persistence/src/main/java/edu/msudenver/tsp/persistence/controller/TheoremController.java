@@ -1,6 +1,6 @@
 package edu.msudenver.tsp.persistence.controller;
 
-import edu.msudenver.tsp.persistence.dto.TheoremDto;
+import edu.msudenver.tsp.persistence.dto.Theorem;
 import edu.msudenver.tsp.persistence.repository.TheoremRepository;
 import edu.msudenver.tsp.utilities.PersistenceUtilities;
 import lombok.AllArgsConstructor;
@@ -26,14 +26,14 @@ public class TheoremController {
 
     @GetMapping({"","/"})
     public @ResponseBody
-    ResponseEntity<Iterable<TheoremDto>> getAllTheorems() {
+    ResponseEntity<Iterable<Theorem>> getAllTheorems() {
         LOG.info("Received request to list all theorems");
 
         LOG.debug("Querying for list of all theorems");
         final StopWatch stopWatch = new StopWatch();
         stopWatch.start();
 
-        final List<TheoremDto> listOfTheorems = theoremRepository.findAll();
+        final List<Theorem> listOfTheorems = theoremRepository.findAll();
 
         stopWatch.stop();
 
@@ -45,7 +45,7 @@ public class TheoremController {
 
     @GetMapping("/branch")
     public @ResponseBody
-    ResponseEntity<List<TheoremDto>> getAllTheoremsByBranch(@RequestParam("branch") final String branch) {
+    ResponseEntity<List<Theorem>> getAllTheoremsByBranch(@RequestParam("branch") final String branch) {
         LOG.info("Received request to query for theorems related to the {} branch of mathematics", branch);
         if (branch == null) {
             LOG.error("ERROR: branch was null");
@@ -57,7 +57,7 @@ public class TheoremController {
         final StopWatch stopWatch = new StopWatch();
         stopWatch.start();
 
-        final List<TheoremDto> listOfTheorems = theoremRepository.findByBranch(branch);
+        final List<Theorem> listOfTheorems = theoremRepository.findByBranch(branch);
 
         stopWatch.stop();
 
@@ -75,7 +75,7 @@ public class TheoremController {
 
     @GetMapping("/proven_status")
     public @ResponseBody
-    ResponseEntity<List<TheoremDto>> getAllTheoremsByProvenStatus(@PathVariable("proven_status") final Boolean provenStatus) {
+    ResponseEntity<List<Theorem>> getAllTheoremsByProvenStatus(@PathVariable("proven_status") final Boolean provenStatus) {
         LOG.info("Received request to query for theorems whose proven status is {}", provenStatus);
         if (provenStatus == null) {
             LOG.error("ERROR: status was null");
@@ -87,7 +87,7 @@ public class TheoremController {
         final StopWatch stopWatch = new StopWatch();
         stopWatch.start();
 
-        final List<TheoremDto> listOfTheorems = theoremRepository.findByProvenStatus(provenStatus);
+        final List<Theorem> listOfTheorems = theoremRepository.findByProvenStatus(provenStatus);
 
         stopWatch.stop();
 
@@ -105,7 +105,7 @@ public class TheoremController {
 
     @GetMapping("/name")
     public @ResponseBody
-    ResponseEntity<List<TheoremDto>> getAllTheoremsByName(@PathVariable("name") final String name) {
+    ResponseEntity<List<Theorem>> getAllTheoremsByName(@PathVariable("name") final String name) {
         LOG.info("Received request to query for theorems whose name is {}", name);
         if (name == null) {
             LOG.error("ERROR: name was null");
@@ -117,7 +117,7 @@ public class TheoremController {
         final StopWatch stopWatch = new StopWatch();
         stopWatch.start();
 
-        final List<TheoremDto> listOfTheorems = theoremRepository.findByName(name);
+        final List<Theorem> listOfTheorems = theoremRepository.findByName(name);
 
         stopWatch.stop();
 
@@ -135,7 +135,7 @@ public class TheoremController {
 
     @GetMapping("/id")
     public @ResponseBody
-    ResponseEntity<TheoremDto> getTheoremById(@PathVariable("id") final Integer id) {
+    ResponseEntity<Theorem> getTheoremById(@PathVariable("id") final Integer id) {
         LOG.info("Received request to query for theorem with id {}", id);
         if (id == null) {
             LOG.error("ERROR: ID was null");
@@ -147,7 +147,7 @@ public class TheoremController {
         final StopWatch stopWatch = new StopWatch();
         stopWatch.start();
 
-        final Optional<TheoremDto> theorem = theoremRepository.findById(id);
+        final Optional<Theorem> theorem = theoremRepository.findById(id);
 
         stopWatch.stop();
 
@@ -164,9 +164,9 @@ public class TheoremController {
     }
 
     @PostMapping({"","/"})
-    @Validated({TheoremDto.Insert.class, Default.class})
-    public @ResponseBody ResponseEntity<TheoremDto> insertTheorem(
-            @Valid @RequestBody final TheoremDto theoremDto,
+    @Validated({Theorem.Insert.class, Default.class})
+    public @ResponseBody ResponseEntity<Theorem> insertTheorem(
+            @Valid @RequestBody final Theorem theorem,
             final BindingResult bindingResult) {
         LOG.info("Received request to insert a new theorem");
         if (bindingResult.hasErrors()) {
@@ -174,7 +174,7 @@ public class TheoremController {
             return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
         }
 
-        if (theoremDto == null) {
+        if (theorem == null) {
             LOG.error("Passed entity is null");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
@@ -184,7 +184,7 @@ public class TheoremController {
         final StopWatch stopWatch = new StopWatch();
         stopWatch.start();
 
-        final TheoremDto savedTheorem = theoremRepository.save(theoremDto);
+        final Theorem savedTheorem = theoremRepository.save(theorem);
 
         stopWatch.stop();
         LOG.debug("Received response from server: query took {}ms to complete", stopWatch.getTotalTimeMillis());
@@ -194,9 +194,9 @@ public class TheoremController {
     }
 
     @PatchMapping("/{id}")
-    public @ResponseBody ResponseEntity<TheoremDto> updateTheorem(
+    public @ResponseBody ResponseEntity<Theorem> updateTheorem(
             @PathVariable("id") final Integer id,
-            @RequestBody final TheoremDto theoremDto, final BindingResult bindingResult) {
+            @RequestBody final Theorem theorem, final BindingResult bindingResult) {
 
         LOG.info("Received request to update a theorem");
         if (bindingResult.hasErrors()) {
@@ -204,7 +204,7 @@ public class TheoremController {
             return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
         }
 
-        if (theoremDto == null) {
+        if (theorem == null) {
             LOG.error("Passed entity is null");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
@@ -219,7 +219,7 @@ public class TheoremController {
         final StopWatch stopWatch = new StopWatch();
         stopWatch.start();
 
-        final Optional<TheoremDto> existingTheorem = theoremRepository.findById(id);
+        final Optional<Theorem> existingTheorem = theoremRepository.findById(id);
 
         stopWatch.stop();
 
@@ -230,7 +230,7 @@ public class TheoremController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        PersistenceUtilities.copyNonNullProperties(theoremDto, existingTheorem.get());
+        PersistenceUtilities.copyNonNullProperties(theorem, existingTheorem.get());
         existingTheorem.get().setVersion(existingTheorem.get().getVersion()+ 1);
 
         LOG.info("Updating theorem with id {}", id);
@@ -238,7 +238,7 @@ public class TheoremController {
 
         stopWatch.start();
 
-        final TheoremDto updatedTheorem = theoremRepository.save(existingTheorem.get());
+        final Theorem updatedTheorem = theoremRepository.save(existingTheorem.get());
 
         stopWatch.stop();
 

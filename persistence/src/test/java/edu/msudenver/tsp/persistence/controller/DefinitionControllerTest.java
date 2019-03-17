@@ -1,6 +1,6 @@
 package edu.msudenver.tsp.persistence.controller;
 
-import edu.msudenver.tsp.persistence.dto.DefinitionDto;
+import edu.msudenver.tsp.persistence.dto.Definition;
 import edu.msudenver.tsp.persistence.repository.DefinitionRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -30,14 +30,14 @@ public class DefinitionControllerTest {
 
     @Test
     public void testGetAllDefinitions() {
-        final DefinitionDto definitionDto = createDefinition();
-        final List<DefinitionDto> definitionDtoList = new ArrayList<>();
-        definitionDtoList.add(definitionDto);
-        definitionDtoList.add(definitionDto);
+        final Definition definitionDto = createDefinition();
+        final List<Definition> definitionList = new ArrayList<>();
+        definitionList.add(definitionDto);
+        definitionList.add(definitionDto);
 
-        when(definitionRepository.findAll()).thenReturn(definitionDtoList);
+        when(definitionRepository.findAll()).thenReturn(definitionList);
 
-        final ResponseEntity<Iterable<DefinitionDto>> responseEntity = definitionController.getAllDefinitions();
+        final ResponseEntity<Iterable<Definition>> responseEntity = definitionController.getAllDefinitions();
 
         assertNotNull(responseEntity);
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
@@ -49,16 +49,16 @@ public class DefinitionControllerTest {
 
     @Test
     public void testGetDefinitionsById() {
-        final DefinitionDto definitionDto = createDefinition();
-        when(definitionRepository.findById(anyInt())).thenReturn(Optional.ofNullable(definitionDto));
+        final Definition definition = createDefinition();
+        when(definitionRepository.findById(anyInt())).thenReturn(Optional.ofNullable(definition));
 
-        final ResponseEntity<DefinitionDto> responseEntity = definitionController.getDefinitionById(1);
+        final ResponseEntity<Definition> responseEntity = definitionController.getDefinitionById(1);
 
         assertNotNull(responseEntity);
         assertTrue(responseEntity.hasBody());
         assertNotNull(responseEntity.getBody());
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-        assertEquals(definitionDto, responseEntity.getBody());
+        assertEquals(definition, responseEntity.getBody());
         verify(definitionRepository).findById(anyInt());
     }
 
@@ -86,17 +86,17 @@ public class DefinitionControllerTest {
 
     @Test
     public void testInsertDefinition() {
-        final DefinitionDto definitionDto = createDefinition();
-        when(definitionRepository.save(any(DefinitionDto.class))).thenReturn(definitionDto);
+        final Definition definition = createDefinition();
+        when(definitionRepository.save(any(Definition.class))).thenReturn(definition);
 
-        final ResponseEntity<DefinitionDto> responseEntity = definitionController.insertDefinition(definitionDto, bindingResult);
+        final ResponseEntity<Definition> responseEntity = definitionController.insertDefinition(definition, bindingResult);
 
         assertNotNull(responseEntity);
         assertTrue(responseEntity.hasBody());
         assertNotNull(responseEntity.getBody());
         assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode());
-        assertEquals(definitionDto, responseEntity.getBody());
-        verify(definitionRepository).save(any(DefinitionDto.class));
+        assertEquals(definition, responseEntity.getBody());
+        verify(definitionRepository).save(any(Definition.class));
     }
 
     @Test
@@ -111,10 +111,10 @@ public class DefinitionControllerTest {
 
     @Test
     public void testInsertDefinition_bindingResultHasErrors() {
-        final DefinitionDto definitionDto = createDefinition();
+        final Definition definition = createDefinition();
         when(bindingResult.hasErrors()).thenReturn(true);
 
-        final ResponseEntity responseEntity = definitionController.insertDefinition(definitionDto, bindingResult);
+        final ResponseEntity responseEntity = definitionController.insertDefinition(definition, bindingResult);
 
         assertNotNull(responseEntity);
         assertFalse(responseEntity.hasBody());
@@ -124,31 +124,31 @@ public class DefinitionControllerTest {
 
     @Test
     public void testUpdateDefinition() {
-        final DefinitionDto existingDefinition = createDefinition();
+        final Definition existingDefinition = createDefinition();
         existingDefinition.setId(1);
         existingDefinition.setVersion(1);
-        final DefinitionDto definitionUpdate = new DefinitionDto();
+        final Definition definitionUpdate = new Definition();
         definitionUpdate.setName("Test Update");
-        final DefinitionDto updatedDefinition = existingDefinition;
+        final Definition updatedDefinition = existingDefinition;
         updatedDefinition.setName("Test Update");
         when(definitionRepository.findById(anyInt())).thenReturn(Optional.of(existingDefinition));
-        when(definitionRepository.save(any(DefinitionDto.class))).thenReturn(updatedDefinition);
+        when(definitionRepository.save(any(Definition.class))).thenReturn(updatedDefinition);
 
-        final ResponseEntity<DefinitionDto> responseEntity = definitionController.updateDefinition(1, definitionUpdate, bindingResult);
+        final ResponseEntity<Definition> responseEntity = definitionController.updateDefinition(1, definitionUpdate, bindingResult);
 
         assertNotNull(responseEntity);
         assertTrue(responseEntity.hasBody());
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         assertEquals(updatedDefinition, responseEntity.getBody());
         verify(definitionRepository).findById(anyInt());
-        verify(definitionRepository).save(any(DefinitionDto.class));
+        verify(definitionRepository).save(any(Definition.class));
     }
 
     @Test
     public void testUpdateDefinition_bindingResultErrors() {
         when(bindingResult.hasErrors()).thenReturn(true);
 
-        final ResponseEntity<DefinitionDto> responseEntity = definitionController.updateDefinition(1, createDefinition(), bindingResult);
+        final ResponseEntity<Definition> responseEntity = definitionController.updateDefinition(1, createDefinition(), bindingResult);
 
         assertNotNull(responseEntity);
         assertFalse(responseEntity.hasBody());
@@ -158,7 +158,7 @@ public class DefinitionControllerTest {
 
     @Test
     public void testUpdateDefinition_definitionDtoIsNull() {
-        final ResponseEntity<DefinitionDto> responseEntity = definitionController.updateDefinition(1, null, bindingResult);
+        final ResponseEntity<Definition> responseEntity = definitionController.updateDefinition(1, null, bindingResult);
 
         assertNotNull(responseEntity);
         assertFalse(responseEntity.hasBody());
@@ -168,7 +168,7 @@ public class DefinitionControllerTest {
 
     @Test
     public void testUpdateDefinition_idIsNull() {
-        final ResponseEntity<DefinitionDto> responseEntity = definitionController.updateDefinition(null, createDefinition(), bindingResult);
+        final ResponseEntity<Definition> responseEntity = definitionController.updateDefinition(null, createDefinition(), bindingResult);
 
         assertNotNull(responseEntity);
         assertFalse(responseEntity.hasBody());
@@ -180,12 +180,12 @@ public class DefinitionControllerTest {
     public void testUpdateDefinition_definitionDoesntExist() {
         when(definitionRepository.findById(anyInt())).thenReturn(Optional.empty());
 
-        final ResponseEntity<DefinitionDto> responseEntity = definitionController.updateDefinition(1, createDefinition(), bindingResult);
+        final ResponseEntity<Definition> responseEntity = definitionController.updateDefinition(1, createDefinition(), bindingResult);
 
         assertNotNull(responseEntity);
         assertFalse(responseEntity.hasBody());
         assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
-        verify(definitionRepository, times(0)).save(any(DefinitionDto.class));
+        verify(definitionRepository, times(0)).save(any(Definition.class));
     }
 
     @Test
@@ -210,18 +210,18 @@ public class DefinitionControllerTest {
         verifyZeroInteractions(definitionRepository);
     }
 
-    private DefinitionDto createDefinition() {
+    private Definition createDefinition() {
         final List<String> definitionList = new ArrayList<>();
         definitionList.add("Test definition 1");
 
         final List<String> notationList = new ArrayList<>();
         notationList.add("\\testLaTeX");
 
-        final DefinitionDto definitionDto = new DefinitionDto();
-        definitionDto.setName("Test Name");
-        definitionDto.setDefinition(definitionList);
-        definitionDto.setNotation(notationList);
+        final Definition definition = new Definition();
+        definition.setName("Test Name");
+        definition.setDefinition(definitionList);
+        definition.setNotation(notationList);
 
-        return definitionDto;
+        return definition;
     }
 }
