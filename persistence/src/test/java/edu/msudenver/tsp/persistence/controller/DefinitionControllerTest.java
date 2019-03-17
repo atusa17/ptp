@@ -1,8 +1,6 @@
 package edu.msudenver.tsp.persistence.controller;
 
-import edu.msudenver.tsp.persistence.dto.Definition;
 import edu.msudenver.tsp.persistence.dto.DefinitionDto;
-import edu.msudenver.tsp.persistence.dto.Notation;
 import edu.msudenver.tsp.persistence.repository.DefinitionRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -216,19 +214,13 @@ public class DefinitionControllerTest {
         final List<String> definitionList = new ArrayList<>();
         definitionList.add("Test definition 1");
 
-        final Definition definition = new Definition();
-        definition.setDefinitions(definitionList);
-
         final List<String> notationList = new ArrayList<>();
         notationList.add("\\testLaTeX");
 
-        final Notation notation = new Notation();
-        notation.setNotations(notationList);
-
         final DefinitionDto definitionDto = new DefinitionDto();
         definitionDto.setName("Test Name");
-        definitionDto.setDefinition(definition);
-        definitionDto.setNotation(notation);
+        definitionDto.setDefinition(definitionList);
+        definitionDto.setNotation(notationList);
 
         return definitionDto;
     }

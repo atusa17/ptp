@@ -1,8 +1,6 @@
 package edu.msudenver.tsp.persistence;
 
-import edu.msudenver.tsp.persistence.dto.Definition;
 import edu.msudenver.tsp.persistence.dto.DefinitionDto;
-import edu.msudenver.tsp.persistence.dto.Notation;
 import edu.msudenver.tsp.persistence.repository.DefinitionRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -35,8 +33,8 @@ public class DefinitionsIntegrationTest {
         assertNotNull(savedDefinition.getDefinition());
         assertNotNull(savedDefinition.getNotation());
 
-        final List<String> definitionsList = savedDefinition.getDefinition().getDefinitions();
-        final List<String> notationList = savedDefinition.getNotation().getNotations();
+        final List<String> definitionsList = savedDefinition.getDefinition();
+        final List<String> notationList = savedDefinition.getNotation();
 
         assertEquals(2, definitionsList.size());
         assertEquals(1, notationList.size());
@@ -52,8 +50,8 @@ public class DefinitionsIntegrationTest {
         assertNotNull(updatedDefinition.getDefinition());
         assertNotNull(updatedDefinition.getNotation());
 
-        final List<String> updatedDefinitionsList = updatedDefinition.getDefinition().getDefinitions();
-        final List<String> updatedNotationsList = updatedDefinition.getNotation().getNotations();
+        final List<String> updatedDefinitionsList = updatedDefinition.getDefinition();
+        final List<String> updatedNotationsList = updatedDefinition.getNotation();
 
         assertEquals(2, updatedDefinitionsList.size());
         assertEquals(1, updatedNotationsList.size());
@@ -72,19 +70,13 @@ public class DefinitionsIntegrationTest {
         definitionList.add("Test definition 1");
         definitionList.add("Test definition 2");
 
-        final Definition definition = new Definition();
-        definition.setDefinitions(definitionList);
-
         final List<String> notationList = new ArrayList<>();
         notationList.add("\\testLaTeX");
 
-        final Notation notation = new Notation();
-        notation.setNotations(notationList);
-
         final DefinitionDto definitionDto = new DefinitionDto();
         definitionDto.setName("Test Name");
-        definitionDto.setDefinition(definition);
-        definitionDto.setNotation(notation);
+        definitionDto.setDefinition(definitionList);
+        definitionDto.setNotation(notationList);
 
         return definitionDto;
     }

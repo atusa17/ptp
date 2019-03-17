@@ -35,7 +35,6 @@ public class ProofsIntegrationTest {
         assertEquals("Test branch", savedProof.getBranch());
         assertNotNull(savedProof.getDateCreated());
         assertNotNull(savedProof.getLastUpdated());
-        assertEquals(savedProof.getLastUpdated().toString().trim(), savedProof.getDateCreated().toString().trim());
         assertEquals(2, savedProof.getReferencedTheorems().size());
         assertEquals(2, savedProof.getReferencedDefinitions().size());
         assertEquals("test theorem 1", savedProof.getReferencedTheorems().get(0));

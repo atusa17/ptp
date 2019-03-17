@@ -12,6 +12,7 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
+import java.util.List;
 
 @Entity(name = "definitions")
 @Table(name = "definitions")
@@ -24,9 +25,9 @@ public class DefinitionDto extends BaseDto implements Serializable {
     private String name;
 
     @NotBlank(groups = Insert.class, message = "At least one (1) definition must be specified")
-    @Type(type = "json") @Column(columnDefinition = "jsonb") private Definition definition;
+    @Type(type = "json") @Column(columnDefinition = "jsonb") private List<String> definition;
 
-    @Type(type = "json") @Column(columnDefinition = "jsonb") private Notation notation;
+    @Type(type = "json") @Column(columnDefinition = "jsonb") private List<String> notation;
 
     private static final long serialVersionUID = -5314619286352932857L;
 
