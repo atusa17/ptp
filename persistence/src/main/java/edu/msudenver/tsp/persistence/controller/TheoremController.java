@@ -24,7 +24,7 @@ import java.util.Optional;
 public class TheoremController {
     private final TheoremRepository theoremRepository;
 
-    @GetMapping("/")
+    @GetMapping({"","/"})
     public @ResponseBody
     ResponseEntity<Iterable<TheoremDto>> getAllTheorems() {
         LOG.info("Received request to list all theorems");
@@ -43,9 +43,9 @@ public class TheoremController {
         return new ResponseEntity<>(listOfTheorems, HttpStatus.OK);
     }
 
-    @GetMapping("/{branch}")
+    @GetMapping("/branch")
     public @ResponseBody
-    ResponseEntity<List<TheoremDto>> getAllTheoremsByBranch(@PathVariable("branch") final String branch) {
+    ResponseEntity<List<TheoremDto>> getAllTheoremsByBranch(@RequestParam("branch") final String branch) {
         LOG.info("Received request to query for theorems related to the {} branch of mathematics", branch);
         if (branch == null) {
             LOG.error("ERROR: branch was null");
@@ -73,7 +73,7 @@ public class TheoremController {
         return new ResponseEntity<>(listOfTheorems, HttpStatus.OK);
     }
 
-    @GetMapping("/{proven_status}")
+    @GetMapping("/proven_status")
     public @ResponseBody
     ResponseEntity<List<TheoremDto>> getAllTheoremsByProvenStatus(@PathVariable("proven_status") final Boolean provenStatus) {
         LOG.info("Received request to query for theorems whose proven status is {}", provenStatus);
@@ -103,7 +103,7 @@ public class TheoremController {
         return new ResponseEntity<>(listOfTheorems, HttpStatus.OK);
     }
 
-    @GetMapping("/{name}")
+    @GetMapping("/name")
     public @ResponseBody
     ResponseEntity<List<TheoremDto>> getAllTheoremsByName(@PathVariable("name") final String name) {
         LOG.info("Received request to query for theorems whose name is {}", name);
@@ -133,7 +133,7 @@ public class TheoremController {
         return new ResponseEntity<>(listOfTheorems, HttpStatus.OK);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/id")
     public @ResponseBody
     ResponseEntity<TheoremDto> getTheoremById(@PathVariable("id") final Integer id) {
         LOG.info("Received request to query for theorem with id {}", id);
@@ -163,7 +163,7 @@ public class TheoremController {
 
     }
 
-    @PostMapping("/")
+    @PostMapping({"","/"})
     @Validated({TheoremDto.Insert.class, Default.class})
     public @ResponseBody ResponseEntity<TheoremDto> insertTheorem(
             @Valid @RequestBody final TheoremDto theoremDto,

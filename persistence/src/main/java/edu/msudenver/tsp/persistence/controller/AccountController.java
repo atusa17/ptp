@@ -26,7 +26,7 @@ import java.util.Optional;
 public class AccountController {
     private final AccountsRepository accountsRepository;
 
-    @GetMapping("/")
+    @GetMapping({"","/"})
     public @ResponseBody
     ResponseEntity<Iterable<AccountDto>> getListOfAccounts() {
         LOG.info("Received request to list all accounts");
@@ -46,9 +46,9 @@ public class AccountController {
         return new ResponseEntity<>(listOfAccounts, HttpStatus.OK);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/id")
     public @ResponseBody
-    ResponseEntity<AccountDto> getAccountById(@PathVariable("id") final Integer id) {
+    ResponseEntity<AccountDto> getAccountById(@RequestParam("id") final Integer id) {
         LOG.info("Received request to query for account with id {}", id);
         if (id == null) {
             LOG.error("ERROR: ID was null");
@@ -75,9 +75,9 @@ public class AccountController {
         );
     }
 
-    @GetMapping("/{username}")
+    @GetMapping("/username")
     public @ResponseBody
-    ResponseEntity<AccountDto> getAccountByUsername(@PathVariable("username") final String username) {
+    ResponseEntity<AccountDto> getAccountByUsername(@RequestParam("username") final String username) {
         LOG.info("Received request to query for account with username {}", username);
         if (username == null) {
             LOG.error("ERROR: username was null");
@@ -104,7 +104,7 @@ public class AccountController {
         );
     }
 
-    @PostMapping("/")
+    @PostMapping({"","/"})
     @Validated({AccountDto.Insert.class, Default.class})
     public @ResponseBody ResponseEntity<AccountDto> insertAccount(
             @Valid @RequestBody final AccountDto accountDto, final BindingResult bindingResult) {

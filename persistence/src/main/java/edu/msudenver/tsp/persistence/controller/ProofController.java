@@ -24,7 +24,7 @@ import java.util.Optional;
 public class ProofController {
     private final ProofRepository proofRepository;
 
-    @GetMapping("/")
+    @GetMapping({"","/"})
     public @ResponseBody
     ResponseEntity<Iterable<ProofDto>> getAllProofs() {
         LOG.info("Received request to list all theorems");
@@ -43,9 +43,9 @@ public class ProofController {
         return new ResponseEntity<>(listOfProofs, HttpStatus.OK);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/id")
     public @ResponseBody
-    ResponseEntity<ProofDto> getProofById(@PathVariable("id") final Integer id) {
+    ResponseEntity<ProofDto> getProofById(@RequestParam("id") final Integer id) {
         LOG.info("Received request to query for proof with id {}", id);
         if (id == null) {
             LOG.error("ERROR: ID was null");
@@ -73,9 +73,9 @@ public class ProofController {
 
     }
 
-    @GetMapping("/{branch}")
+    @GetMapping("/branch")
     public @ResponseBody
-    ResponseEntity<List<ProofDto>> getAllProofsByBranch(@PathVariable("branch") final String branch) {
+    ResponseEntity<List<ProofDto>> getAllProofsByBranch(@RequestParam("branch") final String branch) {
         LOG.info("Received request to query for proofs related to the {} branch of mathematics", branch);
         if (branch == null) {
             LOG.error("ERROR: branch was null");
@@ -103,7 +103,7 @@ public class ProofController {
         return new ResponseEntity<>(listOfProofs, HttpStatus.OK);
     }
 
-    @GetMapping("/{theorem_name}")
+    @GetMapping("/theorem_name")
     public @ResponseBody
     ResponseEntity<List<ProofDto>> getAllProofsByTheoremName(@PathVariable("theorem_name") final String theoremName) {
         LOG.info("Received request to query for proofs of the theorem {}", theoremName);
@@ -133,7 +133,7 @@ public class ProofController {
         return new ResponseEntity<>(listOfProofs, HttpStatus.OK);
     }
 
-    @PostMapping("/")
+    @PostMapping({"","/"})
     @Validated({ProofDto.Insert.class, Default.class})
     public @ResponseBody ResponseEntity<ProofDto> insertProof(
             @Valid @RequestBody final ProofDto proofDto,

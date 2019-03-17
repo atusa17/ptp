@@ -24,7 +24,7 @@ import java.util.Optional;
 public class DefinitionController {
     private final DefinitionRepository definitionRepository;
 
-    @GetMapping("/")
+    @GetMapping({"","/"})
     public @ResponseBody
     ResponseEntity<Iterable<DefinitionDto>> getAllDefinitions() {
         LOG.info("Received request to list all definitions");
@@ -73,7 +73,7 @@ public class DefinitionController {
 
     }
 
-    @PostMapping("/")
+    @PostMapping({"","/"})
     @Validated({DefinitionDto.Insert.class, Default.class})
     public @ResponseBody ResponseEntity<DefinitionDto> insertDefinition(
             @Valid @RequestBody final DefinitionDto definitionDto,

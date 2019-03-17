@@ -38,5 +38,5 @@ jobs:
       script: ./gradlew test
     - stage: Integration Tests
       script: ./gradlew integrationTest
-    - stage: Sonar analysis
+    - stage: Sonar Analysis
       script: ./gradlew sonar
