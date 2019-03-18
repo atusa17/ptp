@@ -6,7 +6,6 @@ import edu.msudenver.tsp.services.dto.Definition;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
@@ -15,7 +14,6 @@ import java.util.Optional;
 
 @Slf4j
 @Service
-@PropertySource(value = "classpath:application.properties", ignoreResourceNotFound = true)
 public class DefinitionService {
     private final RestService restService;
     @Value("${persistence.api.connection.timeout.milliseconds}") private int connectionTimeoutMilliseconds;

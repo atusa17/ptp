@@ -1,17 +1,16 @@
 package edu.msudenver.tsp.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.test.context.TestPropertySource;
+import org.springframework.context.annotation.FilterType;
 
 @Configuration
-@ComponentScan
-@EnableAutoConfiguration(exclude = DataSourceAutoConfiguration.class)
-@TestPropertySource("classpath:test.properties")
+@ComponentScan(excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, value = CommandLineRunner.class))
+@EnableAutoConfiguration
 public class ServiceTestConfig {
 
     @Bean
