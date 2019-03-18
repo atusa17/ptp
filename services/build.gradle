@@ -18,12 +18,14 @@ repositories {
 }
 
 dependencies {
-    compile project(':persistence')
     compile group: 'org.apache.httpcomponents', name: 'httpcore', version: '4.4.11'
     compile group: 'org.apache.httpcomponents', name: 'fluent-hc', version: '4.5.7'
     compile group: 'com.google.code.gson', name: 'gson', version: '2.7'
+    compile group: 'org.springframework.boot', name: 'spring-boot-devtools', version: '2.0.5.RELEASE'
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: '2.0.5.RELEASE'
     compile fileTree(dir: 'lib', include: '**/*.jar')
 
     testCompile "org.springframework:spring-test:5.0.9.RELEASE"
+    testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '2.1.2.RELEASE'
     testCompile group: 'junit', name: 'junit', version: '4.12'
 }
