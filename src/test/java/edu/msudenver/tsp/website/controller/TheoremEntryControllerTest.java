@@ -23,27 +23,19 @@ public class TheoremEntryControllerTest {
     @InjectMocks
     private TheoremEntryController theoremEntryController;
 
-    @Autowired
-    protected MockMvc mockMvc;
-
-    @Test
-    public void contexLoads() throws Exception {
-        assertNotNull(theoremEntryController);
-    }
-
-    @Test
-    public void firstPage(){
-
-        final ModelAndView modelAndView= theoremEntryController.firstPage();
-
-        assertNotNull(modelAndView);
-        assertEquals("welcome",modelAndView.getViewName());
-    }
-
     @Test
     public void theoremPage(){
 
-        final ModelAndView modelAndView= theoremEntryController.theoremPage();
+        final ModelAndView modelAndView= theoremEntryController.enterTheoremPage();
+
+        assertNotNull(modelAndView);
+        assertEquals("Theorem",modelAndView.getViewName());
+    }
+
+    @Test
+    public void saveTheorem(){
+
+        final ModelAndView modelAndView= theoremEntryController.enterTheoremPage();
 
         assertNotNull(modelAndView);
         assertEquals("Theorem",modelAndView.getViewName());

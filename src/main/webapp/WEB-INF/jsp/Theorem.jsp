@@ -7,9 +7,9 @@
 <title>Theroem Page</title>
 </head>
 <body>
-<form action="save" method="post">
-Enter Theorem Name: <input type="text" name="theoremName">
-
+<form action="" method="post">
+Enter Theorem Name : <input type="text" name="theoremName1">
+    <br>Enter Theorem: <input type="text" name="theoremName2"><br>
 <input type="submit" value="save">
 </form>
 </body>
