@@ -8,8 +8,8 @@
 </head>
 <body>
 <form action="save" method="post">
-Enter Theorem 1: <input type="text" name="theoremName1">
-    <br>Enter Theorem 2: <input type="text" name="theoremName2"><br>
+Enter Theorem Name: <input type="text" name="theoremName">
+
 <input type="submit" value="save">
 </form>
 </body>
