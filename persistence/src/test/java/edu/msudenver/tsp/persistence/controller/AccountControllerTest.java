@@ -33,6 +33,7 @@ public class AccountControllerTest {
 
     @Test
     public void testGetAllAccounts() {
+
         final AccountDto accountDto = createAccount();
         final List<AccountDto> accountDtoList = new ArrayList<>();
         accountDtoList.add(accountDto);

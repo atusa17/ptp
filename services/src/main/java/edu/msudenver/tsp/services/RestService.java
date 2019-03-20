@@ -43,15 +43,20 @@ public class RestService {
         return send(requestFactory.post(uri, requestJson), null, connectionTimeout, socketTimeout, type);
     }
 
+    <T> Optional<T> patch(final String uri, final String requestJson, final TypeToken<T> type, final Integer connectionTimeout, final Integer socketTimeout) {
+        LOG.info("Sending Patch {} with body: {}", uri, requestJson);
+        return send(requestFactory.patch(uri, requestJson), null, connectionTimeout, socketTimeout, type);
+    }
     Optional<HttpResponse> post(final String uri, final String requestJson, final Integer connectionTimeout, final Integer socketTimeout) {
         LOG.info("Sending POST {} with body: {}", uri, requestJson);
         return send(requestFactory.post(uri, requestJson), null, connectionTimeout, socketTimeout);
     }
 
-    <T> Optional<T> put(final String uri, final String requestJson, final TypeToken<T> type, final Integer connectionTimeout, final Integer socketTimeout, final String auth) {
+    <T> Optional<T> put(final String uri, final String requestJson, final TypeToken<T> type, final Integer connectionTimeout, final Integer socketTimeout) {
         LOG.info("Sending PUT {} with body: {}", uri, requestJson);
-        return send(requestFactory.put(uri, requestJson), auth, connectionTimeout, socketTimeout, type);
+        return send(requestFactory.put(uri, requestJson), null, connectionTimeout, socketTimeout, type);
     }
+
 
     private <T> Optional<T> send(final Request request, final String auth, final Integer connectionTimeout, final Integer socketTimeout, final TypeToken<T> type) {
         try {

@@ -9,7 +9,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import java.text.ParseException;
 import java.util.Date;
 import java.util.Optional;
 
@@ -24,7 +23,7 @@ public class UserServiceIntegrationTest {
     private UserService userService;
 
     @Test
-    public void testCreateNewUser() throws ParseException {
+    public void testUserService(){
         final Account testAccount = new Account();
         testAccount.setUsername("test user");
         testAccount.setPassword("test password");
@@ -38,5 +37,26 @@ public class UserServiceIntegrationTest {
         assertEquals("test user", returnedAccount.getUsername());
         assertEquals("test password", returnedAccount.getPassword());
         assertFalse(returnedAccount.isAdministratorStatus());
+
+        final Optional<Account> updatePasswordTestCreatedAccount = userService.updatePassword(returnedAccount, "password");
+
+        assertTrue(updatePasswordTestCreatedAccount.isPresent());
+        final Account returnedUpdatedPasswordAccount = updatePasswordTestCreatedAccount.get();
+        assertEquals("test user", returnedUpdatedPasswordAccount.getUsername());
+        assertEquals("password", returnedUpdatedPasswordAccount.getPassword());
+        assertFalse(returnedAccount.isAdministratorStatus());
+
+        final Optional<Account> updateUsernameTestCreatedAccount = userService.updateUsername(returnedUpdatedPasswordAccount, "user");
+
+        assertTrue(updateUsernameTestCreatedAccount.isPresent());
+        final Account returnedUpdatedUsernameAccount = updateUsernameTestCreatedAccount.get();
+        assertEquals("user", returnedUpdatedUsernameAccount.getUsername());
+        assertEquals("password", returnedUpdatedUsernameAccount.getPassword());
+        assertFalse(returnedAccount.isAdministratorStatus());
+
+        final boolean result = userService.deleteAccount(returnedUpdatedUsernameAccount);
+
+        assertTrue(result);
     }
+
 }
