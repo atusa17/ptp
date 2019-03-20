@@ -1,6 +1,6 @@
 package edu.msudenver.tsp.persistence;
 
-import edu.msudenver.tsp.persistence.dto.AccountDto;
+import edu.msudenver.tsp.persistence.dto.Account;
 import edu.msudenver.tsp.persistence.repository.AccountsRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -19,8 +19,8 @@ public class AccountsIntegrationTest {
 
     @Test
     public void testCRUDFunctionality() {
-        final AccountDto accountDto = createAccount();
-        final AccountDto savedAccount = accountsRepository.save(accountDto);
+        final Account account = createAccount();
+        final Account savedAccount = accountsRepository.save(account);
 
         assertNotNull(savedAccount);
         assertEquals(Integer.valueOf(0), savedAccount.getVersion());
@@ -33,25 +33,25 @@ public class AccountsIntegrationTest {
 
         savedAccount.setPassword("Test Update");
 
-        final AccountDto updatedAccount = accountsRepository.save(savedAccount);
+        final Account updatedAccount = accountsRepository.save(savedAccount);
 
         assertEquals("Test username", savedAccount.getUsername());
         assertEquals("Test Update", savedAccount.getPassword());
         assertTrue(savedAccount.getAdministratorStatus());
         assertEquals(updatedAccount.getId(), id);
 
-        accountsRepository.delete(accountDto);
-        final Optional<AccountDto> deletedAccount = accountsRepository.findById(id);
+        accountsRepository.delete(account);
+        final Optional<Account> deletedAccount = accountsRepository.findById(id);
         assertFalse(deletedAccount.isPresent());
     }
 
-    private AccountDto createAccount() {
-        final AccountDto accountDto = new AccountDto();
-        accountDto.setUsername("Test username");
-        accountDto.setPassword("test password");
-        accountDto.setAdministratorStatus(true);
+    private Account createAccount() {
+        final Account account = new Account();
+        account.setUsername("Test username");
+        account.setPassword("test password");
+        account.setAdministratorStatus(true);
 
-        return accountDto;
+        return account;
     }
     
 }
