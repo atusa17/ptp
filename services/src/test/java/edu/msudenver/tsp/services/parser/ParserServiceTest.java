@@ -2,7 +2,8 @@ package edu.msudenver.tsp.services.parser;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Spy;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import java.util.ArrayList;
@@ -16,7 +17,8 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class ParserServiceTest {
 
-    @Spy private ParserService parserService;
+    @Mock private ParserService mockParserService;
+    @InjectMocks private ParserService parserService;
 
     @Test
     public void testEmptyStringEqualsEmptyString() {

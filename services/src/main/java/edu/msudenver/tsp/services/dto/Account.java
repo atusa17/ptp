@@ -21,5 +21,4 @@ public class Account extends BaseDto implements Serializable {
 
     private static final long serialVersionUID = 7095627971593953734L;
 
-
 }

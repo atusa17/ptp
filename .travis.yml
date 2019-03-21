@@ -30,11 +30,19 @@ stages:
 
 jobs:
   include:
-    - stage: Load Database
+    - stage: "Load Database"
       script: ./gradlew loaddb
-    - stage: Build
+    - stage: "Build"
       script: ./gradlew build
-    - stage: Unit Tests
+    - stage: "Unit Tests"
       script: ./gradlew test
-    - stage: Integration Tests
-      script: ./gradlew integrationTest
+    - stage: "Integration Tests"
+      script:
+      - |
+        ./gradlew :persistence:startPersistenceApi &
+        APP_PID=$!
+      - |
+        ./gradlew integrationTest
+      - kill $APP_PID
+    - stage: "Sonar Analysis"
+      script: ./gradlew sonar

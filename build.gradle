@@ -1,16 +1,3 @@
-import java.util.concurrent.Callable
-import java.util.concurrent.ExecutorService
-import java.util.concurrent.Executors
-
-class RunAsyncTask extends DefaultTask {
-    String taskToExecute = ':persistence:startPersistenceApi'
-    @TaskAction
-    def startAsync() {
-        ExecutorService es = Executors.newSingleThreadExecutor()
-        es.submit({taskToExecute.execute()} as Callable)
-    }
-}
-
 buildscript {
     repositories {
         mavenCentral()
@@ -29,7 +16,6 @@ plugins {
     id "org.sonarqube" version "2.6"
     id 'org.unbroken-dome.test-sets' version '1.4.5'
     id 'war'
-    id "com.wiredforcode.spawn" version "0.8.2"
 }
 
 apply plugin: 'org.springframework.boot'
@@ -144,19 +130,6 @@ test {
 testSets {
     unitTest
     integrationTest
-}
-
-task startApi(type: RunAsyncTask) {
-    dependsOn ':persistence:loadDb'
-    dependsOn 'build'
-    taskToExecute = ':persistence:startPersistenceApi'
-}
-
-compileKotlin {
-    kotlinOptions.jvmTarget = "1.8"
-}
-compileTestKotlin {
-    kotlinOptions.jvmTarget = "1.8"
 }
 
 wrapper {
