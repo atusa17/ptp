@@ -18,7 +18,6 @@ import static org.mockito.Mockito.when;
 public class ParserServiceTest {
 
     @Mock private ParserService mockParserService;
-
     @InjectMocks private ParserService parserService;
 
     @Test
