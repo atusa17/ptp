@@ -107,11 +107,18 @@ public class TheoremController {
 
     @GetMapping("/name")
     public @ResponseBody
-    ResponseEntity<List<Theorem>> getAllTheoremsByName(@RequestParam("name") final String name) {
+    ResponseEntity<List<Theorem>> getAllTheoremsByName(@RequestParam("name") String name) {
         LOG.info("Received request to query for theorems whose name is {}", name);
         if (name == null) {
             LOG.error("ERROR: name was null");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        name = name.toLowerCase();
+
+        if (name.contains("_") || name.contains("-")) {
+            name = name.replace("-", "\\s");
+            name = name.replace("-", "\\s");
         }
 
         LOG.debug("Querying for theorems with name {}", name);
@@ -180,6 +187,8 @@ public class TheoremController {
             LOG.error("Passed entity is null");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
+
+        theorem.setName(theorem.getName().toLowerCase());
 
         LOG.debug("Saving new theorem");
 
