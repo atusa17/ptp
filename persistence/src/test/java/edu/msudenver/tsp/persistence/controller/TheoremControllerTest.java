@@ -95,7 +95,7 @@ public class TheoremControllerTest {
 
         when(theoremRepository.findByBranch(anyString())).thenReturn(listOfTheorems);
 
-        final ResponseEntity<List<Theorem>> responseEntity = theoremController.getAllTheoremsByBranch("test");
+        final ResponseEntity<List<Theorem>> responseEntity = theoremController.getAllTheoremsByBranch("test-branch");
 
         assertNotNull(responseEntity);
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
@@ -119,7 +119,7 @@ public class TheoremControllerTest {
     public void testGetAllTheoremsByBranch_noTheoremsFound() {
        when(theoremRepository.findByBranch(anyString())).thenReturn(Collections.emptyList());
 
-       final ResponseEntity<List<Theorem>> responseEntity = theoremController.getAllTheoremsByBranch("test nonexistent branch");
+       final ResponseEntity<List<Theorem>> responseEntity = theoremController.getAllTheoremsByBranch("test_nonexistent_branch");
 
        assertNotNull(responseEntity);
        assertFalse(responseEntity.hasBody());

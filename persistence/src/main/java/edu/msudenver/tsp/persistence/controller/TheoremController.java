@@ -53,8 +53,8 @@ public class TheoremController {
         }
 
         if (branch.contains("_") || branch.contains("-")) {
-            branch = branch.replace("_", "\\s");
-            branch = branch.replace("-", "\\s");
+            branch = branch.replace("_", " ");
+            branch = branch.replace("-", " ");
         }
 
         LOG.debug("Querying for theorems with branch {}", branch);
@@ -122,8 +122,8 @@ public class TheoremController {
         name = name.toLowerCase();
 
         if (name.contains("_") || name.contains("-")) {
-            name = name.replace("-", "\\s");
-            name = name.replace("-", "\\s");
+            name = name.replace("-", " ");
+            name = name.replace("-", " ");
         }
 
         LOG.debug("Querying for theorems with name {}", name);
