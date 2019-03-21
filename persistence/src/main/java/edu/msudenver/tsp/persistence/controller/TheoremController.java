@@ -119,10 +119,8 @@ public class TheoremController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        name = name.toLowerCase();
-
         if (name.contains("_") || name.contains("-")) {
-            name = name.replace("-", " ");
+            name = name.replace("_", " ");
             name = name.replace("-", " ");
         }
 

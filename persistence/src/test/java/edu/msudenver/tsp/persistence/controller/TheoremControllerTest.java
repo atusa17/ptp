@@ -184,7 +184,7 @@ public class TheoremControllerTest {
 
         when(theoremRepository.findByName(anyString())).thenReturn(listOfTheorems);
 
-        final ResponseEntity<List<Theorem>> responseEntity = theoremController.getAllTheoremsByName("Test Theorem");
+        final ResponseEntity<List<Theorem>> responseEntity = theoremController.getAllTheoremsByName("Test_Theorem");
 
         assertNotNull(responseEntity);
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
@@ -208,7 +208,7 @@ public class TheoremControllerTest {
     public void testGetAllTheoremsByName_noNameFound() {
         when(theoremRepository.findByName(anyString())).thenReturn(Collections.emptyList());
 
-        final ResponseEntity<List<Theorem>> responseEntity = theoremController.getAllTheoremsByName("No name");
+        final ResponseEntity<List<Theorem>> responseEntity = theoremController.getAllTheoremsByName("No-name");
 
         assertNotNull(responseEntity);
         assertFalse(responseEntity.hasBody());
