@@ -105,7 +105,7 @@ public class ProofController {
 
     @GetMapping("/theorem_name")
     public @ResponseBody
-    ResponseEntity<List<Proof>> getAllProofsByTheoremName(@PathVariable("theorem_name") final String theoremName) {
+    ResponseEntity<List<Proof>> getAllProofsByTheoremName(@RequestParam("theorem_name") final String theoremName) {
         LOG.info("Received request to query for proofs of the theorem {}", theoremName);
         if (theoremName == null) {
             LOG.error("ERROR: theorem name was null");
