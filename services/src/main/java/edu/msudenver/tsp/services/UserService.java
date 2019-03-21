@@ -70,7 +70,7 @@ public class UserService {
         try{
             final String auth = "";
             final TypeToken<Account> typeToken = new TypeToken<Account>(){};
-            final Optional<Account> persistenceApiResponse = restService.patch(persistenceApiBaseUrl + "accounts/id?id=" + id,
+            final Optional<Account> persistenceApiResponse = restService.patch(persistenceApiBaseUrl + "accounts/" + id,
                     new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").create().toJson(account),
                     typeToken,
                     connectionTimeoutMilliseconds,
@@ -105,7 +105,7 @@ public class UserService {
         try{
             final String auth = "";
             final TypeToken<Account> typeToken = new TypeToken<Account>(){};
-            final Optional<Account> persistenceApiResponse = restService.patch(persistenceApiBaseUrl + "accounts/id?id="+id,
+            final Optional<Account> persistenceApiResponse = restService.patch(persistenceApiBaseUrl + "accounts/"+id,
                     new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").create().toJson(account),
                     typeToken,
                     connectionTimeoutMilliseconds,
@@ -136,7 +136,7 @@ public class UserService {
 
         try{
 
-            final boolean persistenceApiResponse = restService.delete(persistenceApiBaseUrl + "/accounts/id?id=" + id,
+            final boolean persistenceApiResponse = restService.delete(persistenceApiBaseUrl + "/accounts/" + id,
                     connectionTimeoutMilliseconds,
                     socketTimeoutMilliseconds, HttpStatus.NO_CONTENT );
             if(persistenceApiResponse){
