@@ -70,7 +70,6 @@ subprojects {
         testCompile group: 'junit', name: 'junit', version: '4.11'
         testCompile group: 'junit', name: 'junit', version: '4.12'
         testCompile('org.mockito:mockito-core:1.10.19') {exclude(group: 'org.hamcrest')}
-
     }
 
     test {
@@ -107,7 +106,11 @@ dependencies {
     compile 'org.slf4j:slf4j-api:1.7.22'
     compile "joda-time:joda-time:2.2"
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: '2.0.5.RELEASE'
+    compile('org.springframework.boot:spring-boot-starter-web','org.apache.tomcat.embed:tomcat-embed-jasper'
+            ,'javax.servlet:jstl')
 
+    testCompile 'javax.el:javax.el-api:3.0.0'
+    testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '2.1.3.RELEASE'
     testCompile group: 'junit', name: 'junit', version: '4.12'
     testCompile "org.springframework:spring-test:5.0.9.RELEASE"
     testCompile('org.mockito:mockito-core:1.10.19') {exclude(group: 'org.hamcrest')}
