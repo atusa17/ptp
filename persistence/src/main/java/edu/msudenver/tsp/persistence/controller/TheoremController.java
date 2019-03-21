@@ -107,7 +107,7 @@ public class TheoremController {
 
     @GetMapping("/name")
     public @ResponseBody
-    ResponseEntity<List<Theorem>> getAllTheoremsByName(@PathVariable("name") final String name) {
+    ResponseEntity<List<Theorem>> getAllTheoremsByName(@RequestParam("name") final String name) {
         LOG.info("Received request to query for theorems whose name is {}", name);
         if (name == null) {
             LOG.error("ERROR: name was null");
@@ -137,7 +137,7 @@ public class TheoremController {
 
     @GetMapping("/id")
     public @ResponseBody
-    ResponseEntity<Theorem> getTheoremById(@PathVariable("id") final Integer id) {
+    ResponseEntity<Theorem> getTheoremById(@RequestParam("id") final Integer id) {
         LOG.info("Received request to query for theorem with id {}", id);
         if (id == null) {
             LOG.error("ERROR: ID was null");
