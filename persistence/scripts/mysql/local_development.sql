@@ -16,7 +16,6 @@ values ('admin', 'secret', true),
 ('BrittanyBi', 'secret', true),
 ('lanlanzeliu', 'secret', true),
 ('tramanh305', 'secret', true);
-
 create table definitions (
 id int not null auto_increment primary key unique,
 name varchar(200) not null,

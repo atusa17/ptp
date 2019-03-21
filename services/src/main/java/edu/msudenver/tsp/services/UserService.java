@@ -17,19 +17,16 @@ import java.util.Optional;
 @Service
 public class UserService {
     private final RestService restService;
-    @Value("${persistence.api.connection.timeout.milliseconds}")
-    private int connectionTimeoutMilliseconds;
-    @Value("${persistence.api.socket.timeout.milliseconds}")
-    private int socketTimeoutMilliseconds;
-    @Value("${persistence.api.base.url}")
-    private String persistenceApiBaseUrl;
+    @Value("${persistence.api.connection.timeout.milliseconds}") private int connectionTimeoutMilliseconds;
+    @Value("${persistence.api.socket.timeout.milliseconds}") private int socketTimeoutMilliseconds;
+    @Value("${persistence.api.base.url}") private String persistenceApiBaseUrl;
 
     @Autowired
     public UserService(final RestService restService) {
         this.restService = restService;
     }
 
-   public Optional<Account> createNewAccount(final Account account) {
+    public Optional<Account> createNewAccount(final Account account) {
         if (account == null) {
             LOG.error("Given null account, returning {}");
             return Optional.empty();
@@ -37,8 +34,7 @@ public class UserService {
         final Instant start = Instant.now();
 
         try {
-            final TypeToken<Account> typeToken = new TypeToken<Account>() {
-            };
+            final TypeToken<Account> typeToken = new TypeToken<Account>() {};
             final Optional<Account> persistenceApiResponse = restService.post(persistenceApiBaseUrl + "accounts/",
                     new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").create().toJson(account),
                     typeToken,
@@ -46,7 +42,7 @@ public class UserService {
                     socketTimeoutMilliseconds);
 
             if (persistenceApiResponse.isPresent()) {
-                LOG.info("Returning {}", persistenceApiResponse);
+                LOG.info("Returning {}", persistenceApiResponse.get());
             } else {
                 LOG.info("Unable to create new account {}", account.toString());
             }
@@ -74,7 +70,7 @@ public class UserService {
         try{
             final String auth = "";
             final TypeToken<Account> typeToken = new TypeToken<Account>(){};
-            final Optional<Account> persistenceApiResponse = restService.patch(persistenceApiBaseUrl + "accounts/"+id,
+            final Optional<Account> persistenceApiResponse = restService.patch(persistenceApiBaseUrl + "accounts/id?id=" + id,
                     new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").create().toJson(account),
                     typeToken,
                     connectionTimeoutMilliseconds,
@@ -93,7 +89,7 @@ public class UserService {
         } finally {
             LOG.info("Update account request took {} ms", Duration.between(start, Instant.now()).toMillis());
         }
-        }
+    }
 
     public Optional<Account> updateUsername(final Account account , final String  username){
 
@@ -109,7 +105,7 @@ public class UserService {
         try{
             final String auth = "";
             final TypeToken<Account> typeToken = new TypeToken<Account>(){};
-            final Optional<Account> persistenceApiResponse = restService.patch(persistenceApiBaseUrl + "accounts/"+id,
+            final Optional<Account> persistenceApiResponse = restService.patch(persistenceApiBaseUrl + "accounts/id?id="+id,
                     new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").create().toJson(account),
                     typeToken,
                     connectionTimeoutMilliseconds,
@@ -129,9 +125,10 @@ public class UserService {
             LOG.info("Update account request took {} ms", Duration.between(start, Instant.now()).toMillis());
         }
     }
-    public boolean deleteAccount(final Account account){
-        if(account ==null){
-            LOG.error("Username not exist, returning{}");
+
+    public boolean deleteAccount(final Account account) {
+        if(account == null){
+            LOG.error("Username does not exist, returning {}");
             return false;
         }
         final Integer id = account.getId();
@@ -139,14 +136,14 @@ public class UserService {
 
         try{
 
-            final boolean persistenceApiResponse = restService.delete(persistenceApiBaseUrl +"/accounts/"+id,
+            final boolean persistenceApiResponse = restService.delete(persistenceApiBaseUrl + "/accounts/id?id=" + id,
                     connectionTimeoutMilliseconds,
                     socketTimeoutMilliseconds, HttpStatus.NO_CONTENT );
             if(persistenceApiResponse){
                 LOG.info("return {}", persistenceApiResponse);
             }
             else {
-                LOG.info("Unable to delete user {}",account.toString());
+                LOG.info("Unable to delete user {}", account.toString());
             }
 
             return persistenceApiResponse;

@@ -3,9 +3,6 @@ plugins {
     id 'java'
 }
 
-apply plugin: 'io.spring.dependency-management'
-apply plugin: 'org.springframework.boot'
-
 description = 'Provides database access and connectivity'
 group 'edu.msudenver.tsp'
 version '1.0'
