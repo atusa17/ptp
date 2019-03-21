@@ -45,11 +45,18 @@ public class TheoremController {
 
     @GetMapping("/branch")
     public @ResponseBody
-    ResponseEntity<List<Theorem>> getAllTheoremsByBranch(@RequestParam("branch") final String branch) {
+    ResponseEntity<List<Theorem>> getAllTheoremsByBranch(@RequestParam("branch") String branch) {
         LOG.info("Received request to query for theorems related to the {} branch of mathematics", branch);
         if (branch == null) {
             LOG.error("ERROR: branch was null");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        branch = branch.toLowerCase();
+
+        if (branch.contains("_") || branch.contains("-")) {
+            branch = branch.replace("_", "\\s");
+            branch = branch.replace("-", "\\s");
         }
 
         LOG.debug("Querying for theorems with branch {}", branch);
@@ -187,8 +194,6 @@ public class TheoremController {
             LOG.error("Passed entity is null");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-
-        theorem.setName(theorem.getName().toLowerCase());
 
         LOG.debug("Saving new theorem");
 
