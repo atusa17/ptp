@@ -135,7 +135,7 @@ public class TheoremControllerTest {
 
         when(theoremRepository.findByProvenStatus(anyBoolean())).thenReturn(listOfTheorems);
 
-        final ResponseEntity<List<Theorem>> responseEntity = theoremController.getAllTheoremsByProvenStatus(true);
+        final ResponseEntity<List<Theorem>> responseEntity = theoremController.getAllTheoremsByProvenStatus("true");
 
         assertNotNull(responseEntity);
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
@@ -156,10 +156,19 @@ public class TheoremControllerTest {
     }
 
     @Test
+    public void testGetAllTheoremsByProvenStatus_invalidProvenStatus() {
+        final ResponseEntity<List<Theorem>> responseEntity = theoremController.getAllTheoremsByProvenStatus("test");
+
+        assertNotNull(responseEntity);
+        assertFalse(responseEntity.hasBody());
+        assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
+    }
+
+    @Test
     public void testGetAllTheoremsByProvenStatus_noTheoremsFound() {
         when(theoremRepository.findByProvenStatus(anyBoolean())).thenReturn(Collections.emptyList());
 
-        final ResponseEntity<List<Theorem>> responseEntity = theoremController.getAllTheoremsByProvenStatus(false);
+        final ResponseEntity<List<Theorem>> responseEntity = theoremController.getAllTheoremsByProvenStatus("false");
 
         assertNotNull(responseEntity);
         assertFalse(responseEntity.hasBody());
