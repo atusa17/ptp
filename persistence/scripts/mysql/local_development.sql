@@ -32,4 +32,18 @@ referenced_definitions json,
 referenced_theorems json,
 proven_status boolean default false,
 version int default 1
-)
+);
+CREATE TABLE proofs
+(
+  id        INT NOT NULL AUTO_INCREMENT,
+  theorem_name      VARCHAR(512) NOT NULL,
+  branch    VARCHAR(512) NOT NULL,
+  theorem   INT NOT NULL,
+  FOREIGN KEY fk_theorem (theorem) REFERENCES theorems (id) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  referenced_definitions JSON,
+  referenced_theorems JSON,
+  date_added DATE,
+  last_updated DATE,
+  version INT DEFAULT 1,
+  PRIMARY KEY (id)
+);

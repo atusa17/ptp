@@ -1,6 +1,6 @@
 package edu.msudenver.tsp.persistence.controller;
 
-import edu.msudenver.tsp.persistence.dto.DefinitionDto;
+import edu.msudenver.tsp.persistence.dto.Definition;
 import edu.msudenver.tsp.persistence.repository.DefinitionRepository;
 import edu.msudenver.tsp.utilities.PersistenceUtilities;
 import lombok.AllArgsConstructor;
@@ -24,59 +24,59 @@ import java.util.Optional;
 public class DefinitionController {
     private final DefinitionRepository definitionRepository;
 
-    @GetMapping("/")
+    @GetMapping({"","/"})
     public @ResponseBody
-    ResponseEntity<Iterable<DefinitionDto>> getAllDefinitions() {
+    ResponseEntity<Iterable<Definition>> getAllDefinitions() {
         LOG.info("Received request to list all definitions");
 
         LOG.debug("Querying for list of all definitions");
         final StopWatch stopWatch = new StopWatch();
         stopWatch.start();
 
-        final List<DefinitionDto> listOfDefinitions = definitionRepository.findAll();
+        final List<Definition> listOfDefinitions = definitionRepository.findAll();
 
         stopWatch.stop();
 
-        LOG.debug("Successfully completed query. Query took " + stopWatch.getTotalTimeMillis() + "ms to complete");
-        LOG.info("Returning list of all definition with size " + listOfDefinitions.size());
+        LOG.debug("Successfully completed query. Query took {}ms to complete", stopWatch.getTotalTimeMillis());
+        LOG.info("Returning list of all definition with size {}", listOfDefinitions.size());
 
         return new ResponseEntity<>(listOfDefinitions, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
     public @ResponseBody
-    ResponseEntity<DefinitionDto> getDefinitionById(@PathVariable("id") final Integer id) {
-        LOG.info("Received request to query for definition with id " + id);
+    ResponseEntity<Definition> getDefinitionById(@PathVariable("id") final Integer id) {
+        LOG.info("Received request to query for definition with id {}", id);
         if (id == null) {
             LOG.error("ERROR: ID was null");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        LOG.debug("Querying for definition with id " + id);
+        LOG.debug("Querying for definition with id {}", id);
 
         final StopWatch stopWatch = new StopWatch();
         stopWatch.start();
 
-        final Optional<DefinitionDto> definition = definitionRepository.findById(id);
+        final Optional<Definition> definition = definitionRepository.findById(id);
 
         stopWatch.stop();
 
-        LOG.debug("Received response from server: query took " + stopWatch.getTotalTimeMillis() + "ms to complete");
+        LOG.debug("Received response from server: query took {}ms to complete", stopWatch.getTotalTimeMillis());
         return definition.map(definitionDto -> {
-                LOG.info("Returning definition with id " + id);
+                LOG.info("Returning definition with id {}", id);
                 return new ResponseEntity<>(definitionDto, HttpStatus.OK);
         }).orElseGet(
                         () -> {
-                            LOG.warn("No definition was found with id " + id);
+                            LOG.warn("No definition was found with id {}",id);
                             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
                         });
 
     }
 
-    @PostMapping("/")
-    @Validated({DefinitionDto.Insert.class, Default.class})
-    public @ResponseBody ResponseEntity<DefinitionDto> insertDefinition(
-            @Valid @RequestBody final DefinitionDto definitionDto,
+    @PostMapping({"","/"})
+    @Validated({Definition.Insert.class, Default.class})
+    public @ResponseBody ResponseEntity<Definition> insertDefinition(
+            @Valid @RequestBody final Definition definition,
             final BindingResult bindingResult) {
         LOG.info("Received request to insert a new definition");
         if (bindingResult.hasErrors()) {
@@ -84,7 +84,7 @@ public class DefinitionController {
             return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
         }
 
-        if (definitionDto == null) {
+        if (definition == null) {
             LOG.error("Passed entity is null");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
@@ -94,19 +94,19 @@ public class DefinitionController {
         final StopWatch stopWatch = new StopWatch();
         stopWatch.start();
 
-        final DefinitionDto savedDefinition = definitionRepository.save(definitionDto);
+        final Definition savedDefinition = definitionRepository.save(definition);
 
         stopWatch.stop();
-        LOG.debug("Received response from server: query took " + stopWatch.getTotalTimeMillis() + "ms to complete");
+        LOG.debug("Received response from server: query took {}ms to complete", stopWatch.getTotalTimeMillis());
 
-        LOG.info("Returning the newly created definition with id " + savedDefinition.getId());
+        LOG.info("Returning the newly created definition with id {}", savedDefinition.getId());
         return new ResponseEntity<>(savedDefinition, HttpStatus.CREATED);
     }
 
     @PatchMapping("/{id}")
-    public @ResponseBody ResponseEntity<DefinitionDto> updateDefinition(
+    public @ResponseBody ResponseEntity<Definition> updateDefinition(
             @PathVariable("id") final Integer id,
-            @RequestBody final DefinitionDto definitionDto, final BindingResult bindingResult) {
+            @RequestBody final Definition definition, final BindingResult bindingResult) {
 
         LOG.info("Received request to update an account");
         if (bindingResult.hasErrors()) {
@@ -114,7 +114,7 @@ public class DefinitionController {
             return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
         }
 
-        if (definitionDto == null) {
+        if (definition == null) {
             LOG.error("Passed entity is null");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
@@ -124,48 +124,48 @@ public class DefinitionController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        LOG.debug("Checking for existence of definition with id " + id);
+        LOG.debug("Checking for existence of definition with id {}", id);
 
         final StopWatch stopWatch = new StopWatch();
         stopWatch.start();
 
-        final Optional<DefinitionDto> existingDefinition = definitionRepository.findById(id);
+        final Optional<Definition> existingDefinition = definitionRepository.findById(id);
 
         stopWatch.stop();
 
-        LOG.debug("Received response from server: query took " + stopWatch.getTotalTimeMillis() + "ms to complete");
+        LOG.debug("Received response from server: query took {}ms to complete", stopWatch.getTotalTimeMillis());
 
         if (!existingDefinition.isPresent()) {
-            LOG.error("No definition associated with id " + id);
+            LOG.error("No definition associated with id {}", id);
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        PersistenceUtilities.copyNonNullProperties(definitionDto, existingDefinition.get());
+        PersistenceUtilities.copyNonNullProperties(definition, existingDefinition.get());
         existingDefinition.get().setVersion(existingDefinition.get().getVersion()+ 1);
 
-        LOG.info("Updating definition with id " + id);
-        LOG.debug("Querying for definition with ID " + id);
+        LOG.info("Updating definition with id {}", id);
+        LOG.debug("Querying for definition with id {}", id);
 
         stopWatch.start();
 
-        final DefinitionDto updatedDefinition = definitionRepository.save(existingDefinition.get());
+        final Definition updatedDefinition = definitionRepository.save(existingDefinition.get());
 
         stopWatch.stop();
 
-        LOG.debug("Received response from server: query took " + stopWatch.getTotalTimeMillis() + "ms to complete");
+        LOG.debug("Received response from server: query took {}ms to complete", stopWatch.getTotalTimeMillis());
 
         return new ResponseEntity<>(updatedDefinition, HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
     public @ResponseBody ResponseEntity<Void> deleteDefinitionById(@PathVariable("id") final Integer id) {
-        LOG.info("Received request to delete definition with id " + id);
+        LOG.info("Received request to delete definition with id {}", id);
         if (id == null) {
             LOG.error("Specified id is null");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        LOG.debug("Deleting definition with id " + id);
+        LOG.debug("Deleting definition with id {}", id);
 
         final StopWatch stopWatch = new StopWatch();
         stopWatch.start();
@@ -174,7 +174,7 @@ public class DefinitionController {
 
         stopWatch.stop();
 
-        LOG.debug("Received response from server: query took " + stopWatch.getTotalTimeMillis() + "ms to complete");
+        LOG.debug("Received response from server: query took {}ms to complete", stopWatch.getTotalTimeMillis());
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
