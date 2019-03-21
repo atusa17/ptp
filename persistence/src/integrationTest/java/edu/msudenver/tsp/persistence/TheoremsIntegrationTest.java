@@ -32,6 +32,7 @@ public class TheoremsIntegrationTest {
 
         assertEquals("Test theorem", savedTheorem.getName());
         assertEquals("Test branch", savedTheorem.getBranch());
+        assertEquals("test", savedTheorem.getTheorem());
         assertTrue(savedTheorem.getProvenStatus());
         assertEquals(2, savedTheorem.getReferencedTheorems().size());
         assertEquals(2, savedTheorem.getReferencedDefinitions().size());
@@ -48,6 +49,7 @@ public class TheoremsIntegrationTest {
         assertEquals(Integer.valueOf(0), updatedTheorem.getVersion());
         assertEquals("Test theorem", updatedTheorem.getName());
         assertEquals("Test Update", updatedTheorem.getBranch());
+        assertEquals("test", updatedTheorem.getTheorem());
         assertTrue(updatedTheorem.getProvenStatus());
         assertEquals(2, updatedTheorem.getReferencedTheorems().size());
         assertEquals(2, updatedTheorem.getReferencedDefinitions().size());
@@ -73,6 +75,7 @@ public class TheoremsIntegrationTest {
 
         final Theorem theorem = new Theorem();
         theorem.setName("Test theorem");
+        theorem.setTheorem("test");
         theorem.setBranch("Test branch");
         theorem.setProvenStatus(true);
         theorem.setTheoremType(TheoremType.THEOREM);

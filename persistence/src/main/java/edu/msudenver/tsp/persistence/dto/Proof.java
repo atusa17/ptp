@@ -8,6 +8,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.Date;
@@ -22,6 +23,9 @@ public class Proof extends BaseDto implements Serializable {
     @Size(min = 1, max = 512, message = "The name must be at least 1 character and at most 512 characters")
     @Column(name = "theorem_name")
     private String theoremName;
+    @NotNull(groups = Insert.class)
+    @Size(min = 1, max = 4096, message = "The proof must be at least 1 character and at most 4096 characters")
+    private String proof;
     @NotBlank(groups = Insert.class)
     @Size(min = 1, max = 512, message = "The branch must be at least 1 character and at most 512 characters")
     private String branch;
