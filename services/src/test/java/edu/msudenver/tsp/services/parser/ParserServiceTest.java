@@ -2,7 +2,8 @@ package edu.msudenver.tsp.services.parser;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Spy;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import java.util.ArrayList;
@@ -16,7 +17,9 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class ParserServiceTest {
 
-    @Spy private ParserService parserService;
+    @Mock private ParserService mockParserService;
+
+    @InjectMocks private ParserService parserService;
 
     @Test
     public void testEmptyStringEqualsEmptyString() {
@@ -99,8 +102,8 @@ public class ParserServiceTest {
         final List<String> expectedList = new ArrayList<>();
         expectedList.add("");
 
-        when(parserService.parseRawInput(anyString())).thenReturn(new Node("", null));
-        final List<String> actualList = parserService.retrieveStatements(parserService.parseRawInput(""));
+        when(mockParserService.parseRawInput(anyString())).thenReturn(new Node("", null));
+        final List<String> actualList = parserService.retrieveStatements(mockParserService.parseRawInput(""));
 
         assertEquals(expectedList, actualList);
     }
@@ -117,8 +120,8 @@ public class ParserServiceTest {
         testNode.setRight(new Node("then", testNode));
         testNode.getRight().setCenter(new Node(" x^2 is even", testNode.getRight()));
 
-        when(parserService.parseRawInput(anyString())).thenReturn(testNode);
-        final List<String> actualList = parserService.retrieveStatements(parserService.parseRawInput("baseCase"));
+        when(mockParserService.parseRawInput(anyString())).thenReturn(testNode);
+        final List<String> actualList = parserService.retrieveStatements(mockParserService.parseRawInput("baseCase"));
 
         assertEquals(expectedList, actualList);
     }
@@ -126,8 +129,8 @@ public class ParserServiceTest {
     @Test
     public void testDriveParseUserInput() {
         final Node testNode = new Node("", null);
-        when(parserService.parseRawInput(anyString())).thenReturn(testNode);
-        when(parserService.retrieveStatements(testNode)).thenReturn(new ArrayList<>());
+        when(mockParserService.parseRawInput(anyString())).thenReturn(testNode);
+        when(mockParserService.retrieveStatements(testNode)).thenReturn(new ArrayList<>());
 
         final boolean successfulTestDrive = parserService.parseUserInput("");
 

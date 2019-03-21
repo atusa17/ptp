@@ -1,23 +1,24 @@
 package edu.msudenver.tsp.services.parser;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 @Service
 class ParserService {
-    private Node root;
 
     public boolean parseUserInput(final String userInput)
     {
         try {
             final Node tree = parseRawInput(userInput);
-            final List<String> statements = retrieveStatements(tree);
+            retrieveStatements(tree);
 
             return true;
         } catch(final Exception e) {
-            e.printStackTrace();
+            LOG.error(e.getMessage());
         }
         return false;
     }
@@ -26,7 +27,7 @@ class ParserService {
     {
         input = input.toLowerCase();
 
-        root = new Node(input, null);
+        final Node root = new Node(input, null);
 
         if(input.equals(""))
         {

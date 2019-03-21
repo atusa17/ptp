@@ -1,8 +1,6 @@
 package edu.msudenver.tsp.persistence;
 
 import edu.msudenver.tsp.persistence.dto.Definition;
-import edu.msudenver.tsp.persistence.dto.DefinitionDto;
-import edu.msudenver.tsp.persistence.dto.Notation;
 import edu.msudenver.tsp.persistence.repository.DefinitionRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -23,8 +21,8 @@ public class DefinitionsIntegrationTest {
 
     @Test
     public void testCRUDFunctionality() {
-        final DefinitionDto definitionDto = createDefinition();
-        final DefinitionDto savedDefinition = definitionRepository.save(definitionDto);
+        final Definition definition = createDefinition();
+        final Definition savedDefinition = definitionRepository.save(definition);
 
         assertNotNull(savedDefinition);
         assertEquals(Integer.valueOf(0), savedDefinition.getVersion());
@@ -35,8 +33,8 @@ public class DefinitionsIntegrationTest {
         assertNotNull(savedDefinition.getDefinition());
         assertNotNull(savedDefinition.getNotation());
 
-        final List<String> definitionsList = savedDefinition.getDefinition().getDefinitions();
-        final List<String> notationList = savedDefinition.getNotation().getNotations();
+        final List<String> definitionsList = savedDefinition.getDefinition();
+        final List<String> notationList = savedDefinition.getNotation();
 
         assertEquals(2, definitionsList.size());
         assertEquals(1, notationList.size());
@@ -46,14 +44,14 @@ public class DefinitionsIntegrationTest {
 
         savedDefinition.setName("Test Update");
 
-        final DefinitionDto updatedDefinition = definitionRepository.save(savedDefinition);
+        final Definition updatedDefinition = definitionRepository.save(savedDefinition);
 
         assertEquals("Test Update", updatedDefinition.getName());
         assertNotNull(updatedDefinition.getDefinition());
         assertNotNull(updatedDefinition.getNotation());
 
-        final List<String> updatedDefinitionsList = updatedDefinition.getDefinition().getDefinitions();
-        final List<String> updatedNotationsList = updatedDefinition.getNotation().getNotations();
+        final List<String> updatedDefinitionsList = updatedDefinition.getDefinition();
+        final List<String> updatedNotationsList = updatedDefinition.getNotation();
 
         assertEquals(2, updatedDefinitionsList.size());
         assertEquals(1, updatedNotationsList.size());
@@ -63,29 +61,23 @@ public class DefinitionsIntegrationTest {
         assertEquals(id, updatedDefinition.getId());
 
         definitionRepository.delete(updatedDefinition);
-        final Optional<DefinitionDto> deletedDefinition = definitionRepository.findById(id);
+        final Optional<Definition> deletedDefinition = definitionRepository.findById(id);
         assertFalse(deletedDefinition.isPresent());
     }
 
-    private DefinitionDto createDefinition() {
+    private Definition createDefinition() {
         final List<String> definitionList = new ArrayList<>();
         definitionList.add("Test definition 1");
         definitionList.add("Test definition 2");
 
-        final Definition definition = new Definition();
-        definition.setDefinitions(definitionList);
-
         final List<String> notationList = new ArrayList<>();
         notationList.add("\\testLaTeX");
 
-        final Notation notation = new Notation();
-        notation.setNotations(notationList);
+        final Definition definition = new Definition();
+        definition.setName("Test Name");
+        definition.setDefinition(definitionList);
+        definition.setNotation(notationList);
 
-        final DefinitionDto definitionDto = new DefinitionDto();
-        definitionDto.setName("Test Name");
-        definitionDto.setDefinition(definition);
-        definitionDto.setNotation(notation);
-
-        return definitionDto;
+        return definition;
     }
 }
