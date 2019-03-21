@@ -298,6 +298,7 @@ public class ProofControllerTest {
 
         final Proof proof = new Proof();
         proof.setTheoremName("Test proof");
+        proof.setTheorem(1);
         proof.setBranch("Test branch");
         proof.setProof("test proof");
         proof.setDateCreated(new Date());

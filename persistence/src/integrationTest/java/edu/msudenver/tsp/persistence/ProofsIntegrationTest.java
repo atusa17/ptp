@@ -34,6 +34,7 @@ public class ProofsIntegrationTest {
         assertEquals("Test proof", savedProof.getTheoremName());
         assertEquals("Test branch", savedProof.getBranch());
         assertEquals("test", savedProof.getProof());
+        assertEquals(Integer.valueOf(1), savedProof.getTheorem());
         assertNotNull(savedProof.getDateCreated());
         assertNotNull(savedProof.getLastUpdated());
         assertEquals(2, savedProof.getReferencedTheorems().size());
@@ -52,6 +53,7 @@ public class ProofsIntegrationTest {
         assertEquals("Test proof", updatedProof.getTheoremName());
         assertEquals("Test Update", updatedProof.getBranch());
         assertEquals("test", updatedProof.getProof());
+        assertEquals(Integer.valueOf(1), savedProof.getTheorem());
         assertNotNull(updatedProof.getLastUpdated());
         assertNotNull(updatedProof.getDateCreated());
         assertNotEquals(updatedProof.getDateCreated().toInstant(), updatedProof.getLastUpdated().toInstant());
@@ -80,6 +82,7 @@ public class ProofsIntegrationTest {
         final Proof proof = new Proof();
         proof.setTheoremName("Test proof");
         proof.setProof("test");
+        proof.setTheorem(1);
         proof.setBranch("Test branch");
         proof.setDateCreated(new Date());
         proof.setReferencedTheorems(referencedTheoremsList);

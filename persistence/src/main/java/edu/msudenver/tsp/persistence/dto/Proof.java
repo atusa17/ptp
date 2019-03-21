@@ -26,6 +26,8 @@ public class Proof extends BaseDto implements Serializable {
     @NotNull(groups = Insert.class)
     @Size(min = 1, max = 4096, message = "The proof must be at least 1 character and at most 4096 characters")
     private String proof;
+    @NotNull(groups = Insert.class)
+    private Integer theorem;
     @NotBlank(groups = Insert.class)
     @Size(min = 1, max = 512, message = "The branch must be at least 1 character and at most 512 characters")
     private String branch;
