@@ -52,8 +52,6 @@ public class TheoremController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        branch = branch.toLowerCase();
-
         if (branch.contains("_") || branch.contains("-")) {
             branch = branch.replace("_", "\\s");
             branch = branch.replace("-", "\\s");
