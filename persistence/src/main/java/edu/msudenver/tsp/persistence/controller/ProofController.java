@@ -75,11 +75,16 @@ public class ProofController {
 
     @GetMapping("/branch")
     public @ResponseBody
-    ResponseEntity<List<Proof>> getAllProofsByBranch(@RequestParam("branch") final String branch) {
+    ResponseEntity<List<Proof>> getAllProofsByBranch(@RequestParam("branch") String branch) {
         LOG.info("Received request to query for proofs related to the {} branch of mathematics", branch);
         if (branch == null) {
             LOG.error("ERROR: branch was null");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        if (branch.contains("_") || branch.contains("-")) {
+            branch = branch.replace("_"," ");
+            branch = branch.replace("-", " ");
         }
 
         LOG.debug("Querying for proofs with branch {}", branch);
@@ -105,11 +110,16 @@ public class ProofController {
 
     @GetMapping("/theorem_name")
     public @ResponseBody
-    ResponseEntity<List<Proof>> getAllProofsByTheoremName(@PathVariable("theorem_name") final String theoremName) {
+    ResponseEntity<List<Proof>> getAllProofsByTheoremName(@RequestParam("theorem_name") String theoremName) {
         LOG.info("Received request to query for proofs of the theorem {}", theoremName);
         if (theoremName == null) {
             LOG.error("ERROR: theorem name was null");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        if (theoremName.contains("_") || theoremName.contains("-")) {
+            theoremName = theoremName.replace("_"," ");
+            theoremName = theoremName.replace("-", " ");
         }
 
         LOG.debug("Querying for proofs of the theorem {}", theoremName);
