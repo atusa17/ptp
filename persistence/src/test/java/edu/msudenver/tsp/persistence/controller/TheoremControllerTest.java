@@ -352,6 +352,7 @@ public class TheoremControllerTest {
 
        final Theorem theorem = new Theorem();
        theorem.setName("Test theorem");
+       theorem.setTheorem("test theorem thing here");
        theorem.setBranch("Test branch");
        theorem.setProvenStatus(true);
        theorem.setTheoremType(TheoremType.THEOREM);
