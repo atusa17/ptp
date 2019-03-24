@@ -7,20 +7,20 @@
 --%>
 
 
-<%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8" %>
+<%@ page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-  <title>Theroem Prover</title>
+  <title>Theorem Prover</title>
 </head>
 <body>
 <div>
   <div>
     <h1>Theorem Prover</h1>
-    <h2>Hello! ${message}</h2>
+    <h2>Hello! Welcome to Theorem Prover !!</h2>
 
-    Click on this <strong><a href="next">link</a></strong> to visit theorem entering page.
+    Click on this <strong><a href="/theorem/">link</a></strong> to visit theorem entering page.
   </div>
 </div>
 </body>
