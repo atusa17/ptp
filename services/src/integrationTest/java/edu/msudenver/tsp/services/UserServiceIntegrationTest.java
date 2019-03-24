@@ -49,6 +49,7 @@ public class UserServiceIntegrationTest {
 
         assertTrue(result);
     }
+
     private Account creatAccount(){
         final Account testAccount = new Account();
         testAccount.setUsername("test user");

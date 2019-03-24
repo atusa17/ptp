@@ -19,10 +19,8 @@ import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class UserServiceTest {
-    @Mock
-    private RestService restService;
-    @InjectMocks
-    private UserService userService;
+    @Mock private RestService restService;
+    @InjectMocks private UserService userService;
 
     @Test
     public void testCreateNewAccount() throws ParseException {
