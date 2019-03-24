@@ -45,11 +45,16 @@ public class TheoremController {
 
     @GetMapping("/branch")
     public @ResponseBody
-    ResponseEntity<List<Theorem>> getAllTheoremsByBranch(@RequestParam("branch") final String branch) {
+    ResponseEntity<List<Theorem>> getAllTheoremsByBranch(@RequestParam("branch") String branch) {
         LOG.info("Received request to query for theorems related to the {} branch of mathematics", branch);
         if (branch == null) {
             LOG.error("ERROR: branch was null");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        if (branch.contains("_") || branch.contains("-")) {
+            branch = branch.replace("_", " ");
+            branch = branch.replace("-", " ");
         }
 
         LOG.debug("Querying for theorems with branch {}", branch);
@@ -75,19 +80,21 @@ public class TheoremController {
 
     @GetMapping("/proven_status")
     public @ResponseBody
-    ResponseEntity<List<Theorem>> getAllTheoremsByProvenStatus(@PathVariable("proven_status") final Boolean provenStatus) {
+    ResponseEntity<List<Theorem>> getAllTheoremsByProvenStatus(@RequestParam("proven_status") final String provenStatus) {
         LOG.info("Received request to query for theorems whose proven status is {}", provenStatus);
         if (provenStatus == null) {
             LOG.error("ERROR: status was null");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        LOG.debug("Querying for theorems with proven status {}", provenStatus);
+        final Boolean isProven = Boolean.parseBoolean(provenStatus);
+
+        LOG.debug("Querying for theorems with proven status {}", isProven);
 
         final StopWatch stopWatch = new StopWatch();
         stopWatch.start();
 
-        final List<Theorem> listOfTheorems = theoremRepository.findByProvenStatus(provenStatus);
+        final List<Theorem> listOfTheorems = theoremRepository.findByProvenStatus(isProven);
 
         stopWatch.stop();
 
@@ -95,21 +102,26 @@ public class TheoremController {
         LOG.info("Returning list of all theorems with size {}", listOfTheorems.size());
 
         if (listOfTheorems.isEmpty()) {
-            LOG.warn("No theorems were found for proven status {}", provenStatus);
+            LOG.warn("No theorems were found for proven status {}", isProven);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
-        LOG.info("Returning list of theorems with proven status {}", provenStatus);
+        LOG.info("Returning list of theorems with proven status {}", isProven);
         return new ResponseEntity<>(listOfTheorems, HttpStatus.OK);
     }
 
     @GetMapping("/name")
     public @ResponseBody
-    ResponseEntity<List<Theorem>> getAllTheoremsByName(@PathVariable("name") final String name) {
+    ResponseEntity<List<Theorem>> getAllTheoremsByName(@RequestParam("name") String name) {
         LOG.info("Received request to query for theorems whose name is {}", name);
         if (name == null) {
             LOG.error("ERROR: name was null");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        if (name.contains("_") || name.contains("-")) {
+            name = name.replace("_", " ");
+            name = name.replace("-", " ");
         }
 
         LOG.debug("Querying for theorems with name {}", name);
@@ -135,7 +147,7 @@ public class TheoremController {
 
     @GetMapping("/id")
     public @ResponseBody
-    ResponseEntity<Theorem> getTheoremById(@PathVariable("id") final Integer id) {
+    ResponseEntity<Theorem> getTheoremById(@RequestParam("id") final Integer id) {
         LOG.info("Received request to query for theorem with id {}", id);
         if (id == null) {
             LOG.error("ERROR: ID was null");

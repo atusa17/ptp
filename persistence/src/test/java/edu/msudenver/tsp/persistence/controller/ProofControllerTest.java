@@ -53,7 +53,7 @@ public class ProofControllerTest {
 
         when(proofRepository.findByBranch(anyString())).thenReturn(listOfProofs);
 
-        final ResponseEntity<List<Proof>> responseEntity = proofController.getAllProofsByBranch("test");
+        final ResponseEntity<List<Proof>> responseEntity = proofController.getAllProofsByBranch("Test_branch");
 
         assertNotNull(responseEntity);
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
@@ -77,7 +77,7 @@ public class ProofControllerTest {
     public void testGetAllProofsByBranch_noProofsFound() {
         when(proofRepository.findByBranch(anyString())).thenReturn(Collections.emptyList());
 
-        final ResponseEntity<List<Proof>> responseEntity = proofController.getAllProofsByBranch("test nonexistent branch");
+        final ResponseEntity<List<Proof>> responseEntity = proofController.getAllProofsByBranch("test-nonexistent-branch");
 
         assertNotNull(responseEntity);
         assertFalse(responseEntity.hasBody());
@@ -93,7 +93,7 @@ public class ProofControllerTest {
 
         when(proofRepository.findByTheoremName(anyString())).thenReturn(listOfProofs);
 
-        final ResponseEntity<List<Proof>> responseEntity = proofController.getAllProofsByTheoremName("test");
+        final ResponseEntity<List<Proof>> responseEntity = proofController.getAllProofsByTheoremName("Test_proof");
 
         assertNotNull(responseEntity);
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
@@ -104,7 +104,7 @@ public class ProofControllerTest {
     }
 
     @Test
-    public void testGetAllProfsByTheoremName_nullTheoremName() {
+    public void testGetAllProofsByTheoremName_nullTheoremName() {
         final ResponseEntity<List<Proof>> responseEntity = proofController.getAllProofsByTheoremName(null);
 
         assertNotNull(responseEntity);
@@ -117,7 +117,7 @@ public class ProofControllerTest {
     public void testGetAllProofsByTheoremName_noProofsFound() {
         when(proofRepository.findByTheoremName(anyString())).thenReturn(Collections.emptyList());
 
-        final ResponseEntity<List<Proof>> responseEntity = proofController.getAllProofsByTheoremName("test nonexistent branch");
+        final ResponseEntity<List<Proof>> responseEntity = proofController.getAllProofsByTheoremName("test-nonexistent-proof");
 
         assertNotNull(responseEntity);
         assertFalse(responseEntity.hasBody());
@@ -298,7 +298,9 @@ public class ProofControllerTest {
 
         final Proof proof = new Proof();
         proof.setTheoremName("Test proof");
+        proof.setTheorem(1);
         proof.setBranch("Test branch");
+        proof.setProof("test proof");
         proof.setDateCreated(new Date());
         proof.setReferencedTheorems(referencedTheoremsList);
         proof.setReferencedDefinitions(referencedDefinitionsList);

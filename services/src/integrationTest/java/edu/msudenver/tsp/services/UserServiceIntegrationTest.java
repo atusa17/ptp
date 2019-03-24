@@ -38,7 +38,7 @@ public class UserServiceIntegrationTest {
         assertEquals("test password", returnedAccount.getPassword());
         assertFalse(returnedAccount.isAdministratorStatus());
 
-        final Optional<Account> updatePasswordTestCreatedAccount = userService.updatePassword(returnedAccount, "password");
+        final Optional<Account> updatePasswordTestCreatedAccount = userService.updateAccount(returnedAccount);
 
         assertTrue(updatePasswordTestCreatedAccount.isPresent());
         final Account returnedUpdatedPasswordAccount = updatePasswordTestCreatedAccount.get();

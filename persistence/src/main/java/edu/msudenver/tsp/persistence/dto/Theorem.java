@@ -21,6 +21,7 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 public class Theorem extends BaseDto implements Serializable {
     @NotBlank(groups = Insert.class) @Size(min = 1, max = 512, message = "theorem name must be between 1 and 512 characters") private String name;
+    @NotNull(groups = Insert.class) @Size(min = 1, max = 1024, message = "theorem must be between 1 and 1024 characters") private String theorem;
     @NotNull(groups = Insert.class) @Column(name = "theorem_type") private TheoremType theoremType;
     @NotNull(groups = Insert.class, message = "a branch of mathematics that this theorem is associated with must be specified") private String branch;
     @Type(type = "json") @Column(name = "referenced_definitions", columnDefinition = "jsonb") private List<String> referencedDefinitions;
