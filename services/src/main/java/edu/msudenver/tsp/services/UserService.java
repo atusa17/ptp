@@ -56,19 +56,21 @@ public class UserService {
         }
     }
 
-    public Optional<Account> updatePassword(final Account account , final String  password){
-
-        if(account ==null){
-            LOG.error("user not exist, returning{}");
+    public Optional<Account> updateAccount(final Account account) {
+        if (account == null) {
+            LOG.error("User does not exist, returning {}");
             return Optional.empty();
         }
 
-        final Integer id = account.getId();
-        account.setPassword(password);
+        if (account.getId() == 0) {
+            LOG.error("No user ID specified! Returning {}");
+            return Optional.empty();
+        }
+
+        final int id = account.getId();
         final Instant start = Instant.now();
 
-        try{
-            final String auth = "";
+        try {
             final TypeToken<Account> typeToken = new TypeToken<Account>(){};
             final Optional<Account> persistenceApiResponse = restService.patch(persistenceApiBaseUrl + "accounts/" + id,
                     new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").create().toJson(account),
@@ -79,15 +81,15 @@ public class UserService {
             if (persistenceApiResponse.isPresent()) {
                 LOG.info("Returning {}", persistenceApiResponse.get());
             } else {
-                LOG.info("Unable to update password for account {}",account.toString());
+                LOG.info("Unable to update user {} with id", account.getId());
             }
 
             return persistenceApiResponse;
         } catch (final Exception e) {
-            LOG.error("Error updating account {}", e);
+            LOG.error("Error updating user {}", e);
             return Optional.empty();
         } finally {
-            LOG.info("Update account request took {} ms", Duration.between(start, Instant.now()).toMillis());
+            LOG.info("Update user request took {} ms", Duration.between(start, Instant.now()).toMillis());
         }
     }
 
