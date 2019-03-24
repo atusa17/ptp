@@ -12,13 +12,13 @@
 <html>
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-  <title>Theorem Prover</title>
+  <title>Pandamonium™ Theorem Prover</title>
 </head>
 <body>
 <div>
   <div>
     <h1>Theorem Prover</h1>
-    <h2>Hello! Welcome to Theorem Prover !!</h2>
+    <h2>Hello! Welcome to Pandamonium™ Theorem Prover!!</h2>
 
     Click on this <strong><a href="/theorem/">link</a></strong> to visit theorem entering page.
   </div>
