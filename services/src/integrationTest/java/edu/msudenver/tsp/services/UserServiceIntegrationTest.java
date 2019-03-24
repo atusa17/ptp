@@ -24,11 +24,7 @@ public class UserServiceIntegrationTest {
 
     @Test
     public void testUserService(){
-        final Account testAccount = new Account();
-        testAccount.setUsername("test user");
-        testAccount.setPassword("test password");
-        testAccount.setAdministratorStatus(false);
-        testAccount.setLastLogin(new Date());
+        final Account testAccount = creatAccount();
 
         final Optional<Account> testCreatedAccount = userService.createNewAccount(testAccount);
 
@@ -38,25 +34,29 @@ public class UserServiceIntegrationTest {
         assertEquals("test password", returnedAccount.getPassword());
         assertFalse(returnedAccount.isAdministratorStatus());
 
-        final Optional<Account> updatePasswordTestCreatedAccount = userService.updateAccount(returnedAccount);
+        returnedAccount.setUsername("test updatedUser");
+        returnedAccount.setPassword("test updatedPassword");
 
-        assertTrue(updatePasswordTestCreatedAccount.isPresent());
-        final Account returnedUpdatedPasswordAccount = updatePasswordTestCreatedAccount.get();
-        assertEquals("test user", returnedUpdatedPasswordAccount.getUsername());
-        assertEquals("password", returnedUpdatedPasswordAccount.getPassword());
-        assertFalse(returnedAccount.isAdministratorStatus());
+        final Optional<Account> updatedTestCreatedAccount = userService.updateAccount(returnedAccount);
 
-        final Optional<Account> updateUsernameTestCreatedAccount = userService.updateUsername(returnedUpdatedPasswordAccount, "user");
+        assertTrue(updatedTestCreatedAccount .isPresent());
+        final Account returnedUpdatedAccount = updatedTestCreatedAccount.get();
+        assertEquals("test updatedUser", returnedUpdatedAccount.getUsername());
+        assertEquals("test updatedPassword", returnedUpdatedAccount.getPassword());
+        assertFalse(returnedUpdatedAccount.isAdministratorStatus());
 
-        assertTrue(updateUsernameTestCreatedAccount.isPresent());
-        final Account returnedUpdatedUsernameAccount = updateUsernameTestCreatedAccount.get();
-        assertEquals("user", returnedUpdatedUsernameAccount.getUsername());
-        assertEquals("password", returnedUpdatedUsernameAccount.getPassword());
-        assertFalse(returnedAccount.isAdministratorStatus());
-
-        final boolean result = userService.deleteAccount(returnedUpdatedUsernameAccount);
+        final boolean result = userService.deleteAccount(returnedUpdatedAccount);
 
         assertTrue(result);
+    }
+    private Account creatAccount(){
+        final Account testAccount = new Account();
+        testAccount.setUsername("test user");
+        testAccount.setPassword("test password");
+        testAccount.setAdministratorStatus(false);
+        testAccount.setLastLogin(new Date());
+
+        return testAccount;
     }
 
 }

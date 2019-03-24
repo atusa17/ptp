@@ -93,47 +93,18 @@ public class UserService {
         }
     }
 
-    public Optional<Account> updateUsername(final Account account , final String  username){
-
-        if(account ==null){
-            LOG.error("user not exist, returning{}");
-            return Optional.empty();
-        }
-
-        final Integer id = account.getId();
-        account.setUsername(username);
-        final Instant start = Instant.now();
-
-        try{
-            final String auth = "";
-            final TypeToken<Account> typeToken = new TypeToken<Account>(){};
-            final Optional<Account> persistenceApiResponse = restService.patch(persistenceApiBaseUrl + "accounts/"+id,
-                    new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").create().toJson(account),
-                    typeToken,
-                    connectionTimeoutMilliseconds,
-                    socketTimeoutMilliseconds);
-
-            if (persistenceApiResponse.isPresent()) {
-                LOG.info("Returning {}", persistenceApiResponse.get());
-            } else {
-                LOG.info("Unable to update username for account {}",account.toString());
-            }
-
-            return persistenceApiResponse;
-        } catch (final Exception e) {
-            LOG.error("Error updating account {}", e);
-            return Optional.empty();
-        } finally {
-            LOG.info("Update account request took {} ms", Duration.between(start, Instant.now()).toMillis());
-        }
-    }
 
     public boolean deleteAccount(final Account account) {
         if(account == null){
             LOG.error("Username does not exist, returning {}");
             return false;
         }
-        final Integer id = account.getId();
+
+        if (account.getId() == 0) {
+            LOG.error("No user ID specified! Returning {}");
+            return false;
+        }
+        final int id = account.getId();
         final Instant start = Instant.now();
 
         try{

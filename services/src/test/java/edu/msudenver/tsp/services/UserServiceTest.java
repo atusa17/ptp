@@ -27,11 +27,7 @@ public class UserServiceTest {
     @Test
     public void testCreateNewAccount() throws ParseException {
 
-        final Account account = new Account();
-        account.setUsername("Test username");
-        account.setPassword("test password");
-        account.setAdministratorStatus(false);
-        account.setLastLogin(new Date());
+        final Account account = createAccount();
 
         when(restService.post(anyString(), anyString(), any(TypeToken.class), anyInt(), anyInt()))
                 .thenReturn(Optional.of(account));
@@ -40,5 +36,44 @@ public class UserServiceTest {
 
         assertTrue(response.isPresent());
         assertEquals(account, response.get());
+    }
+
+    @Test
+    public void testUpdateAccount() throws ParseException {
+        final Account account = createAccount();
+        account.setId(1);
+
+        when(restService.patch(anyString(), anyString(), any(TypeToken.class), anyInt(), anyInt()))
+                .thenReturn(Optional.of(account));
+
+        final Optional<Account> response = userService.updateAccount(account);
+
+        assertTrue(response.isPresent());
+        assertEquals(account, response.get());
+    }
+
+    @Test
+    public void testDeleteAccount() throws ParseException {
+        final boolean response= true;
+        final Account account = createAccount();
+        account.setId(1);
+
+        when(restService.delete(anyString(), anyInt(), anyInt(), any()))
+                .thenReturn(response);
+
+        final boolean persistenceApiResponse = userService.deleteAccount(account);
+
+        assertTrue(persistenceApiResponse );
+        assertEquals(response, persistenceApiResponse );
+    }
+
+
+    private Account createAccount() {
+        final Account account = new Account();
+        account.setUsername("Test username");
+        account.setPassword("test password");
+        account.setAdministratorStatus(true);
+        account.setLastLogin(new Date());
+        return account;
     }
 }
