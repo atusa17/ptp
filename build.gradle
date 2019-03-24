@@ -100,7 +100,7 @@ repositories {
 }
 
 dependencies {
-    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+    compile group: 'org.jacoco', name: 'org.jacoco.core', version: '0.8.3'
     compile 'org.codehaus.groovy:groovy-all:2.3.11'
     compile 'org.apache.commons:commons-lang3:3.5'
     // The production code uses the SLF4J logging API at compile time
