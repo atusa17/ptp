@@ -50,3 +50,11 @@ task loadDb(type: Exec, group: 'Verification', description: 'Reloads the local d
         commandLine=['cmd','/c','loaddb.bat']
     }
 }
+
+task startPersistenceApi(type: JavaExec, description: 'Starts the Persistence API') {
+    dependsOn 'loadDb'
+    dependsOn 'build'
+    classpath = files('build/libs/persistence-1.0.jar')
+    classpath += sourceSets.main.runtimeClasspath
+    main = 'edu.msudenver.tsp.persistence.PersistenceApi'
+}

@@ -1,6 +1,6 @@
 package edu.msudenver.tsp.persistence.controller;
 
-import edu.msudenver.tsp.persistence.dto.AccountDto;
+import edu.msudenver.tsp.persistence.dto.Account;
 import edu.msudenver.tsp.persistence.repository.AccountsRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -33,35 +33,35 @@ public class AccountControllerTest {
 
     @Test
     public void testGetAllAccounts() {
-        final AccountDto accountDto = createAccount();
-        final List<AccountDto> accountDtoList = new ArrayList<>();
-        accountDtoList.add(accountDto);
-        accountDtoList.add(accountDto);
+        final Account accountDto = createAccount();
+        final List<Account> accountList = new ArrayList<>();
+        accountList.add(accountDto);
+        accountList.add(accountDto);
 
-        when(accountsRepository.findAll()).thenReturn(accountDtoList);
+        when(accountsRepository.findAll()).thenReturn(accountList);
 
-        final ResponseEntity<Iterable<AccountDto>> responseEntity = accountController.getListOfAccounts();
+        final ResponseEntity<Iterable<Account>> responseEntity = accountController.getListOfAccounts();
 
         assertNotNull(responseEntity);
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         assertTrue(responseEntity.hasBody());
         assertNotNull(responseEntity.getBody());
 
-        responseEntity.getBody().forEach(account -> assertEquals(account, accountDto));
+        responseEntity.getBody().forEach(account -> assertEquals(accountDto, account));
     }
 
     @Test
     public void testGetAccountById() {
-        final AccountDto accountDto = createAccount();
-        when(accountsRepository.findById(anyInt())).thenReturn(Optional.ofNullable(accountDto));
+        final Account account = createAccount();
+        when(accountsRepository.findById(anyInt())).thenReturn(Optional.ofNullable(account));
 
-        final ResponseEntity<AccountDto> responseEntity = accountController.getAccountById(1);
+        final ResponseEntity<Account> responseEntity = accountController.getAccountById(1);
 
         assertNotNull(responseEntity);
         assertTrue(responseEntity.hasBody());
         assertNotNull(responseEntity.getBody());
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-        assertEquals(accountDto, responseEntity.getBody());
+        assertEquals(account, responseEntity.getBody());
         verify(accountsRepository).findById(anyInt());
     }
 
@@ -88,18 +88,70 @@ public class AccountControllerTest {
     }
 
     @Test
-    public void testInsertAccount() {
-        final AccountDto accountDto = createAccount();
-        when(accountsRepository.save(any(AccountDto.class))).thenReturn(accountDto);
+    public void testGetAccountByUsername() {
+        final Account account = createAccount();
+        when(accountsRepository.findByUsername(anyString())).thenReturn(Optional.ofNullable(account));
 
-        final ResponseEntity<AccountDto> responseEntity = accountController.insertAccount(accountDto, bindingResult);
+        final ResponseEntity<Account> responseEntity = accountController.getAccountByUsername("Test username");
+
+        assertNotNull(responseEntity);
+        assertTrue(responseEntity.hasBody());
+        assertNotNull(responseEntity.getBody());
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        assertEquals(account, responseEntity.getBody());
+        verify(accountsRepository).findByUsername(anyString());
+    }
+
+    @Test
+    public void testGetAccountById_nullUsername() {
+        final ResponseEntity responseEntity = accountController.getAccountByUsername(null);
+
+        assertNotNull(responseEntity);
+        assertFalse(responseEntity.hasBody());
+        assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
+        verifyZeroInteractions(accountsRepository);
+    }
+
+    @Test
+    public void testGetAccountByUsername_noAccountFound() {
+        when(accountsRepository.findByUsername(anyString())).thenReturn(Optional.empty());
+
+        final ResponseEntity responseEntity = accountController.getAccountByUsername("Test username");
+
+        assertNotNull(responseEntity);
+        assertFalse(responseEntity.hasBody());
+        assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
+        verify(accountsRepository).findByUsername(anyString());
+    }
+
+    @Test
+    public void testInsertAccount() {
+        final Account account = createAccount();
+        when(accountsRepository.save(any(Account.class))).thenReturn(account);
+        when(accountsRepository.findByUsername(anyString())).thenReturn(Optional.empty());
+
+        final ResponseEntity<Account> responseEntity = accountController.insertAccount(account, bindingResult);
 
         assertNotNull(responseEntity);
         assertTrue(responseEntity.hasBody());
         assertNotNull(responseEntity.getBody());
         assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode());
-        assertEquals(accountDto, responseEntity.getBody());
-        verify(accountsRepository).save(any(AccountDto.class));
+        assertEquals(account, responseEntity.getBody());
+        verify(accountsRepository).save(any(Account.class));
+    }
+
+    @Test
+    public void testInsertAccount_usernameAlreadyExists() {
+        final Account account = createAccount();
+        when(accountsRepository.findByUsername(anyString())).thenReturn(Optional.of(account));
+
+        final ResponseEntity<Account> responseEntity = accountController.insertAccount(account, bindingResult);
+
+        assertNotNull(responseEntity);
+        assertFalse(responseEntity.hasBody());
+        assertEquals(HttpStatus.CONFLICT, responseEntity.getStatusCode());
+        verify(accountsRepository).findByUsername(anyString());
+        verify(accountsRepository, times(0)).save(any(Account.class));
     }
 
     @Test
@@ -114,10 +166,10 @@ public class AccountControllerTest {
 
     @Test
     public void testInsertAccount_bindingResultHasErrors() {
-        final AccountDto definitionDto = createAccount();
+        final Account account = createAccount();
         when(bindingResult.hasErrors()).thenReturn(true);
 
-        final ResponseEntity responseEntity = accountController.insertAccount(definitionDto, bindingResult);
+        final ResponseEntity responseEntity = accountController.insertAccount(account, bindingResult);
 
         assertNotNull(responseEntity);
         assertFalse(responseEntity.hasBody());
@@ -127,31 +179,31 @@ public class AccountControllerTest {
 
     @Test
     public void testUpdateAccount() {
-        final AccountDto existingAccount = createAccount();
+        final Account existingAccount = createAccount();
         existingAccount.setId(1);
         existingAccount.setVersion(1);
-        final AccountDto accountUpdate = new AccountDto();
+        final Account accountUpdate = new Account();
         accountUpdate.setUsername("Test Update");
-        final AccountDto updatedAccount = existingAccount;
+        final Account updatedAccount = existingAccount;
         updatedAccount.setUsername("Test Update");
         when(accountsRepository.findById(anyInt())).thenReturn(Optional.of(existingAccount));
-        when(accountsRepository.save(any(AccountDto.class))).thenReturn(updatedAccount);
+        when(accountsRepository.save(any(Account.class))).thenReturn(updatedAccount);
 
-        final ResponseEntity<AccountDto> responseEntity = accountController.updateAccount(1, accountUpdate, bindingResult);
+        final ResponseEntity<Account> responseEntity = accountController.updateAccount(1, accountUpdate, bindingResult);
 
         assertNotNull(responseEntity);
         assertTrue(responseEntity.hasBody());
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         assertEquals(updatedAccount, responseEntity.getBody());
         verify(accountsRepository).findById(anyInt());
-        verify(accountsRepository).save(any(AccountDto.class));
+        verify(accountsRepository).save(any(Account.class));
     }
 
     @Test
     public void testUpdateAccount_bindingResultHasErrors() {
         when(bindingResult.hasErrors()).thenReturn(true);
 
-        final ResponseEntity<AccountDto> responseEntity = accountController.updateAccount(1, createAccount(), bindingResult);
+        final ResponseEntity<Account> responseEntity = accountController.updateAccount(1, createAccount(), bindingResult);
 
         assertNotNull(responseEntity);
         assertFalse(responseEntity.hasBody());
@@ -161,7 +213,7 @@ public class AccountControllerTest {
 
     @Test
     public void testUpdateAccount_accountsDtoIsNull() {
-        final ResponseEntity<AccountDto> responseEntity = accountController.updateAccount(1, null, bindingResult);
+        final ResponseEntity<Account> responseEntity = accountController.updateAccount(1, null, bindingResult);
 
         assertNotNull(responseEntity);
         assertFalse(responseEntity.hasBody());
@@ -171,7 +223,7 @@ public class AccountControllerTest {
 
     @Test
     public void testUpdateAccount_idIsNull() {
-        final ResponseEntity<AccountDto> responseEntity = accountController.updateAccount(null, createAccount(), bindingResult);
+        final ResponseEntity<Account> responseEntity = accountController.updateAccount(null, createAccount(), bindingResult);
 
         assertNotNull(responseEntity);
         assertFalse(responseEntity.hasBody());
@@ -183,12 +235,12 @@ public class AccountControllerTest {
     public void testUpdateAccount_accountDoesNotExist() {
         when(accountsRepository.findById(anyInt())).thenReturn(Optional.empty());
 
-        final ResponseEntity<AccountDto> responseEntity = accountController.updateAccount(1, createAccount(), bindingResult);
+        final ResponseEntity<Account> responseEntity = accountController.updateAccount(1, createAccount(), bindingResult);
 
         assertNotNull(responseEntity);
         assertFalse(responseEntity.hasBody());
         assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
-        verify(accountsRepository, times(0)).save(any(AccountDto.class));
+        verify(accountsRepository, times(0)).save(any(Account.class));
     }
 
     @Test
@@ -213,12 +265,12 @@ public class AccountControllerTest {
         verifyZeroInteractions(accountsRepository);
     }
 
-    private AccountDto createAccount() {
-        final AccountDto accountDto = new AccountDto();
-        accountDto.setUsername("Test username");
-        accountDto.setPassword("test password");
-        accountDto.setAdministratorStatus(true);
+    private Account createAccount() {
+        final Account account = new Account();
+        account.setUsername("Test username");
+        account.setPassword("test password");
+        account.setAdministratorStatus(true);
 
-        return accountDto;
+        return account;
     }
 }
