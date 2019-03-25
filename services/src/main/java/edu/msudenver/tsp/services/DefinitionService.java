@@ -6,6 +6,7 @@ import edu.msudenver.tsp.services.dto.Definition;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
@@ -97,7 +98,7 @@ public class DefinitionService {
                     socketTimeoutMilliseconds);
 
             if (persistenceApiResponse.isPresent()) {
-                LOG.info("Returning {}", persistenceApiResponse.get());
+                LOG.info("Creation successful. Returning {}", persistenceApiResponse.get());
             } else {
                 LOG.info("Unable to create new definition {}", definition);
             }
@@ -134,7 +135,7 @@ public class DefinitionService {
                     socketTimeoutMilliseconds);
 
             if (persistenceApiResponse.isPresent()) {
-                LOG.info("Returning {}", persistenceApiResponse.get());
+                LOG.info("Update successful. Returning {}", persistenceApiResponse.get());
             } else {
                 LOG.info("Unable to update definition {}", definition);
             }
@@ -145,6 +146,41 @@ public class DefinitionService {
             return Optional.empty();
         } finally {
             LOG.info("Update definition request took {}ms", Duration.between(start, Instant.now()).toMillis());
+        }
+    }
+
+    public boolean deleteDefinition(final Definition definition) {
+        if (definition == null) {
+            LOG.error("Given null definition, returning false");
+            return false;
+        }
+
+        if (definition.getId() == 0) {
+            LOG.error("Given invalid id 0, returning false");
+            return false;
+        }
+
+        LOG.info("Sending request to delete definition {}", definition);
+        final Instant start = Instant.now();
+
+        try {
+            final boolean deleteIsSuccessful = restService.delete(persistenceApiBaseUrl + "/" + definition.getId(),
+                    connectionTimeoutMilliseconds,
+                    socketTimeoutMilliseconds,
+                    HttpStatus.NO_CONTENT);
+
+            if (deleteIsSuccessful) {
+                LOG.info("Deletion successful. Returning true");
+            } else {
+                LOG.info("Unable to delete definition {}", definition);
+            }
+
+            return deleteIsSuccessful;
+        } catch (final Exception e) {
+            LOG.error("Error when deleting definition {}", e);
+            return false;
+        } finally {
+            LOG.info("Delete definition request took {}ms", Duration.between(start, Instant.now()).toMillis());
         }
     }
 }

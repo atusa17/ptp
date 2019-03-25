@@ -125,6 +125,14 @@ public class DefinitionServiceTest {
     }
 
     @Test
+    public void testCreateDefinition_NullDefinition() {
+        final Optional<Definition> nullDefinition = definitionService.createDefinition(null);
+
+        assertFalse(nullDefinition.isPresent());
+        verifyZeroInteractions(restService);
+    }
+
+    @Test
     public void testCreateDefinition_UnableToCreateDefinition() {
         final Definition testDefinition = createDefinition();
         final String testDefinitionJson = new GsonBuilder().create().toJson(testDefinition);
