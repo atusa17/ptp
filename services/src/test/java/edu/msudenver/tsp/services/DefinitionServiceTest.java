@@ -220,6 +220,58 @@ public class DefinitionServiceTest {
         verify(restService).patch(anyString(), anyString(), any(), anyInt(), anyInt());
     }
 
+    @Test
+    public void testDeleteDefinition() {
+        when(restService.delete(anyString(), anyInt(), anyInt(), any()))
+                .thenReturn(true);
+
+        final boolean deleteIsSuccessful = definitionService.deleteDefinition(createDefinition());
+
+        assertTrue(deleteIsSuccessful);
+        verify(restService).delete(anyString(), anyInt(), anyInt(), any());
+    }
+
+    @Test
+    public void testDeleteDefinition_NullDefinition() {
+        final boolean deleteIsSuccessful = definitionService.deleteDefinition(null);
+
+        assertFalse(deleteIsSuccessful);
+        verifyZeroInteractions(restService);
+    }
+
+    @Test
+    public void testDeleteDefinition_IdIsZero() {
+        final Definition testDefinition = createDefinition();
+        testDefinition.setId(0);
+
+        final boolean deleteIsSuccessful = definitionService.deleteDefinition(testDefinition);
+
+        assertFalse(deleteIsSuccessful);
+        verifyZeroInteractions(restService);
+    }
+
+    @Test
+    public void testDeleteDefinition_RequestReturnsFalse() {
+        when(restService.delete(anyString(), anyInt(), anyInt(), any()))
+                .thenReturn(false);
+
+        final boolean deleteIsSuccessful = definitionService.deleteDefinition(createDefinition());
+
+        assertFalse(deleteIsSuccessful);
+        verify(restService).delete(anyString(), anyInt(), anyInt(), any());
+    }
+
+    @Test
+    public void testDeleteDefinition_ExceptionThrownWhenSendingRequest() {
+        when(restService.delete(anyString(), anyInt(), anyInt(), any()))
+                .thenThrow(new UnsupportedOperationException("test exception"));
+
+        final boolean deleteIsSuccessful = definitionService.deleteDefinition(createDefinition());
+
+        assertFalse(deleteIsSuccessful);
+        verify(restService).delete(anyString(), anyInt(), anyInt(), any());
+    }
+
     private Definition createDefinition() {
         final List<String> definitionList = new ArrayList<>();
         definitionList.add("Test definition 1");
