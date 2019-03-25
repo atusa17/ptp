@@ -89,10 +89,10 @@ public class DefinitionService {
         final Instant start = Instant.now();
 
         try {
-            final TypeToken<Definition> definitionTypeToken = new TypeToken<Definition>() {};
+            final TypeToken<Definition> typeToken = new TypeToken<Definition>() {};
             final Optional<Definition> persistenceApiResponse = restService.post(persistenceApiBaseUrl + "definitions/",
                     new GsonBuilder().create().toJson(definition),
-                    definitionTypeToken,
+                    typeToken,
                     connectionTimeoutMilliseconds,
                     socketTimeoutMilliseconds);
 
@@ -108,6 +108,38 @@ public class DefinitionService {
             return Optional.empty();
         } finally {
             LOG.info("Create new definition request took {}ms", Duration.between(start, Instant.now()).toMillis());
+        }
+    }
+
+    public Optional<Definition> updateDefinition(final Definition definition) {
+        if (definition == null) {
+            LOG.error("Given null definition, returning {}");
+            return Optional.empty();
+        }
+
+        LOG.info("Sending request to update definition {}", definition);
+        final Instant start = Instant.now();
+
+        try {
+            final TypeToken<Definition> typeToken = new TypeToken<Definition>(){};
+            final Optional<Definition> persistenceApiResposne = restService.patch(persistenceApiBaseUrl + "/" + definition.getId(),
+                    new GsonBuilder().create().toJson(definition),
+                    typeToken,
+                    connectionTimeoutMilliseconds,
+                    socketTimeoutMilliseconds);
+
+            if (persistenceApiResposne.isPresent()) {
+                LOG.info("Returning {}", persistenceApiResposne.get());
+            } else {
+                LOG.info("Unable to update definition {}", definition);
+            }
+
+            return persistenceApiResposne;
+        } catch (final Exception e) {
+            LOG.error("Error updating definition {}", e);
+            return Optional.empty();
+        } finally {
+            LOG.info("Update definition request took {}ms", Duration.between(start, Instant.now()).toMillis());
         }
     }
 }
