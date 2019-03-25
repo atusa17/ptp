@@ -50,6 +50,35 @@ public class DefinitionService {
         }
     }
 
+    public Optional<Definition> findById(final int id) {
+        if (id == 0) {
+            LOG.error("Null id specified; returning {}");
+            return Optional.empty();
+        }
+
+        LOG.info("Sending request to find definition by id {}", id);
+        final Instant start = Instant.now();
+
+        try {
+            final TypeToken<Definition> typeToken = new TypeToken<Definition>(){};
+            final Optional<Definition> persistenceApiResponse = restService.get(persistenceApiBaseUrl + "/" + id,
+                    typeToken, connectionTimeoutMilliseconds, socketTimeoutMilliseconds, null);
+
+            if (persistenceApiResponse.isPresent()) {
+                LOG.info("Returning {}", persistenceApiResponse.get());
+            } else {
+                LOG.info("Unable to find definition with id {}", id);
+            }
+
+            return persistenceApiResponse;
+        } catch (final Exception e) {
+            LOG.error("Error finding definition by id", e);
+            return Optional.empty();
+        } finally {
+            LOG.info("Find by id request took {}ms", Duration.between(start, Instant.now()).toMillis());
+        }
+    }
+
     public Optional<Definition> createDefinition(final Definition definition) {
         if (definition == null) {
             LOG.error("Given null definition, returning {}");
