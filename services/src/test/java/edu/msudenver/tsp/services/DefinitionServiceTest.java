@@ -1,7 +1,6 @@
 package edu.msudenver.tsp.services;
 
 import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
 import edu.msudenver.tsp.services.dto.Definition;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,8 +17,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.*;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class DefinitionServiceTest {
@@ -33,7 +31,7 @@ public class DefinitionServiceTest {
         definitionList.add(testDefinition);
         definitionList.add(testDefinition);
 
-        when(restService.get(anyString(), any(TypeToken.class), anyInt(), anyInt(), anyString()))
+        when(restService.get(anyString(), any(), anyInt(), anyInt(), anyString()))
                 .thenReturn(Optional.of(definitionList));
 
         final Optional<List<Definition>> listOfDefinitions = definitionService.getAllDefinitions();
@@ -41,26 +39,73 @@ public class DefinitionServiceTest {
         assertTrue(listOfDefinitions.isPresent());
         assertThat(listOfDefinitions.get().size(), is(2));
         listOfDefinitions.get().forEach(definition -> assertThat(definition, equalTo(testDefinition)));
+        verify(restService).get(anyString(), any(), anyInt(), anyInt(), anyString());
     }
 
     @Test
     public void testGetAllDefinitions_ReturnsEmptyOptional() {
-        when(restService.get(anyString(), any(TypeToken.class), anyInt(), anyInt(), anyString()))
+        when(restService.get(anyString(), any(), anyInt(), anyInt(), anyString()))
                 .thenReturn(Optional.empty());
 
         final Optional<List<Definition>> listOfDefinitions = definitionService.getAllDefinitions();
 
         assertFalse(listOfDefinitions.isPresent());
+        verify(restService).get(anyString(), any(), anyInt(), anyInt(), anyString());
     }
 
     @Test
-    public void testGetAllDefinitions_ExceptionThrown() {
-        when(restService.get(anyString(), any(TypeToken.class), anyInt(), anyInt(), anyString()))
+    public void testGetAllDefinitions_ExceptionThrownWhenSendingRequest() {
+        when(restService.get(anyString(), any(), anyInt(), anyInt(), anyString()))
                 .thenThrow(new UnsupportedOperationException("Test exception"));
 
         final Optional<List<Definition>> listOfDefinitions = definitionService.getAllDefinitions();
 
         assertFalse(listOfDefinitions.isPresent());
+        verify(restService).get(anyString(), any(), anyInt(), anyInt(), anyString());
+    }
+
+    @Test
+    public void testFindById() {
+        final Definition testDefinition = createDefinition();
+        when(restService.get(anyString(), any(), anyInt(), anyInt(), anyString()))
+                .thenReturn(Optional.of(testDefinition));
+
+        final Optional<Definition> foundDefinition = definitionService.findById(testDefinition.getId());
+
+        assertTrue(foundDefinition.isPresent());
+        assertThat(foundDefinition.get().getId(), is(1));
+        assertThat(foundDefinition.get(), is(equalTo(testDefinition)));
+        verify(restService).get(anyString(), any(), anyInt(), anyInt(), anyString());
+    }
+
+    @Test
+    public void testFindById_ReturnsEmptyOptional() {
+        when(restService.get(anyString(), any(), anyInt(), anyInt(), anyString()))
+                .thenReturn(Optional.empty());
+
+        final Optional<Definition> nonExistentDefinition = definitionService.findById(1);
+
+        assertFalse(nonExistentDefinition.isPresent());
+        verify(restService).get(anyString(), any(), anyInt(), anyInt(), anyString());
+    }
+
+    @Test
+    public void testFindById_ExceptionThrownWhenSendingRequest() {
+        when(restService.get(anyString(), any(), anyInt(), anyInt(), anyString()))
+                .thenThrow(new UnsupportedOperationException("test exception"));
+
+        final Optional<Definition> exceptionThrowingDefinition = definitionService.findById(1);
+
+        assertFalse(exceptionThrowingDefinition.isPresent());
+        verify(restService).get(anyString(), any(), anyInt(), anyInt(), anyString());
+    }
+
+    @Test
+    public void testFindById_IdIsZero() {
+        final Optional<Definition> impossibleDefinition = definitionService.findById(0);
+
+        assertFalse(impossibleDefinition.isPresent());
+        verifyZeroInteractions(restService);
     }
 
     @Test
@@ -120,6 +165,7 @@ public class DefinitionServiceTest {
         definition.setName("Test Name");
         definition.setDefinition(definitionList);
         definition.setNotation(notationList);
+        definition.setId(1);
 
         return definition;
     }
