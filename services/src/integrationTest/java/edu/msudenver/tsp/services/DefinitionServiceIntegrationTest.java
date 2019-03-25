@@ -6,7 +6,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,16 +16,16 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.*;
 import static org.mockito.AdditionalMatchers.not;
 
-@RunWith(SpringRunner.class)
+@RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = ServiceTestConfig.class)
 @TestPropertySource(locations = "classpath:test.properties")
 public class DefinitionServiceIntegrationTest {
     @Autowired private DefinitionService definitionService;
 
     @Test
-    public void testCreateNewDefinition() {
+    public void testCreateDefinition() {
         final Definition testDefinition = createDefinition();
-        final Optional<Definition> createdDefinition = definitionService.createNewDefinition(testDefinition);
+        final Optional<Definition> createdDefinition = definitionService.createDefinition(testDefinition);
 
         assertNotNull(createdDefinition);
         assertTrue(createdDefinition.isPresent());

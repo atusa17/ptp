@@ -24,14 +24,14 @@ public class DefinitionServiceTest {
     @InjectMocks private DefinitionService definitionService;
 
     @Test
-    public void testCreateNewDefinition() {
+    public void testCreateDefinition() {
         final Definition testDefinition = createDefinition();
         final String testDefinitionJson = new GsonBuilder().create().toJson(testDefinition);
 
         when(restService.post(anyString(), anyString(), any(), anyInt(), anyInt()))
                 .thenReturn(Optional.of(testDefinition));
 
-        final Optional<Definition> createdDefinition = definitionService.createNewDefinition(testDefinition);
+        final Optional<Definition> createdDefinition = definitionService.createDefinition(testDefinition);
 
         assertNotNull(createdDefinition);
         assertTrue(createdDefinition.isPresent());
@@ -40,14 +40,14 @@ public class DefinitionServiceTest {
     }
 
     @Test
-    public void testCreateNewDefinition_unableToCreateNewDefinition() {
+    public void testCreateDefinition_unableToCreateDefinition() {
         final Definition testDefinition = createDefinition();
         final String testDefinitionJson = new GsonBuilder().create().toJson(testDefinition);
 
         when(restService.post(anyString(), anyString(), any(), anyInt(), anyInt()))
                 .thenReturn(Optional.empty());
 
-        final Optional<Definition> createdDefinition = definitionService.createNewDefinition(testDefinition);
+        final Optional<Definition> createdDefinition = definitionService.createDefinition(testDefinition);
 
         assertNotNull(createdDefinition);
         assertFalse(createdDefinition.isPresent());
@@ -55,14 +55,14 @@ public class DefinitionServiceTest {
     }
 
     @Test
-    public void testCreateNewDefinition_restServiceThrowsException() {
+    public void testCreateDefinition_restServiceThrowsException() {
         final Definition testDefinition = createDefinition();
         final String testDefinitionJson = new GsonBuilder().create().toJson(testDefinition);
 
         when(restService.post(anyString(), anyString(), any(), anyInt(), anyInt()))
                 .thenThrow(new UnsupportedOperationException("test exception"));
 
-        final Optional<Definition> createdDefinition = definitionService.createNewDefinition(testDefinition);
+        final Optional<Definition> createdDefinition = definitionService.createDefinition(testDefinition);
 
         assertNotNull(createdDefinition);
         assertFalse(createdDefinition.isPresent());

@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -25,25 +26,51 @@ public class DefinitionService {
         this.restService = restService;
     }
 
-    public Optional<Definition> createNewDefinition(final Definition definition) {
+    public Optional<List<Definition>> getAllDefinitions() {
+        final Instant start = Instant.now();
+
+        try {
+            final TypeToken<List<Definition>> typeToken = new TypeToken<List<Definition>>(){};
+            final Optional<List<Definition>> persistenceApiResponse =
+                    restService.get(persistenceApiBaseUrl + "definitions/",
+                            typeToken, connectionTimeoutMilliseconds, socketTimeoutMilliseconds, null);
+
+            if (persistenceApiResponse.isPresent()) {
+                LOG.info("Returning {}", persistenceApiResponse.get());
+            } else {
+                LOG.info("Unable to get list of definitions");
+            }
+
+            return persistenceApiResponse;
+        } catch (final Exception e) {
+            LOG.error("Error getting list of definitions! {}", e);
+            return Optional.empty();
+        } finally {
+            LOG.info("Get all definitions request took {}ms", Duration.between(start, Instant.now()).toMillis());
+        }
+    }
+
+    public Optional<Definition> createDefinition(final Definition definition) {
         if (definition == null) {
             LOG.error("Given null definition, returning {}");
             return Optional.empty();
         }
+
+        LOG.info("Sending request to insert definition {}", definition);
         final Instant start = Instant.now();
 
         try {
             final TypeToken<Definition> definitionTypeToken = new TypeToken<Definition>() {};
-            final Optional<Definition> persistenceApiResponse = restService.post(persistenceApiBaseUrl + "/",
+            final Optional<Definition> persistenceApiResponse = restService.post(persistenceApiBaseUrl + "definitions/",
                     new GsonBuilder().create().toJson(definition),
                     definitionTypeToken,
                     connectionTimeoutMilliseconds,
                     socketTimeoutMilliseconds);
 
-            if(persistenceApiResponse.isPresent()) {
+            if (persistenceApiResponse.isPresent()) {
                 LOG.info("Returning {}", persistenceApiResponse.get());
             } else {
-                LOG.info("Unable to create new definition {}", definition.toString());
+                LOG.info("Unable to create new definition {}", definition);
             }
 
             return persistenceApiResponse;
