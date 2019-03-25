@@ -122,19 +122,19 @@ public class DefinitionService {
 
         try {
             final TypeToken<Definition> typeToken = new TypeToken<Definition>(){};
-            final Optional<Definition> persistenceApiResposne = restService.patch(persistenceApiBaseUrl + "/" + definition.getId(),
+            final Optional<Definition> persistenceApiResponse = restService.patch(persistenceApiBaseUrl + "/" + definition.getId(),
                     new GsonBuilder().create().toJson(definition),
                     typeToken,
                     connectionTimeoutMilliseconds,
                     socketTimeoutMilliseconds);
 
-            if (persistenceApiResposne.isPresent()) {
-                LOG.info("Returning {}", persistenceApiResposne.get());
+            if (persistenceApiResponse.isPresent()) {
+                LOG.info("Returning {}", persistenceApiResponse.get());
             } else {
                 LOG.info("Unable to update definition {}", definition);
             }
 
-            return persistenceApiResposne;
+            return persistenceApiResponse;
         } catch (final Exception e) {
             LOG.error("Error updating definition {}", e);
             return Optional.empty();
