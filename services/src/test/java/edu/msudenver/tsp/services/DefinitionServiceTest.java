@@ -1,6 +1,7 @@
 package edu.msudenver.tsp.services;
 
 import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 import edu.msudenver.tsp.services.dto.Definition;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -13,6 +14,8 @@ import java.util.List;
 import java.util.Optional;
 
 import static junit.framework.TestCase.assertTrue;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.verify;
@@ -22,6 +25,43 @@ import static org.mockito.Mockito.when;
 public class DefinitionServiceTest {
     @Mock private RestService restService;
     @InjectMocks private DefinitionService definitionService;
+
+    @Test
+    public void testGetAllDefinitions() {
+        final List<Definition> definitionList = new ArrayList<>();
+        final Definition testDefinition = createDefinition();
+        definitionList.add(testDefinition);
+        definitionList.add(testDefinition);
+
+        when(restService.get(anyString(), any(TypeToken.class), anyInt(), anyInt(), anyString()))
+                .thenReturn(Optional.of(definitionList));
+
+        final Optional<List<Definition>> listOfDefinitions = definitionService.getAllDefinitions();
+
+        assertTrue(listOfDefinitions.isPresent());
+        assertThat(listOfDefinitions.get().size(), is(2));
+        listOfDefinitions.get().forEach(definition -> assertThat(definition, equalTo(testDefinition)));
+    }
+
+    @Test
+    public void testGetAllDefinitions_ReturnsEmptyOptional() {
+        when(restService.get(anyString(), any(TypeToken.class), anyInt(), anyInt(), anyString()))
+                .thenReturn(Optional.empty());
+
+        final Optional<List<Definition>> listOfDefinitions = definitionService.getAllDefinitions();
+
+        assertFalse(listOfDefinitions.isPresent());
+    }
+
+    @Test
+    public void testGetAllDefinitions_ExceptionThrown() {
+        when(restService.get(anyString(), any(TypeToken.class), anyInt(), anyInt(), anyString()))
+                .thenThrow(new UnsupportedOperationException("Test exception"));
+
+        final Optional<List<Definition>> listOfDefinitions = definitionService.getAllDefinitions();
+
+        assertFalse(listOfDefinitions.isPresent());
+    }
 
     @Test
     public void testCreateDefinition() {
