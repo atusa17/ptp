@@ -117,6 +117,11 @@ public class DefinitionService {
             return Optional.empty();
         }
 
+        if (definition.getId() == 0) {
+            LOG.error("Given invalid id 0, returning {}");
+            return Optional.empty();
+        }
+
         LOG.info("Sending request to update definition {}", definition);
         final Instant start = Instant.now();
 

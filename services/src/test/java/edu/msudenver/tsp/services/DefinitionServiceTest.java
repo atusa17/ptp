@@ -43,7 +43,7 @@ public class DefinitionServiceTest {
     }
 
     @Test
-    public void testGetAllDefinitions_ReturnsEmptyOptional() {
+    public void testGetAllDefinitions_RequestReturnsEmptyOptional() {
         when(restService.get(anyString(), any(), anyInt(), anyInt(), anyString()))
                 .thenReturn(Optional.empty());
 
@@ -79,7 +79,7 @@ public class DefinitionServiceTest {
     }
 
     @Test
-    public void testFindById_ReturnsEmptyOptional() {
+    public void testFindById_RequestReturnsEmptyOptional() {
         when(restService.get(anyString(), any(), anyInt(), anyInt(), anyString()))
                 .thenReturn(Optional.empty());
 
@@ -125,7 +125,7 @@ public class DefinitionServiceTest {
     }
 
     @Test
-    public void testCreateDefinition_unableToCreateDefinition() {
+    public void testCreateDefinition_UnableToCreateDefinition() {
         final Definition testDefinition = createDefinition();
         final String testDefinitionJson = new GsonBuilder().create().toJson(testDefinition);
 
@@ -140,7 +140,7 @@ public class DefinitionServiceTest {
     }
 
     @Test
-    public void testCreateDefinition_restServiceThrowsException() {
+    public void testCreateDefinition_RestServiceThrowsException() {
         final Definition testDefinition = createDefinition();
         final String testDefinitionJson = new GsonBuilder().create().toJson(testDefinition);
 
@@ -152,6 +152,64 @@ public class DefinitionServiceTest {
         assertNotNull(createdDefinition);
         assertFalse(createdDefinition.isPresent());
         verify(restService).post(anyString(), eq(testDefinitionJson), any(), anyInt(), anyInt());
+    }
+
+    @Test
+    public void testUpdateDefinition() {
+        when(restService.patch(anyString(), anyString(), any(), anyInt(), anyInt()))
+                .thenReturn(Optional.of(createDefinition().setName("Test update")));
+
+        final Definition testDefinition = new Definition();
+        testDefinition.setName("Test update");
+        testDefinition.setId(1);
+
+        final Optional<Definition> updatedDefinition = definitionService.updateDefinition(testDefinition);
+
+        assertTrue(updatedDefinition.isPresent());
+        assertThat(updatedDefinition.get().getId(), is(1));
+        assertThat(updatedDefinition.get().getName(), is(equalTo("Test update")));
+        verify(restService).patch(anyString(), anyString(), any(), anyInt(), anyInt());
+    }
+
+    @Test
+    public void testUpdateDefinition_nullDefinition() {
+        final Optional<Definition> testUpdate = definitionService.updateDefinition(null);
+
+        assertFalse(testUpdate.isPresent());
+        verifyZeroInteractions(restService);
+    }
+
+    @Test
+    public void testUpdateDefinition_IdIsZero() {
+        final Definition impossibleDefinition = createDefinition();
+        impossibleDefinition.setId(0);
+
+        final Optional<Definition> testUpdate = definitionService.updateDefinition(impossibleDefinition);
+
+        assertFalse(testUpdate.isPresent());
+        verifyZeroInteractions(restService);
+    }
+
+    @Test
+    public void testUpdateDefinition_RequestReturnsEmptyOptional() {
+        when(restService.patch(anyString(), anyString(), any(), anyInt(), anyInt()))
+                .thenReturn(Optional.empty());
+
+        final Optional<Definition> nonExistentDefinition = definitionService.updateDefinition(createDefinition());
+
+        assertFalse(nonExistentDefinition.isPresent());
+        verify(restService).patch(anyString(), anyString(), any(), anyInt(), anyInt());
+    }
+
+    @Test
+    public void testUpdateDefinition_ExceptionThrownWhenSendingRequest() {
+        when(restService.patch(anyString(), anyString(), any(), anyInt(), anyInt()))
+                .thenThrow(new UnsupportedOperationException("test exception"));
+
+        final Optional<Definition> exceptionThrowingDefinition = definitionService.updateDefinition(createDefinition());
+
+        assertFalse(exceptionThrowingDefinition.isPresent());
+        verify(restService).patch(anyString(), anyString(), any(), anyInt(), anyInt());
     }
 
     private Definition createDefinition() {
