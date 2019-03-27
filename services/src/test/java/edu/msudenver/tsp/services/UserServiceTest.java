@@ -8,8 +8,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
@@ -23,27 +24,65 @@ public class UserServiceTest {
     @InjectMocks private UserService userService;
 
     @Test
-    public void testCreateNewAccount() throws ParseException {
+    public void testGetListOfAccounts(){
+        final Account account1 = createAccount();
+        final Account account2 = createAccount();
+        final List<Account> accountList = new ArrayList<>();
+        accountList.add(account1);
+        accountList.add(account2);
 
+        when(restService.get(anyString(),any(TypeToken.class), anyInt(), anyInt(),anyString()))
+                .thenReturn(Optional.of(accountList));
+        final Optional<Account> response = userService.getListOfAccount();
+
+        assertTrue(response.isPresent());
+        assertEquals(accountList, response.get());
+    }
+
+    @Test
+    public void testGetAccountById(){
         final Account account = createAccount();
+        account.setId(1);
 
-        when(restService.post(anyString(), anyString(), any(TypeToken.class), anyInt(), anyInt()))
+        when(restService.get(anyString(),any(TypeToken.class), anyInt(), anyInt(),anyString()))
                 .thenReturn(Optional.of(account));
-
-        final Optional<Account> response = userService.createNewAccount(account);
+        final Optional<Account> response = userService.getAccountById(1);
 
         assertTrue(response.isPresent());
         assertEquals(account, response.get());
     }
 
     @Test
-    public void testUpdateAccount() throws ParseException {
+    public void testGetAccountByUsername(){
+        final Account account = createAccount();
+        final String username = account.getUsername();
+
+        when(restService.get(anyString(),any(TypeToken.class), anyInt(), anyInt(),anyString()))
+                .thenReturn(Optional.of(account));
+        final Optional<Account> response = userService.getAccountByUsername(username);
+
+        assertTrue(response.isPresent());
+        assertEquals(account, response.get());
+    }
+    @Test
+    public void testCreateAccount(){
+        final Account account = createAccount();
+
+        when(restService.post(anyString(), anyString(), any(TypeToken.class), anyInt(), anyInt()))
+                .thenReturn(Optional.of(account));
+        final Optional<Account> response = userService.createAccount(account);
+
+        assertTrue(response.isPresent());
+        assertEquals(account, response.get());
+    }
+
+    @Test
+    public void testUpdateAccount(){
         final Account account = createAccount();
         account.setId(1);
 
         when(restService.patch(anyString(), anyString(), any(TypeToken.class), anyInt(), anyInt()))
                 .thenReturn(Optional.of(account));
-
         final Optional<Account> response = userService.updateAccount(account);
 
         assertTrue(response.isPresent());
@@ -51,14 +90,13 @@ public class UserServiceTest {
     }
 
     @Test
-    public void testDeleteAccount() throws ParseException {
+    public void testDeleteAccount(){
         final boolean response= true;
         final Account account = createAccount();
         account.setId(1);
 
         when(restService.delete(anyString(), anyInt(), anyInt(), any()))
                 .thenReturn(response);
-
         final boolean persistenceApiResponse = userService.deleteAccount(account);
 
         assertTrue(persistenceApiResponse );

@@ -24,36 +24,47 @@ public class UserServiceIntegrationTest {
 
     @Test
     public void testUserService(){
-        final Account testAccount = creatAccount();
+        final Account testAccount = createAccount();
 
-        final Optional<Account> testCreatedAccount = userService.createNewAccount(testAccount);
-
+        final Optional<Account> testCreatedAccount = userService.createAccount(testAccount);
         assertTrue(testCreatedAccount.isPresent());
         final Account returnedAccount = testCreatedAccount.get();
-        assertEquals("test user", returnedAccount.getUsername());
-        assertEquals("test password", returnedAccount.getPassword());
+        assertEquals("test_user", returnedAccount.getUsername());
+        assertEquals("test_password", returnedAccount.getPassword());
         assertFalse(returnedAccount.isAdministratorStatus());
 
-        returnedAccount.setUsername("test updatedUser");
-        returnedAccount.setPassword("test updatedPassword");
+        final Optional<Account> getAccountById = userService.getAccountById(returnedAccount.getId());
+        assertTrue(getAccountById.isPresent());
+        final Account returnedAccountById = getAccountById.get();
+        assertEquals("test_user", returnedAccountById.getUsername());
+        assertEquals("test_password", returnedAccountById.getPassword());
+        assertFalse(returnedAccountById.isAdministratorStatus());
 
-        final Optional<Account> updatedTestCreatedAccount = userService.updateAccount(returnedAccount);
+        final Optional<Account> getAccountByUsername = userService.getAccountByUsername(returnedAccount.getUsername());
+        assertTrue(getAccountByUsername.isPresent());
+        final Account returnedAccountByUsername = getAccountByUsername.get();
+        assertEquals("test_user", returnedAccountByUsername.getUsername());
+        assertEquals("test_password", returnedAccountByUsername.getPassword());
+        assertFalse(returnedAccountById.isAdministratorStatus());
 
-        assertTrue(updatedTestCreatedAccount .isPresent());
-        final Account returnedUpdatedAccount = updatedTestCreatedAccount.get();
-        assertEquals("test updatedUser", returnedUpdatedAccount.getUsername());
-        assertEquals("test updatedPassword", returnedUpdatedAccount.getPassword());
+        returnedAccount.setUsername("test_updatedUser");
+        returnedAccount.setPassword("test_updatedPassword");
+
+        final Optional<Account> updatedAccount = userService.updateAccount(returnedAccount);
+        assertTrue(updatedAccount .isPresent());
+        final Account returnedUpdatedAccount = updatedAccount.get();
+        assertEquals("test_updatedUser", returnedUpdatedAccount.getUsername());
+        assertEquals("test_updatedPassword", returnedUpdatedAccount.getPassword());
         assertFalse(returnedUpdatedAccount.isAdministratorStatus());
 
         final boolean result = userService.deleteAccount(returnedUpdatedAccount);
-
         assertTrue(result);
     }
 
-    private Account creatAccount(){
+    private Account createAccount(){
         final Account testAccount = new Account();
-        testAccount.setUsername("test user");
-        testAccount.setPassword("test password");
+        testAccount.setUsername("test_user");
+        testAccount.setPassword("test_password");
         testAccount.setAdministratorStatus(false);
         testAccount.setLastLogin(new Date());
 
