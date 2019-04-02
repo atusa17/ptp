@@ -27,7 +27,7 @@ public class UserService {
     }
 
     public Optional<Account> getListOfAccount(){
-        final String auth = "";
+        final String auth = null;
         final Instant start = Instant.now();
 
         try {
@@ -60,7 +60,7 @@ public class UserService {
             return Optional.empty();
         }
 
-        final String auth = "";
+        final String auth = null;
         final Instant start = Instant.now();
 
         try {
@@ -92,7 +92,7 @@ public class UserService {
             return Optional.empty();
         }
 
-        final String auth = "";
+        final String auth = null;
         final Instant start = Instant.now();
 
         try {
@@ -208,7 +208,7 @@ public class UserService {
                 LOG.info("Returning {}", persistenceApiResponse);
             }
             else {
-                LOG.info("Unable to delete user {}", account.toString());
+                LOG.info("Unable to delete user {}");
             }
 
             return persistenceApiResponse;
