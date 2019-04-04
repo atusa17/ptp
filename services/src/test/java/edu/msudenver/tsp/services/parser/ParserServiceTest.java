@@ -22,7 +22,19 @@ public class ParserServiceTest {
     @InjectMocks private ParserService parserService;
 
     @Test
-    public void testEmptyStringEqualsEmptyString() {
+    public void testParseRawInput_EmptyString() {
+        final String expected = "0: \n";
+        final String actual;
+
+        when(parserService.parseRawInput("")).thenReturn(new Node("", null));
+
+        actual = parserService.parseRawInput("").toString();
+
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void testParseRawInputAndRecurse_EmptyStringEqualsEmptyString() {
         final String expected = "0: \n";
         final String actual = parserService.parseRawInput("").toString();
 
@@ -30,7 +42,7 @@ public class ParserServiceTest {
     }
 
     @Test
-    public void testUselessStringEqualsUselessString() {
+    public void testParseRawInput_UselessStringEqualsUselessString() {
         final String expected = "0: cat\n";
         final String actual = parserService.parseRawInput("cat").toString();
 
@@ -38,7 +50,7 @@ public class ParserServiceTest {
     }
 
     @Test
-    public void testSingleIfReturnsIfPlusEmptyString() {
+    public void testParseRawInput_SingleIfReturnsIfPlusEmptyString() {
         final String expected = "0: if\n... 1: if\n... 2: \n\n";
         final String actual = parserService.parseRawInput("if").toString();
 
@@ -46,7 +58,7 @@ public class ParserServiceTest {
     }
 
     @Test
-    public void testBaseCaseIfXIsEvenThenXSquaredIsEven() {
+    public void testParseRawInput_BaseCaseIfXIsEvenThenXSquaredIsEven() {
         final String expected = "0: if x is even then x^2 is even\n" +
                 "... 1: if\n" +
                 "... 2:  x is even \n" +
@@ -59,7 +71,7 @@ public class ParserServiceTest {
     }
 
     @Test
-    public void testLetXBeEvenThenXSquaredIsEven() {
+    public void testParseRawInput_LetXBeEvenThenXSquaredIsEven() {
         final String expected = "0: let x be even. then x^2 is even.\n" +
                 "... 1: let\n" +
                 "... 2:  x be even. \n" +
@@ -72,7 +84,7 @@ public class ParserServiceTest {
     }
 
     @Test
-    public void testLetIfThen() {
+    public void testParseRawInput_LetIfThen() {
         final String expected = "0: let a. if b, then c.\n" +
                 "... 1: let\n" +
                 "... 2:  a. \n" +
@@ -87,7 +99,7 @@ public class ParserServiceTest {
     }
 
     @Test
-    public void testLetStatementWithoutAnyIfOrThenStatements() {
+    public void testParseRawInput_LetStatementWithoutAnyIfOrThenStatements() {
         final String expected = "0: let a be equal to b.\n" +
                 "... 1: let\n" +
                 "... 2:  a be equal to b.\n\n";
@@ -98,7 +110,7 @@ public class ParserServiceTest {
     }
 
     @Test
-    public void testEmptyStringReturnsEmptyList() {
+    public void testRetrieveStatements_EmptyStringReturnsEmptyList() {
         final List<String> expectedList = new ArrayList<>();
         expectedList.add("");
 
@@ -109,7 +121,7 @@ public class ParserServiceTest {
     }
 
     @Test
-    public void testBaseCaseReturnsXIsEven() {
+    public void testRetrieveStatements_BaseCaseReturnsXIsEven() {
         final List<String> expectedList = new ArrayList<>();
         expectedList.add("x is even");
         expectedList.add("x^2 is even");
