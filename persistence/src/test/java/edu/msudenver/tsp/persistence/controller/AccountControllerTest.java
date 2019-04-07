@@ -25,10 +25,8 @@ import static org.mockito.Mockito.*;
 @RunWith(MockitoJUnitRunner.class)
 @WebMvcTest(controllers = AccountController.class)
 public class AccountControllerTest {
-    @Mock
-    private AccountsRepository accountsRepository;
-    @InjectMocks
-    private AccountController accountController;
+    @Mock private AccountsRepository accountsRepository;
+    @InjectMocks private AccountController accountController;
     @Mock private BindingResult bindingResult;
 
     @Test
