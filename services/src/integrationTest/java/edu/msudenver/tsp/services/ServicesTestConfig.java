@@ -14,10 +14,4 @@ public class ServicesTestConfig {
     public UserService userService(final RestService restService) {
         return new UserService(restService);
     }
-
-    @Bean
-    @Autowired
-    public DefinitionService definitionService(final RestService restService) {
-        return new DefinitionService(restService);
-    }
 }

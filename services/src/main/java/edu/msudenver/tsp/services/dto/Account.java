@@ -4,6 +4,8 @@ import com.google.gson.annotations.SerializedName;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
@@ -15,7 +17,7 @@ public class Account extends BaseDto implements Serializable {
     @Size(max = 50) private String username;
     @Size(max = 256) private String password;
     @NotNull private boolean administrator;
-    @SerializedName("last_login") private Date lastLogin;
+    @Temporal(TemporalType.DATE) @SerializedName("last_login") private Date lastLogin;
 
     private static final long serialVersionUID = 7095627971593953734L;
 }
