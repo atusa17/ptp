@@ -29,7 +29,7 @@ public class AccountsIntegrationTest {
 
         assertEquals("Test username", savedAccount.getUsername());
         assertEquals("test password", savedAccount.getPassword());
-        assertTrue(savedAccount.getAdministratorStatus());
+        assertTrue(savedAccount.getAdministrator());
 
         savedAccount.setPassword("Test Update");
 
@@ -37,7 +37,7 @@ public class AccountsIntegrationTest {
 
         assertEquals("Test username", savedAccount.getUsername());
         assertEquals("Test Update", savedAccount.getPassword());
-        assertTrue(savedAccount.getAdministratorStatus());
+        assertTrue(savedAccount.getAdministrator());
         assertEquals(updatedAccount.getId(), id);
 
         accountsRepository.delete(account);
@@ -49,7 +49,7 @@ public class AccountsIntegrationTest {
         final Account account = new Account();
         account.setUsername("Test username");
         account.setPassword("test password");
-        account.setAdministratorStatus(true);
+        account.setAdministrator(true);
 
         return account;
     }

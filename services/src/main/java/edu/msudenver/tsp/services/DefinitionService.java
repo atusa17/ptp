@@ -44,7 +44,7 @@ public class DefinitionService {
 
             return persistenceApiResponse;
         } catch (final Exception e) {
-            LOG.error("Error getting list of definitions! {}", e);
+            LOG.error("Error getting list of definitions!", e);
             return Optional.empty();
         } finally {
             LOG.info("Get all definitions request took {}ms", Duration.between(start, Instant.now()).toMillis());
@@ -105,7 +105,7 @@ public class DefinitionService {
 
             return persistenceApiResponse;
         } catch (final Exception e) {
-            LOG.error("Error creating new definition {}", e);
+            LOG.error("Error creating new definition", e);
             return Optional.empty();
         } finally {
             LOG.info("Create new definition request took {}ms", Duration.between(start, Instant.now()).toMillis());
@@ -142,7 +142,7 @@ public class DefinitionService {
 
             return persistenceApiResponse;
         } catch (final Exception e) {
-            LOG.error("Error updating definition {}", e);
+            LOG.error("Error updating definition", e);
             return Optional.empty();
         } finally {
             LOG.info("Update definition request took {}ms", Duration.between(start, Instant.now()).toMillis());
@@ -177,7 +177,7 @@ public class DefinitionService {
 
             return deleteIsSuccessful;
         } catch (final Exception e) {
-            LOG.error("Error when deleting definition {}", e);
+            LOG.error("Error when deleting definition", e);
             return false;
         } finally {
             LOG.info("Delete definition request took {}ms", Duration.between(start, Instant.now()).toMillis());

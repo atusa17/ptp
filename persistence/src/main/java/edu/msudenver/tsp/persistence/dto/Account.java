@@ -19,19 +19,19 @@ import java.util.Date;
 public class Account extends BaseDto implements Serializable {
     @NotBlank(groups = Insert.class, message = "A username must be specified") @Size(max = 50) private String username;
     @NotBlank(groups = Insert.class, message = "A password must be specified") @Size(max = 256) private String password;
-    @NotNull @Column(name = "administrator_status") private boolean administratorStatus;
+    @NotNull @Column(name = "administrator") private boolean administrator;
     @Temporal(TemporalType.DATE) @Column(name = "last_login") private Date lastLogin;
 
     private static final long serialVersionUID = 7095627971593953734L;
 
     @JsonProperty("administrator_status")
-    public boolean getAdministratorStatus() {
-        return administratorStatus;
+    public boolean getAdministrator() {
+        return administrator;
     }
 
     @JsonProperty("administrator_status")
-    public void setAdministratorStatus(final boolean administratorStatus) {
-        this.administratorStatus = administratorStatus;
+    public void setAdministrator(final boolean administrator) {
+        this.administrator = administrator;
     }
 
     @JsonProperty("last_login")
