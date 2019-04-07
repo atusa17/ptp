@@ -22,60 +22,47 @@ public class UserServiceTest {
     @InjectMocks private UserService userService;
 
     @Test
-    public void testGetListOfAccounts(){
-        final Account account1 = createAccount();
-        final Account account2 = createAccount();
+    public void testGetListOfAccounts() {
         final List<Account> accountList = new ArrayList<>();
-        accountList.add(account1);
-        accountList.add(account2);
+        accountList.add(createAccount());
+        accountList.add(createAccount());
 
-        when(restService.get(anyString(),any(TypeToken.class), anyInt(), anyInt(),anyString()))
-                .thenReturn(Optional.of(accountList));
-        final Optional<Account> response = userService.getListOfAccount();
+        when(restService.get(anyString(),any(TypeToken.class), anyInt(), anyInt(), anyString())).thenReturn(Optional.of(accountList));
+
+        final Optional<List<Account>> response = userService.getListOfAccounts();
 
         assertTrue(response.isPresent());
         assertEquals(accountList, response.get());
+        verify(restService).get(anyString(), any(TypeToken.class), anyInt(), anyInt(), anyString());
     }
 
     @Test
-    public void testGetListOfAccounts_persistenceApiResponseIsNotPresent(){
-        final Account account1 = createAccount();
-        final Account account2 = createAccount();
-        final List<Account> accountList = new ArrayList<>();
-        accountList.add(account1);
-        accountList.add(account2);
+    public void testGetListOfAccounts_PersistenceApiResponseIsEmpty() {
+        when(restService.get(anyString(),any(TypeToken.class), anyInt(), anyInt(),anyString())).thenReturn(Optional.empty());
 
-        when(restService.get(anyString(),any(TypeToken.class), anyInt(), anyInt(),anyString()))
-                .thenReturn(Optional.empty());
-        final Optional<Account> response = userService.getListOfAccount();
+        final Optional<List<Account>> response = userService.getListOfAccounts();
 
         assertFalse(response.isPresent());
+        verify(restService).get(anyString(), any(TypeToken.class), anyInt(), anyInt(), anyString());
     }
 
     @Test
-    public void testGetListOfAccounts_catchException(){
-        final Account account1 = createAccount();
-        final Account account2 = createAccount();
-        final List<Account> accountList = new ArrayList<>();
-        accountList.add(account1);
-        accountList.add(account2);
-        final Exception e = new Exception();
+    public void testGetListOfAccounts_RestServiceThrowsException() {
+        when(restService.get(anyString(),any(TypeToken.class), anyInt(), anyInt(),anyString())).thenThrow(Exception.class);
 
-        when(restService.get(anyString(),any(TypeToken.class), anyInt(), anyInt(),anyString()))
-                .thenThrow(Exception.class);
-        final Optional<Account> response = userService.getListOfAccount();
+        final Optional<List<Account>> response = userService.getListOfAccounts();
 
         assertFalse(response.isPresent());
-        assertEquals(Optional.empty(), response);
+        verify(restService).get(anyString(), any(TypeToken.class), anyInt(), anyInt(), anyString());
     }
 
     @Test
-    public void testGetAccountById(){
+    public void testFindAccountById() {
         final Account account = createAccount();
 
-        when(restService.get(anyString(),any(TypeToken.class), anyInt(), anyInt(),anyString()))
-                .thenReturn(Optional.of(account));
-        final Optional<Account> response = userService.getAccountById(1);
+        when(restService.get(anyString(),any(TypeToken.class), anyInt(), anyInt(),anyString())).thenReturn(Optional.of(account));
+
+        final Optional<Account> response = userService.findAccountById(1);
 
         assertTrue(response.isPresent());
         assertEquals(account, response.get());
@@ -83,8 +70,8 @@ public class UserServiceTest {
     }
 
     @Test
-    public void testGetAccountById_nullId() {
-        final Optional<Account> response = userService.getAccountById(0);
+    public void testFindAccountById_IdEqualsZero() {
+        final Optional<Account> response = userService.findAccountById(0);
 
         assertFalse(response.isPresent());
         assertEquals(Optional.empty(), response);
@@ -92,34 +79,32 @@ public class UserServiceTest {
     }
 
     @Test
-    public void testGetAccountById_persistenceApiResponseIsNotPresent(){
+    public void testFindAccountById_PersistenceApiResponseIsEmpty() {
+        when(restService.get(anyString(),any(TypeToken.class), anyInt(), anyInt(),anyString())).thenReturn(Optional.empty());
 
-        when(restService.get(anyString(),any(TypeToken.class), anyInt(), anyInt(),anyString()))
-                .thenReturn(Optional.empty());
-        final Optional<Account> response = userService.getAccountById(1);
+        final Optional<Account> response = userService.findAccountById(1);
 
         assertFalse(response.isPresent());
         verify(restService).get(anyString(),any(TypeToken.class), anyInt(), anyInt(),anyString());
     }
 
     @Test
-    public void testGetAccountById_catchException(){
+    public void testFindAccountById_RestServiceThrowsException() {
+        when(restService.get(anyString(),any(TypeToken.class), anyInt(), anyInt(),anyString())).thenThrow(Exception.class);
 
-        when(restService.get(anyString(),any(TypeToken.class), anyInt(), anyInt(),anyString()))
-                .thenThrow(Exception.class);
-        final Optional<Account> response = userService.getAccountById(1);
+        final Optional<Account> response = userService.findAccountById(1);
 
         assertFalse(response.isPresent());
-        assertEquals(Optional.empty(), response);
+        verify(restService).get(anyString(), any(TypeToken.class), anyInt(), anyInt(), anyString());
     }
 
     @Test
-    public void testGetAccountByUsername(){
+    public void testFindAccountByUsername() {
         final Account account = createAccount();
 
-        when(restService.get(anyString(),any(TypeToken.class), anyInt(), anyInt(),anyString()))
-                .thenReturn(Optional.of(account));
-        final Optional<Account> response = userService.getAccountByUsername(account.getUsername());
+        when(restService.get(anyString(),any(TypeToken.class), anyInt(), anyInt(),anyString())).thenReturn(Optional.of(account));
+
+        final Optional<Account> response = userService.findAccountByUsername(account.getUsername());
 
         assertTrue(response.isPresent());
         assertEquals(account, response.get());
@@ -127,8 +112,8 @@ public class UserServiceTest {
     }
 
     @Test
-    public void testGetAccountByUsername_nullUsername(){
-        final Optional<Account> response = userService.getAccountByUsername(null);
+    public void testFindAccountByUsername_NullUsername() {
+        final Optional<Account> response = userService.findAccountByUsername(null);
 
         assertFalse(response.isPresent());
         assertEquals(Optional.empty(), response);
@@ -136,23 +121,33 @@ public class UserServiceTest {
     }
 
     @Test
-    public void testGetAccountByUsername_persistenceApiResponseIsNotPresent(){
+    public void testFindAccountByUsername_PersistenceApiResponseIsEmpty() {
         final Account account = createAccount();
 
-        when(restService.get(anyString(),any(TypeToken.class), anyInt(), anyInt(),anyString()))
-                .thenReturn(Optional.empty());
-        final Optional<Account> response = userService.getAccountByUsername(account.getUsername());
+        when(restService.get(anyString(),any(TypeToken.class), anyInt(), anyInt(),anyString())).thenReturn(Optional.empty());
+
+        final Optional<Account> response = userService.findAccountByUsername(account.getUsername());
 
         assertFalse(response.isPresent());
         verify(restService).get(anyString(),any(TypeToken.class), anyInt(), anyInt(),anyString());
     }
 
     @Test
-    public void testCreateAccount(){
+    public void testFindAccountByUsername_RestServiceThrowsException() {
+        when(restService.get(anyString(), any(TypeToken.class), anyInt(), anyInt(), anyString())).thenThrow(Exception.class);
+
+        final Optional<Account> response = userService.findAccountByUsername("test");
+
+        assertFalse(response.isPresent());
+        verify(restService).get(anyString(), any(TypeToken.class), anyInt(), anyInt(), anyString());
+    }
+
+    @Test
+    public void testCreateAccount() {
         final Account account = createAccount();
 
-        when(restService.post(anyString(), anyString(), any(TypeToken.class), anyInt(), anyInt()))
-                .thenReturn(Optional.of(account));
+        when(restService.post(anyString(), anyString(), any(TypeToken.class), anyInt(), anyInt())).thenReturn(Optional.of(account));
+
         final Optional<Account> response = userService.createAccount(account);
 
         assertTrue(response.isPresent());
@@ -161,7 +156,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void testCreateAccount_NoAccountFound() {
+    public void testCreateAccount_NullAccount() {
         final Optional<Account> response = userService.createAccount(null);
 
         assertFalse(response.isPresent());
@@ -170,23 +165,32 @@ public class UserServiceTest {
     }
 
     @Test
-    public void testCreateAccount_catchException(){
-        final Account account = createAccount();
+    public void testCreateAccount_AccountCouldNotBeCreated() {
+        when(restService.post(anyString(), anyString(), any(TypeToken.class), anyInt(), anyInt())).thenReturn(Optional.empty());
 
-        when(restService.post(anyString(), anyString(), any(TypeToken.class), anyInt(), anyInt())).thenThrow(Exception.class);
-        final Optional<Account> response = userService.createAccount(account);
+        final Optional<Account> response = userService.createAccount(createAccount());
 
         assertFalse(response.isPresent());
-        assertEquals(Optional.empty(), response);
+        verify(restService).post(anyString(), anyString(), any(TypeToken.class), anyInt(), anyInt());
     }
 
     @Test
-    public void testUpdateAccount(){
+    public void testCreateAccount_RestServiceThrowsException() {
+        when(restService.post(anyString(), anyString(), any(TypeToken.class), anyInt(), anyInt())).thenThrow(Exception.class);
+
+        final Optional<Account> response = userService.createAccount(createAccount());
+
+        assertFalse(response.isPresent());
+        verify(restService).post(anyString(), anyString(), any(TypeToken.class), anyInt(), anyInt());
+    }
+
+    @Test
+    public void testUpdateAccount() {
         final Account account = createAccount();
         account.setId(1);
 
-        when(restService.patch(anyString(), anyString(), any(TypeToken.class), anyInt(), anyInt()))
-                .thenReturn(Optional.of(account));
+        when(restService.patch(anyString(), anyString(), any(TypeToken.class), anyInt(), anyInt())).thenReturn(Optional.of(account));
+
         final Optional<Account> response = userService.updateAccount(account);
 
         assertTrue(response.isPresent());
@@ -195,115 +199,106 @@ public class UserServiceTest {
     }
 
     @Test
-    public void testUpdateAccount_nullAccount(){
+    public void testUpdateAccount_NullAccount() {
         final Optional<Account> response = userService.updateAccount(null);
 
         assertFalse(response.isPresent());
-        assertEquals(Optional.empty(), response);
-        verify(restService, times(0)).patch(anyString(), anyString(), any(TypeToken.class), anyInt(), anyInt());
+        verifyZeroInteractions(restService);
     }
 
     @Test
-    public void testUpdateAccount_nullId(){
+    public void testUpdateAccount_IdEqualsZero() {
         final Account account = createAccount();
         account.setId(0);
 
         final Optional<Account> response = userService.updateAccount(account);
 
         assertFalse(response.isPresent());
-        assertEquals(Optional.empty(), response);
-        verify(restService, times(0)).patch(anyString(), anyString(), any(TypeToken.class), anyInt(), anyInt());
+        verifyZeroInteractions(restService);
     }
 
     @Test
-    public void testUpdateAccount_PersistenceApiResponseIsNotPresent(){
+    public void testUpdateAccount_PersistenceApiResponseIsEmpty() {
         final Account account = createAccount();
         account.setId(1);
 
-        when(restService.patch(anyString(), anyString(), any(TypeToken.class), anyInt(), anyInt()))
-                .thenReturn(Optional.empty());
+        when(restService.patch(anyString(), anyString(), any(TypeToken.class), anyInt(), anyInt())).thenReturn(Optional.empty());
+
         final Optional<Account> response = userService.updateAccount(account);
 
         assertFalse(response.isPresent());
-        assertEquals(Optional.empty(), response);
+        verify(restService).patch(anyString(), anyString(), any(TypeToken.class), anyInt(), anyInt());
     }
 
     @Test
-    public void testUpdateAccount_catchException(){
+    public void testUpdateAccount_RestServiceThrowsException() {
         final Account account = createAccount();
         account.setId(1);
 
-        when(restService.patch(anyString(), anyString(), any(TypeToken.class), anyInt(), anyInt()))
-                .thenThrow(Exception.class);
+        when(restService.patch(anyString(), anyString(), any(TypeToken.class), anyInt(), anyInt())).thenThrow(Exception.class);
+
         final Optional<Account> response = userService.updateAccount(account);
 
         assertFalse(response.isPresent());
-        assertEquals(Optional.empty(), response);
+        verify(restService).patch(anyString(), anyString(), any(TypeToken.class), anyInt(), anyInt());
     }
 
     @Test
-    public void testDeleteAccount(){
-        final boolean response= true;
+    public void testDeleteAccount() {
         final Account account = createAccount();
         account.setId(1);
 
-        when(restService.delete(anyString(), anyInt(), anyInt(), any()))
-                .thenReturn(response);
-        final boolean persistenceApiResponse = userService.deleteAccount(account);
+        when(restService.delete(anyString(), anyInt(), anyInt(), any())).thenReturn(true);
 
-        assertNotNull(persistenceApiResponse);
-        assertTrue(persistenceApiResponse);
-        assertEquals(response, persistenceApiResponse);
+        final boolean isDeleteSuccessful = userService.deleteAccount(account);
+
+        assertTrue(isDeleteSuccessful);
         verify(restService).delete(anyString(), anyInt(), anyInt(), any());
     }
 
     @Test
-    public void testDeleteAccount_nullAccount(){
-        final boolean persistenceApiResponse = userService.deleteAccount(null);
+    public void testDeleteAccount_NullAccount() {
+        final boolean isDeleteSuccessful = userService.deleteAccount(null);
 
-        assertNotNull(persistenceApiResponse);
-        assertFalse(persistenceApiResponse);
-        verify(restService, times(0)).delete(anyString(), anyInt(), anyInt(), any());
+        assertFalse(isDeleteSuccessful);
+        verifyZeroInteractions(restService);
     }
 
     @Test
-    public void testDeleteAccount_nullId(){
+    public void testDeleteAccount_IdEqualsZero() {
         final Account account = createAccount();
         account.setId(0);
 
-        final boolean persistenceApiResponse = userService.deleteAccount(account);
+        final boolean isDeleteSuccessful = userService.deleteAccount(account);
 
-        assertNotNull(persistenceApiResponse);
-        assertFalse(persistenceApiResponse);
-        verify(restService, times(0)).delete(anyString(), anyInt(), anyInt(), any());
+        assertFalse(isDeleteSuccessful);
+        verifyZeroInteractions(restService);
     }
 
     @Test
-    public void testDeleteAccount_persistenceApiResponseIsNotPresent(){
-        final boolean response= false;
+    public void testDeleteAccount_PersistenceApiResponseIsEmpty() {
         final Account account = createAccount();
         account.setId(1);
 
-        when(restService.delete(anyString(), anyInt(), anyInt(), any()))
-                .thenReturn(response);
-        final boolean persistenceApiResponse = userService.deleteAccount(account);
+        when(restService.delete(anyString(), anyInt(), anyInt(), any())).thenReturn(false);
 
-        assertNotNull(persistenceApiResponse);
-        assertFalse(persistenceApiResponse);
-        assertEquals(response, persistenceApiResponse);
+        final boolean isDeleteSuccessful = userService.deleteAccount(account);
+
+        assertFalse(isDeleteSuccessful);
         verify(restService).delete(anyString(), anyInt(), anyInt(), any());
     }
 
     @Test
-    public void testDeleteAccount_catchException(){
+    public void testDeleteAccount_RestServiceThrowsException() {
         final Account account = createAccount();
         account.setId(1);
 
         when(restService.delete(anyString(), anyInt(), anyInt(), any())).thenThrow(Exception.class);
+
         final boolean persistenceApiResponse = userService.deleteAccount(account);
 
-        assertNotNull(persistenceApiResponse);
         assertFalse(persistenceApiResponse);
+        verify(restService).delete(anyString(), anyInt(), anyInt(), any());
     }
 
 

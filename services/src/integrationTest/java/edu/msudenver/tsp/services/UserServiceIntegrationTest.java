@@ -33,14 +33,14 @@ public class UserServiceIntegrationTest {
         assertEquals("test_password", returnedAccount.getPassword());
         assertFalse(returnedAccount.isAdministratorStatus());
 
-        final Optional<Account> getAccountById = userService.getAccountById(returnedAccount.getId());
+        final Optional<Account> getAccountById = userService.findAccountById(returnedAccount.getId());
         assertTrue(getAccountById.isPresent());
         final Account returnedAccountById = getAccountById.get();
         assertEquals("test_user", returnedAccountById.getUsername());
         assertEquals("test_password", returnedAccountById.getPassword());
         assertFalse(returnedAccountById.isAdministratorStatus());
 
-        final Optional<Account> getAccountByUsername = userService.getAccountByUsername(returnedAccount.getUsername());
+        final Optional<Account> getAccountByUsername = userService.findAccountByUsername(returnedAccount.getUsername());
         assertTrue(getAccountByUsername.isPresent());
         final Account returnedAccountByUsername = getAccountByUsername.get();
         assertEquals("test_user", returnedAccountByUsername.getUsername());
@@ -61,7 +61,7 @@ public class UserServiceIntegrationTest {
         assertTrue(result);
     }
 
-    private Account createAccount(){
+    private Account createAccount() {
         final Account testAccount = new Account();
         testAccount.setUsername("test_user");
         testAccount.setPassword("test_password");
