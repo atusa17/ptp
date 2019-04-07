@@ -18,7 +18,7 @@ import static org.junit.Assert.*;
 import static org.mockito.AdditionalMatchers.not;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = ServiceTestConfig.class)
+@ContextConfiguration(classes = ServicesTestConfig.class)
 @TestPropertySource(locations = "classpath:test.properties")
 public class DefinitionServiceIntegrationTest {
     @Autowired private DefinitionService definitionService;

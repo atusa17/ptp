@@ -23,7 +23,7 @@ public class UserServiceIntegrationTest {
     private UserService userService;
 
     @Test
-    public void testUserService(){
+    public void testCRUD() {
         final Account testAccount = createAccount();
 
         final Optional<Account> testCreatedAccount = userService.createAccount(testAccount);
