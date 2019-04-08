@@ -32,7 +32,7 @@ public class TheoremEntryControllerTest {
         assertEquals("Theorem",modelAndView.getViewName());
     }
 
-    @Test
+   @Test
     public void saveTheorem(){
 
         final ModelAndView modelAndView= theoremEntryController.enterTheoremPage();
@@ -40,6 +40,6 @@ public class TheoremEntryControllerTest {
         assertNotNull(modelAndView);
         assertEquals("Theorem",modelAndView.getViewName());
     }
-
+//
 
 }

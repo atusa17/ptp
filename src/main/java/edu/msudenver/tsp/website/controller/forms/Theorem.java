@@ -9,8 +9,9 @@ import javax.validation.constraints.NotBlank;
 @Setter
 public class Theorem {
     private String theoremName1 ;
-    private String theoremName2 ;
-    @NotBlank(message = "Theorem name must not be blank") private String theoremName;
-    private String theorem;
+     private String theoremName2 ;
+
+    // @NotBlank(message = "Theorem name must not be blank") private String theoremName;
+
 
 }
