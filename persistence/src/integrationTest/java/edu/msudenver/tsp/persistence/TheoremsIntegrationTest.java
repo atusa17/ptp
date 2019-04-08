@@ -1,6 +1,6 @@
 package edu.msudenver.tsp.persistence;
 
-import edu.msudenver.tsp.persistence.dto.TheoremDto;
+import edu.msudenver.tsp.persistence.dto.Theorem;
 import edu.msudenver.tsp.persistence.dto.TheoremType;
 import edu.msudenver.tsp.persistence.repository.TheoremRepository;
 import org.junit.Test;
@@ -22,8 +22,8 @@ public class TheoremsIntegrationTest {
 
     @Test
     public void testCRUDFunctionality() {
-        final TheoremDto theoremDto = createTheorem();
-        final TheoremDto savedTheorem = theoremRepository.save(theoremDto);
+        final Theorem theorem = createTheorem();
+        final Theorem savedTheorem = theoremRepository.save(theorem);
 
         assertNotNull(savedTheorem);
         assertEquals(Integer.valueOf(0), savedTheorem.getVersion());
@@ -32,6 +32,7 @@ public class TheoremsIntegrationTest {
 
         assertEquals("Test theorem", savedTheorem.getName());
         assertEquals("Test branch", savedTheorem.getBranch());
+        assertEquals("test", savedTheorem.getTheorem());
         assertTrue(savedTheorem.getProvenStatus());
         assertEquals(2, savedTheorem.getReferencedTheorems().size());
         assertEquals(2, savedTheorem.getReferencedDefinitions().size());
@@ -42,12 +43,13 @@ public class TheoremsIntegrationTest {
 
         savedTheorem.setBranch("Test Update");
 
-        final TheoremDto updatedTheorem = theoremRepository.save(savedTheorem);
+        final Theorem updatedTheorem = theoremRepository.save(savedTheorem);
 
         assertNotNull(updatedTheorem);
         assertEquals(Integer.valueOf(0), updatedTheorem.getVersion());
         assertEquals("Test theorem", updatedTheorem.getName());
         assertEquals("Test Update", updatedTheorem.getBranch());
+        assertEquals("test", updatedTheorem.getTheorem());
         assertTrue(updatedTheorem.getProvenStatus());
         assertEquals(2, updatedTheorem.getReferencedTheorems().size());
         assertEquals(2, updatedTheorem.getReferencedDefinitions().size());
@@ -57,12 +59,12 @@ public class TheoremsIntegrationTest {
         assertEquals("test definition 2", updatedTheorem.getReferencedDefinitions().get(1));
         assertEquals(updatedTheorem.getId(), id);
 
-        theoremRepository.delete(theoremDto);
-        final Optional<TheoremDto> deletedTheorem = theoremRepository.findById(id);
+        theoremRepository.delete(theorem);
+        final Optional<Theorem> deletedTheorem = theoremRepository.findById(id);
         assertFalse(deletedTheorem.isPresent());
     }
 
-    private TheoremDto createTheorem() {
+    private Theorem createTheorem() {
         final List<String> referencedTheoremsList = new ArrayList<>();
         referencedTheoremsList.add("test theorem 1");
         referencedTheoremsList.add("test theorem 2");
@@ -71,14 +73,15 @@ public class TheoremsIntegrationTest {
         referencedDefinitionsList.add("test definition 1");
         referencedDefinitionsList.add("test definition 2");
 
-        final TheoremDto theoremDto = new TheoremDto();
-        theoremDto.setName("Test theorem");
-        theoremDto.setBranch("Test branch");
-        theoremDto.setProvenStatus(true);
-        theoremDto.setTheoremType(TheoremType.THEOREM);
-        theoremDto.setReferencedTheorems(referencedTheoremsList);
-        theoremDto.setReferencedDefinitions(referencedDefinitionsList);
+        final Theorem theorem = new Theorem();
+        theorem.setName("Test theorem");
+        theorem.setTheorem("test");
+        theorem.setBranch("Test branch");
+        theorem.setProvenStatus(true);
+        theorem.setTheoremType(TheoremType.THEOREM);
+        theorem.setReferencedTheorems(referencedTheoremsList);
+        theorem.setReferencedDefinitions(referencedDefinitionsList);
 
-        return theoremDto;
+        return theorem;
     }
 }
