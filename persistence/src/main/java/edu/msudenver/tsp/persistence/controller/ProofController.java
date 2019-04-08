@@ -1,6 +1,8 @@
 package edu.msudenver.tsp.persistence.controller;
 
 import edu.msudenver.tsp.persistence.dto.Proof;
+import edu.msudenver.tsp.persistence.exception.BadRequestException;
+import edu.msudenver.tsp.persistence.exception.UnprocessableEntityException;
 import edu.msudenver.tsp.persistence.repository.ProofRepository;
 import edu.msudenver.tsp.utilities.PersistenceUtilities;
 import lombok.AllArgsConstructor;
@@ -45,11 +47,11 @@ public class ProofController {
 
     @GetMapping("/id")
     public @ResponseBody
-    ResponseEntity<Proof> getProofById(@RequestParam("id") final Integer id) {
+    ResponseEntity<Proof> getProofById(@RequestParam("id") final Integer id) throws BadRequestException {
         LOG.info("Received request to query for proof with id {}", id);
         if (id == null) {
             LOG.error("ERROR: ID was null");
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            throw new BadRequestException("Specified ID is null");
         }
 
         LOG.debug("Querying for proof with id {}", id);
@@ -75,11 +77,12 @@ public class ProofController {
 
     @GetMapping("/branch")
     public @ResponseBody
-    ResponseEntity<List<Proof>> getAllProofsByBranch(@RequestParam("branch") String branch) {
+    ResponseEntity<List<Proof>> getAllProofsByBranch(@RequestParam("branch") String branch)
+            throws BadRequestException {
         LOG.info("Received request to query for proofs related to the {} branch of mathematics", branch);
         if (branch == null) {
             LOG.error("ERROR: branch was null");
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            throw new BadRequestException("Specified branch is null");
         }
 
         if (branch.contains("_") || branch.contains("-")) {
@@ -110,11 +113,12 @@ public class ProofController {
 
     @GetMapping("/theorem_name")
     public @ResponseBody
-    ResponseEntity<List<Proof>> getAllProofsByTheoremName(@RequestParam("theorem_name") String theoremName) {
+    ResponseEntity<List<Proof>> getAllProofsByTheoremName(@RequestParam("theorem_name") String theoremName)
+            throws BadRequestException {
         LOG.info("Received request to query for proofs of the theorem {}", theoremName);
         if (theoremName == null) {
             LOG.error("ERROR: theorem name was null");
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            throw new BadRequestException("Specified theorem name is null");
         }
 
         if (theoremName.contains("_") || theoremName.contains("-")) {
@@ -147,16 +151,16 @@ public class ProofController {
     @Validated({Proof.Insert.class, Default.class})
     public @ResponseBody ResponseEntity<Proof> insertProof(
             @Valid @RequestBody final Proof proof,
-            final BindingResult bindingResult) {
+            final BindingResult bindingResult) throws UnprocessableEntityException, BadRequestException {
         LOG.info("Received request to insert a new proof");
         if (bindingResult.hasErrors()) {
             LOG.error("Binding result is unprocessable");
-            return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
+            throw new UnprocessableEntityException(bindingResult.getAllErrors().toString());
         }
 
         if (proof == null) {
             LOG.error("Passed entity is null");
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            throw new BadRequestException("Passed proof is null");
         }
 
         LOG.debug("Saving new proof");
@@ -176,22 +180,23 @@ public class ProofController {
     @PatchMapping("/{id}")
     public @ResponseBody ResponseEntity<Proof> updateProof(
             @PathVariable("id") final Integer id,
-            @RequestBody final Proof proof, final BindingResult bindingResult) {
+            @RequestBody final Proof proof, final BindingResult bindingResult)
+            throws UnprocessableEntityException, BadRequestException {
 
         LOG.info("Received request to update a proof");
         if (bindingResult.hasErrors()) {
             LOG.error("Binding result is unprocessable");
-            return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
+            throw new UnprocessableEntityException(bindingResult.getAllErrors().toString());
         }
 
         if (proof == null) {
             LOG.error("Passed entity is null");
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            throw new BadRequestException("Passed proof is null");
         }
 
         if (id == null) {
             LOG.error("Proof ID must be specified");
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            throw new BadRequestException("Specified ID is null");
         }
 
         LOG.debug("Checking for existence of proof with id {}", id);
@@ -207,7 +212,7 @@ public class ProofController {
 
         if (!existingProof.isPresent()) {
             LOG.error("No proof associated with id {}", id);
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
         PersistenceUtilities.copyNonNullProperties(proof, existingProof.get());
@@ -228,11 +233,11 @@ public class ProofController {
     }
 
     @DeleteMapping("/{id}")
-    public @ResponseBody ResponseEntity<Void> deleteProofById(@PathVariable("id") final Integer id) {
+    public @ResponseBody ResponseEntity<Void> deleteProofById(@PathVariable("id") final Integer id) throws BadRequestException {
         LOG.info("Received request to delete proof with id {}", id);
         if (id == null) {
             LOG.error("Specified id is null");
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            throw new BadRequestException("Specified ID is null");
         }
 
         LOG.debug("Deleting proof with id {}", id);
