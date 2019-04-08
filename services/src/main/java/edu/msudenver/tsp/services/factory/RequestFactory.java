@@ -24,6 +24,6 @@ public class RequestFactory {
     }
 
     public Request patch(final String uri, final String requestJson) {
-        return StringUtils.isNotBlank(requestJson) ? Request.Put(uri).bodyString(requestJson, ContentType.APPLICATION_JSON) : Request.Patch(uri);
+        return StringUtils.isNotBlank(requestJson) ? Request.Patch(uri).bodyString(requestJson, ContentType.APPLICATION_JSON) : Request.Patch(uri);
     }
 }
