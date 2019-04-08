@@ -36,7 +36,7 @@ version int default 1
 );
 create table proofs
 (
-  id int not null auto_increment primary key unique,
+  id int not null auto_increment,
   theorem_name varchar(512) not null,
   proof varchar(4096) not null,
   branch varchar(512) not null,
@@ -45,5 +45,6 @@ create table proofs
   referenced_theorems json,
   date_added date,
   last_updated date,
-  version int default 1
+  version int default 1,
+  primary key (id)
 );

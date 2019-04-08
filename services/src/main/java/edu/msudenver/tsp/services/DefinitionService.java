@@ -62,7 +62,7 @@ public class DefinitionService {
 
         try {
             final TypeToken<Definition> typeToken = new TypeToken<Definition>(){};
-            final Optional<Definition> persistenceApiResponse = restService.get(persistenceApiBaseUrl + "/" + id,
+            final Optional<Definition> persistenceApiResponse = restService.get(persistenceApiBaseUrl + "definitions/" + id,
                     typeToken, connectionTimeoutMilliseconds, socketTimeoutMilliseconds, null);
 
             if (persistenceApiResponse.isPresent()) {
@@ -128,7 +128,7 @@ public class DefinitionService {
 
         try {
             final TypeToken<Definition> typeToken = new TypeToken<Definition>(){};
-            final Optional<Definition> persistenceApiResponse = restService.patch(persistenceApiBaseUrl + "/" + definition.getId(),
+            final Optional<Definition> persistenceApiResponse = restService.patch(persistenceApiBaseUrl + "definitions/" + definition.getId(),
                     new GsonBuilder().create().toJson(definition),
                     typeToken,
                     connectionTimeoutMilliseconds,
@@ -164,7 +164,7 @@ public class DefinitionService {
         final Instant start = Instant.now();
 
         try {
-            final boolean deleteIsSuccessful = restService.delete(persistenceApiBaseUrl + "/" + definition.getId(),
+            final boolean deleteIsSuccessful = restService.delete(persistenceApiBaseUrl + "definitions/" + definition.getId(),
                     connectionTimeoutMilliseconds,
                     socketTimeoutMilliseconds,
                     HttpStatus.NO_CONTENT);
