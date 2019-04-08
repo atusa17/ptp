@@ -5,12 +5,13 @@ import lombok.Setter;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 
 @Getter
 @Setter
 public class UserCreationForm {
     @NotNull
-    @NotEmpty
+    @Positive
     private int userID;
 
     @NotNull
@@ -24,13 +25,6 @@ public class UserCreationForm {
     @NotNull
     @NotEmpty
     private String confirmPassword;
-
-    public Boolean checkPassword(final String passwordInput, final String passwordCheck) {
-        if(!passwordInput.equals(passwordCheck)) {
-            return false;
-        }
-        else return true;
-    }
 
     @NotNull
     @NotEmpty
@@ -47,6 +41,5 @@ public class UserCreationForm {
     private String referrer; // optional
 
     @NotNull
-    @NotEmpty
     private boolean agreedToTerms;
 }
