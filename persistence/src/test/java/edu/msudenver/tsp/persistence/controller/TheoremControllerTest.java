@@ -2,6 +2,8 @@ package edu.msudenver.tsp.persistence.controller;
 
 import edu.msudenver.tsp.persistence.dto.Theorem;
 import edu.msudenver.tsp.persistence.dto.TheoremType;
+import edu.msudenver.tsp.persistence.exception.BadRequestException;
+import edu.msudenver.tsp.persistence.exception.UnprocessableEntityException;
 import edu.msudenver.tsp.persistence.repository.TheoremRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -50,7 +52,7 @@ public class TheoremControllerTest {
    }
 
     @Test
-    public void testGetTheoremById() {
+    public void testGetTheoremById() throws BadRequestException {
         final Theorem theorem = createTheorem();
         when(theoremRepository.findById(anyInt())).thenReturn(Optional.ofNullable(theorem));
 
@@ -64,18 +66,13 @@ public class TheoremControllerTest {
         verify(theoremRepository).findById(anyInt());
     }
 
-    @Test
-    public void testGetTheoremById_nullId() {
-        final ResponseEntity responseEntity = theoremController.getTheoremById(null);
-
-        assertNotNull(responseEntity);
-        assertFalse(responseEntity.hasBody());
-        assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
-        verifyZeroInteractions(theoremRepository);
+    @Test(expected = BadRequestException.class)
+    public void testGetTheoremById_nullId() throws BadRequestException {
+        theoremController.getTheoremById(null);
     }
 
     @Test
-    public void testGetTheoremById_noTheoremFound() {
+    public void testGetTheoremById_noTheoremFound() throws BadRequestException {
         when(theoremRepository.findById(anyInt())).thenReturn(Optional.empty());
 
         final ResponseEntity responseEntity = theoremController.getTheoremById(1);
@@ -87,7 +84,7 @@ public class TheoremControllerTest {
     }
 
     @Test
-    public void testGetAllTheoremsByBranch() {
+    public void testGetAllTheoremsByBranch() throws BadRequestException {
         final Theorem theoremDto = createTheorem();
         final List<Theorem> listOfTheorems = new ArrayList<>();
         listOfTheorems.add(theoremDto);
@@ -105,18 +102,13 @@ public class TheoremControllerTest {
         responseEntity.getBody().forEach(theorem -> assertEquals(theoremDto, theorem));
     }
 
-    @Test
-    public void testGetAllTheoremsByBranch_nullBranch() {
-        final ResponseEntity<List<Theorem>> responseEntity = theoremController.getAllTheoremsByBranch(null);
-
-        assertNotNull(responseEntity);
-        assertFalse(responseEntity.hasBody());
-        assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
-        verifyZeroInteractions(theoremRepository);
+    @Test(expected = BadRequestException.class)
+    public void testGetAllTheoremsByBranch_nullBranch() throws BadRequestException {
+        theoremController.getAllTheoremsByBranch(null);
     }
 
     @Test
-    public void testGetAllTheoremsByBranch_noTheoremsFound() {
+    public void testGetAllTheoremsByBranch_noTheoremsFound() throws BadRequestException {
        when(theoremRepository.findByBranch(anyString())).thenReturn(Collections.emptyList());
 
        final ResponseEntity<List<Theorem>> responseEntity = theoremController.getAllTheoremsByBranch("test_nonexistent_branch");
@@ -127,7 +119,7 @@ public class TheoremControllerTest {
     }
 
     @Test
-    public void testGetAllTheoremsByProvenStatus() {
+    public void testGetAllTheoremsByProvenStatus() throws BadRequestException {
         final Theorem theoremDto = createTheorem();
         final List<Theorem> listOfTheorems = new ArrayList<>();
         listOfTheorems.add(theoremDto);
@@ -145,18 +137,13 @@ public class TheoremControllerTest {
         responseEntity.getBody().forEach(theorem -> assertEquals(theoremDto, theorem));
     }
 
-    @Test
-    public void testGetAllTheoremsByProvenStatus_nullProvenStatus() {
-        final ResponseEntity<List<Theorem>> responseEntity = theoremController.getAllTheoremsByProvenStatus(null);
-
-        assertNotNull(responseEntity);
-        assertFalse(responseEntity.hasBody());
-        assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
-        verifyZeroInteractions(theoremRepository);
+    @Test(expected = BadRequestException.class)
+    public void testGetAllTheoremsByProvenStatus_nullProvenStatus() throws BadRequestException {
+        theoremController.getAllTheoremsByProvenStatus(null);
     }
 
     @Test
-    public void testGetAllTheoremsByProvenStatus_invalidProvenStatus() {
+    public void testGetAllTheoremsByProvenStatus_invalidProvenStatus() throws BadRequestException {
         final ResponseEntity<List<Theorem>> responseEntity = theoremController.getAllTheoremsByProvenStatus("test");
 
         assertNotNull(responseEntity);
@@ -165,7 +152,7 @@ public class TheoremControllerTest {
     }
 
     @Test
-    public void testGetAllTheoremsByProvenStatus_noTheoremsFound() {
+    public void testGetAllTheoremsByProvenStatus_noTheoremsFound() throws BadRequestException {
         when(theoremRepository.findByProvenStatus(anyBoolean())).thenReturn(Collections.emptyList());
 
         final ResponseEntity<List<Theorem>> responseEntity = theoremController.getAllTheoremsByProvenStatus("false");
@@ -176,7 +163,7 @@ public class TheoremControllerTest {
     }
 
     @Test
-    public void testGetAllTheoremsByName() {
+    public void testGetAllTheoremsByName() throws BadRequestException {
         final Theorem theoremDto = createTheorem();
         final List<Theorem> listOfTheorems = new ArrayList<>();
         listOfTheorems.add(theoremDto);
@@ -194,18 +181,13 @@ public class TheoremControllerTest {
         responseEntity.getBody().forEach(theorem -> assertEquals(theoremDto, theorem));
     }
 
-    @Test
-    public void testGetAllTheoremsByName_nullName() {
-        final ResponseEntity<List<Theorem>> responseEntity = theoremController.getAllTheoremsByName(null);
-
-        assertNotNull(responseEntity);
-        assertFalse(responseEntity.hasBody());
-        assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
-        verifyZeroInteractions(theoremRepository);
+    @Test(expected = BadRequestException.class)
+    public void testGetAllTheoremsByName_nullName() throws BadRequestException {
+        theoremController.getAllTheoremsByName(null);
     }
 
     @Test
-    public void testGetAllTheoremsByName_noNameFound() {
+    public void testGetAllTheoremsByName_noNameFound() throws BadRequestException {
         when(theoremRepository.findByName(anyString())).thenReturn(Collections.emptyList());
 
         final ResponseEntity<List<Theorem>> responseEntity = theoremController.getAllTheoremsByName("No-name");
@@ -216,7 +198,7 @@ public class TheoremControllerTest {
     }
 
     @Test
-    public void testInsertTheorem() {
+    public void testInsertTheorem() throws BadRequestException, UnprocessableEntityException {
         final Theorem theorem = createTheorem();
         when(theoremRepository.save(any(Theorem.class))).thenReturn(theorem);
 
@@ -230,31 +212,21 @@ public class TheoremControllerTest {
         verify(theoremRepository).save(any(Theorem.class));
     }
 
-    @Test
-    public void testInsertTheorem_theoremDtoIsNull() {
-        final ResponseEntity responseEntity = theoremController.insertTheorem(null, bindingResult);
-
-        assertNotNull(responseEntity);
-        assertFalse(responseEntity.hasBody());
-        assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
-        verifyZeroInteractions(theoremRepository);
+    @Test(expected = BadRequestException.class)
+    public void testInsertTheorem_theoremDtoIsNull() throws BadRequestException, UnprocessableEntityException {
+        theoremController.insertTheorem(null, bindingResult);
     }
 
-    @Test
-    public void testInsertTheorem_bindingResultHasErrors() {
+    @Test(expected = UnprocessableEntityException.class)
+    public void testInsertTheorem_bindingResultHasErrors() throws BadRequestException, UnprocessableEntityException {
         final Theorem theorem = createTheorem();
         when(bindingResult.hasErrors()).thenReturn(true);
 
-        final ResponseEntity responseEntity = theoremController.insertTheorem(theorem, bindingResult);
-
-        assertNotNull(responseEntity);
-        assertFalse(responseEntity.hasBody());
-        assertEquals(HttpStatus.UNPROCESSABLE_ENTITY, responseEntity.getStatusCode());
-        verifyZeroInteractions(theoremRepository);
+        theoremController.insertTheorem(theorem, bindingResult);
     }
 
     @Test
-    public void testUpdateTheorem() {
+    public void testUpdateTheorem() throws BadRequestException, UnprocessableEntityException {
         final Theorem existingTheorem = createTheorem();
         existingTheorem.setId(1);
         existingTheorem.setVersion(1);
@@ -275,52 +247,37 @@ public class TheoremControllerTest {
         verify(theoremRepository).save(any(Theorem.class));
     }
 
-    @Test
-    public void testUpdateTheorem_bindingResultHasErrors() {
+    @Test(expected = UnprocessableEntityException.class)
+    public void testUpdateTheorem_bindingResultHasErrors() throws BadRequestException, UnprocessableEntityException {
         when(bindingResult.hasErrors()).thenReturn(true);
 
-        final ResponseEntity<Theorem> responseEntity = theoremController.updateTheorem(1, createTheorem(), bindingResult);
+        theoremController.updateTheorem(1, createTheorem(), bindingResult);
+    }
 
-        assertNotNull(responseEntity);
-        assertFalse(responseEntity.hasBody());
-        assertEquals(HttpStatus.UNPROCESSABLE_ENTITY, responseEntity.getStatusCode());
-        verifyZeroInteractions(theoremRepository);
+    @Test(expected = BadRequestException.class)
+    public void testUpdateTheorem_theoremDtoIsNull() throws BadRequestException, UnprocessableEntityException {
+        theoremController.updateTheorem(1, null, bindingResult);
+    }
+
+    @Test(expected = BadRequestException.class)
+    public void testUpdateTheorem_idIsNull() throws BadRequestException, UnprocessableEntityException {
+        theoremController.updateTheorem(null, createTheorem(), bindingResult);
     }
 
     @Test
-    public void testUpdateTheorem_theoremDtoIsNull() {
-        final ResponseEntity<Theorem> responseEntity = theoremController.updateTheorem(1, null, bindingResult);
-
-        assertNotNull(responseEntity);
-        assertFalse(responseEntity.hasBody());
-        assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
-        verifyZeroInteractions(theoremRepository);
-    }
-
-    @Test
-    public void testUpdateTheorem_idIsNull() {
-        final ResponseEntity<Theorem> responseEntity = theoremController.updateTheorem(null, createTheorem(), bindingResult);
-
-        assertNotNull(responseEntity);
-        assertFalse(responseEntity.hasBody());
-        assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
-        verifyZeroInteractions(theoremRepository);
-    }
-
-    @Test
-    public void testUpdateTheorem_theoremDoesNotExist() {
+    public void testUpdateTheorem_theoremDoesNotExist() throws BadRequestException, UnprocessableEntityException {
         when(theoremRepository.findById(anyInt())).thenReturn(Optional.empty());
 
         final ResponseEntity<Theorem> responseEntity = theoremController.updateTheorem(1, createTheorem(), bindingResult);
 
         assertNotNull(responseEntity);
         assertFalse(responseEntity.hasBody());
-        assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
+        assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
         verify(theoremRepository, times(0)).save(any(Theorem.class));
     }
 
     @Test
-    public void testDeleteTheoremById() {
+    public void testDeleteTheoremById() throws BadRequestException {
         doNothing().when(theoremRepository).deleteById(anyInt());
 
         final ResponseEntity responseEntity = theoremController.deleteTheoremById(1);
@@ -331,14 +288,9 @@ public class TheoremControllerTest {
         verify(theoremRepository).deleteById(anyInt());
     }
 
-    @Test
-    public void testDeleteTheoremById_idIsNull() {
-        final ResponseEntity responseEntity = theoremController.deleteTheoremById(null);
-
-        assertNotNull(responseEntity);
-        assertFalse(responseEntity.hasBody());
-        assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
-        verifyZeroInteractions(theoremRepository);
+    @Test(expected = BadRequestException.class)
+    public void testDeleteTheoremById_idIsNull() throws BadRequestException {
+        theoremController.deleteTheoremById(null);
     }
 
    private Theorem createTheorem() {
