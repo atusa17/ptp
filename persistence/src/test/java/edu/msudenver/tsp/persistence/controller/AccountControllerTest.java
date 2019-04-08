@@ -1,6 +1,8 @@
 package edu.msudenver.tsp.persistence.controller;
 
 import edu.msudenver.tsp.persistence.dto.Account;
+import edu.msudenver.tsp.persistence.exception.BadRequestException;
+import edu.msudenver.tsp.persistence.exception.UnprocessableEntityException;
 import edu.msudenver.tsp.persistence.repository.AccountsRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -51,7 +53,7 @@ public class AccountControllerTest {
     }
 
     @Test
-    public void testGetAccountById() {
+    public void testGetAccountById() throws BadRequestException {
         final Account account = createAccount();
         when(accountsRepository.findById(anyInt())).thenReturn(Optional.ofNullable(account));
 
@@ -65,18 +67,13 @@ public class AccountControllerTest {
         verify(accountsRepository).findById(anyInt());
     }
 
-    @Test
-    public void testGetAccountById_nullId() {
-        final ResponseEntity responseEntity = accountController.getAccountById(null);
-
-        assertNotNull(responseEntity);
-        assertFalse(responseEntity.hasBody());
-        assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
-        verifyZeroInteractions(accountsRepository);
+    @Test(expected = BadRequestException.class)
+    public void testGetAccountById_nullId() throws BadRequestException {
+        accountController.getAccountById(null);
     }
 
     @Test
-    public void testGetAccountById_noAccountFound() {
+    public void testGetAccountById_noAccountFound() throws BadRequestException {
         when(accountsRepository.findById(anyInt())).thenReturn(Optional.empty());
 
         final ResponseEntity responseEntity = accountController.getAccountById(1);
@@ -88,7 +85,7 @@ public class AccountControllerTest {
     }
 
     @Test
-    public void testGetAccountByUsername() {
+    public void testGetAccountByUsername() throws BadRequestException {
         final Account account = createAccount();
         when(accountsRepository.findByUsername(anyString())).thenReturn(Optional.ofNullable(account));
 
@@ -102,18 +99,13 @@ public class AccountControllerTest {
         verify(accountsRepository).findByUsername(anyString());
     }
 
-    @Test
-    public void testGetAccountById_nullUsername() {
-        final ResponseEntity responseEntity = accountController.getAccountByUsername(null);
-
-        assertNotNull(responseEntity);
-        assertFalse(responseEntity.hasBody());
-        assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
-        verifyZeroInteractions(accountsRepository);
+    @Test(expected = BadRequestException.class)
+    public void testGetAccountById_nullUsername() throws BadRequestException {
+        accountController.getAccountByUsername(null);
     }
 
     @Test
-    public void testGetAccountByUsername_noAccountFound() {
+    public void testGetAccountByUsername_noAccountFound() throws BadRequestException {
         when(accountsRepository.findByUsername(anyString())).thenReturn(Optional.empty());
 
         final ResponseEntity responseEntity = accountController.getAccountByUsername("Test username");
@@ -125,7 +117,7 @@ public class AccountControllerTest {
     }
 
     @Test
-    public void testInsertAccount() {
+    public void testInsertAccount() throws UnprocessableEntityException, BadRequestException {
         final Account account = createAccount();
         when(accountsRepository.save(any(Account.class))).thenReturn(account);
         when(accountsRepository.findByUsername(anyString())).thenReturn(Optional.empty());
@@ -141,7 +133,7 @@ public class AccountControllerTest {
     }
 
     @Test
-    public void testInsertAccount_usernameAlreadyExists() {
+    public void testInsertAccount_usernameAlreadyExists() throws UnprocessableEntityException, BadRequestException {
         final Account account = createAccount();
         when(accountsRepository.findByUsername(anyString())).thenReturn(Optional.of(account));
 
@@ -154,8 +146,8 @@ public class AccountControllerTest {
         verify(accountsRepository, times(0)).save(any(Account.class));
     }
 
-    @Test
-    public void testInsertAccount_accountsDtoIsNull() {
+    @Test(expected = BadRequestException.class)
+    public void testInsertAccount_accountsDtoIsNull() throws UnprocessableEntityException, BadRequestException {
         final ResponseEntity responseEntity = accountController.insertAccount(null, bindingResult);
 
         assertNotNull(responseEntity);
@@ -164,21 +156,16 @@ public class AccountControllerTest {
         verifyZeroInteractions(accountsRepository);
     }
 
-    @Test
-    public void testInsertAccount_bindingResultHasErrors() {
+    @Test(expected = UnprocessableEntityException.class)
+    public void testInsertAccount_bindingResultHasErrors() throws UnprocessableEntityException, BadRequestException {
         final Account account = createAccount();
         when(bindingResult.hasErrors()).thenReturn(true);
 
-        final ResponseEntity responseEntity = accountController.insertAccount(account, bindingResult);
-
-        assertNotNull(responseEntity);
-        assertFalse(responseEntity.hasBody());
-        assertEquals(HttpStatus.UNPROCESSABLE_ENTITY, responseEntity.getStatusCode());
-        verifyZeroInteractions(accountsRepository);
+        accountController.insertAccount(account, bindingResult);
     }
 
     @Test
-    public void testUpdateAccount() {
+    public void testUpdateAccount() throws UnprocessableEntityException, BadRequestException {
         final Account existingAccount = createAccount();
         existingAccount.setId(1);
         existingAccount.setVersion(1);
@@ -199,40 +186,25 @@ public class AccountControllerTest {
         verify(accountsRepository).save(any(Account.class));
     }
 
-    @Test
-    public void testUpdateAccount_bindingResultHasErrors() {
+    @Test(expected = UnprocessableEntityException.class)
+    public void testUpdateAccount_bindingResultHasErrors() throws UnprocessableEntityException, BadRequestException {
         when(bindingResult.hasErrors()).thenReturn(true);
 
-        final ResponseEntity<Account> responseEntity = accountController.updateAccount(1, createAccount(), bindingResult);
+        accountController.updateAccount(1, createAccount(), bindingResult);
+    }
 
-        assertNotNull(responseEntity);
-        assertFalse(responseEntity.hasBody());
-        assertEquals(HttpStatus.UNPROCESSABLE_ENTITY, responseEntity.getStatusCode());
-        verifyZeroInteractions(accountsRepository);
+    @Test(expected = BadRequestException.class)
+    public void testUpdateAccount_accountsDtoIsNull() throws UnprocessableEntityException, BadRequestException {
+        accountController.updateAccount(1, null, bindingResult);
+    }
+
+    @Test(expected = BadRequestException.class)
+    public void testUpdateAccount_idIsNull() throws UnprocessableEntityException, BadRequestException {
+        accountController.updateAccount(null, createAccount(), bindingResult);
     }
 
     @Test
-    public void testUpdateAccount_accountsDtoIsNull() {
-        final ResponseEntity<Account> responseEntity = accountController.updateAccount(1, null, bindingResult);
-
-        assertNotNull(responseEntity);
-        assertFalse(responseEntity.hasBody());
-        assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
-        verifyZeroInteractions(accountsRepository);
-    }
-
-    @Test
-    public void testUpdateAccount_idIsNull() {
-        final ResponseEntity<Account> responseEntity = accountController.updateAccount(null, createAccount(), bindingResult);
-
-        assertNotNull(responseEntity);
-        assertFalse(responseEntity.hasBody());
-        assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
-        verifyZeroInteractions(accountsRepository);
-    }
-
-    @Test
-    public void testUpdateAccount_accountDoesNotExist() {
+    public void testUpdateAccount_accountDoesNotExist() throws UnprocessableEntityException, BadRequestException {
         when(accountsRepository.findById(anyInt())).thenReturn(Optional.empty());
 
         final ResponseEntity<Account> responseEntity = accountController.updateAccount(1, createAccount(), bindingResult);
@@ -244,7 +216,7 @@ public class AccountControllerTest {
     }
 
     @Test
-    public void testDeleteAccountById() {
+    public void testDeleteAccountById() throws BadRequestException {
         doNothing().when(accountsRepository).deleteById(anyInt());
 
         final ResponseEntity responseEntity = accountController.deleteAccountById(1);
@@ -255,14 +227,9 @@ public class AccountControllerTest {
         verify(accountsRepository).deleteById(anyInt());
     }
 
-    @Test
-    public void testDeleteAccountById_idIsNull() {
-        final ResponseEntity responseEntity = accountController.deleteAccountById(null);
-
-        assertNotNull(responseEntity);
-        assertFalse(responseEntity.hasBody());
-        assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
-        verifyZeroInteractions(accountsRepository);
+    @Test(expected = BadRequestException.class)
+    public void testDeleteAccountById_idIsNull() throws BadRequestException {
+        accountController.deleteAccountById(null);
     }
 
     private Account createAccount() {
