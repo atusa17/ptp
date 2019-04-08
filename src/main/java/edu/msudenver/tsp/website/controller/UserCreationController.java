@@ -34,8 +34,6 @@ public class UserCreationController {
         model.addAttribute("referrer", userCreationForm.getReferrer());
         model.addAttribute("TnCAgreement", userCreationForm.isAgreedToTerms());
 
-        LOG.info("Saving user {}...", userCreationForm);
-
-        return "success";
+        return "successfulRegistration";
     }
 }
