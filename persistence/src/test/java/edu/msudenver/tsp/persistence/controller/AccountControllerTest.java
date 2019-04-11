@@ -25,10 +25,8 @@ import static org.mockito.Mockito.*;
 @RunWith(MockitoJUnitRunner.class)
 @WebMvcTest(controllers = AccountController.class)
 public class AccountControllerTest {
-    @Mock
-    private AccountsRepository accountsRepository;
-    @InjectMocks
-    private AccountController accountController;
+    @Mock private AccountsRepository accountsRepository;
+    @InjectMocks private AccountController accountController;
     @Mock private BindingResult bindingResult;
 
     @Test
@@ -269,7 +267,7 @@ public class AccountControllerTest {
         final Account account = new Account();
         account.setUsername("Test username");
         account.setPassword("test password");
-        account.setAdministratorStatus(true);
+        account.setAdministrator(true);
 
         return account;
     }
