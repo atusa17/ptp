@@ -1,6 +1,8 @@
 package edu.msudenver.tsp.persistence.controller;
 
 import edu.msudenver.tsp.persistence.dto.Definition;
+import edu.msudenver.tsp.persistence.exception.BadRequestException;
+import edu.msudenver.tsp.persistence.exception.UnprocessableEntityException;
 import edu.msudenver.tsp.persistence.repository.DefinitionRepository;
 import edu.msudenver.tsp.utilities.PersistenceUtilities;
 import lombok.AllArgsConstructor;
@@ -21,6 +23,7 @@ import java.util.Optional;
 @RestController
 @AllArgsConstructor
 @RequestMapping(path = "/definitions")
+@Validated
 public class DefinitionController {
     private final DefinitionRepository definitionRepository;
 
@@ -45,11 +48,12 @@ public class DefinitionController {
 
     @GetMapping("/{id}")
     public @ResponseBody
-    ResponseEntity<Definition> getDefinitionById(@PathVariable("id") final Integer id) {
+    ResponseEntity<Definition> getDefinitionById(@PathVariable("id") final Integer id)
+            throws BadRequestException {
         LOG.info("Received request to query for definition with id {}", id);
         if (id == null) {
-            LOG.error("ERROR: ID was null");
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            LOG.error("ERROR: ID cannot be null");
+            throw new BadRequestException("ERROR: ID cannot be null");
         }
 
         LOG.debug("Querying for definition with id {}", id);
@@ -77,16 +81,17 @@ public class DefinitionController {
     @Validated({Definition.Insert.class, Default.class})
     public @ResponseBody ResponseEntity<Definition> insertDefinition(
             @Valid @RequestBody final Definition definition,
-            final BindingResult bindingResult) {
+            final BindingResult bindingResult)
+            throws UnprocessableEntityException, BadRequestException {
         LOG.info("Received request to insert a new definition");
         if (bindingResult.hasErrors()) {
             LOG.error("Binding result is unprocessable");
-            return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
+            throw new UnprocessableEntityException(bindingResult.getAllErrors().toString());
         }
 
         if (definition == null) {
             LOG.error("Passed entity is null");
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            throw new BadRequestException("Passed definition is be null");
         }
 
         LOG.debug("Saving new definition");
@@ -106,22 +111,22 @@ public class DefinitionController {
     @PatchMapping("/{id}")
     public @ResponseBody ResponseEntity<Definition> updateDefinition(
             @PathVariable("id") final Integer id,
-            @RequestBody final Definition definition, final BindingResult bindingResult) {
+            @RequestBody final Definition definition, final BindingResult bindingResult) throws UnprocessableEntityException, BadRequestException {
 
         LOG.info("Received request to update an account");
         if (bindingResult.hasErrors()) {
             LOG.error("Binding result is unprocessable");
-            return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
+            throw new UnprocessableEntityException(bindingResult.getAllErrors().toString());
         }
 
         if (definition == null) {
             LOG.error("Passed entity is null");
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            throw new BadRequestException("Passed definition is null");
         }
 
         if (id == null) {
             LOG.error("Definition ID must be specified");
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            throw new BadRequestException("Definition ID must be specified");
         }
 
         LOG.debug("Checking for existence of definition with id {}", id);
@@ -137,7 +142,7 @@ public class DefinitionController {
 
         if (!existingDefinition.isPresent()) {
             LOG.error("No definition associated with id {}", id);
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
         PersistenceUtilities.copyNonNullProperties(definition, existingDefinition.get());
@@ -158,11 +163,11 @@ public class DefinitionController {
     }
 
     @DeleteMapping("/{id}")
-    public @ResponseBody ResponseEntity<Void> deleteDefinitionById(@PathVariable("id") final Integer id) {
+    public @ResponseBody ResponseEntity<Void> deleteDefinitionById(@PathVariable("id") final Integer id) throws BadRequestException {
         LOG.info("Received request to delete definition with id {}", id);
         if (id == null) {
             LOG.error("Specified id is null");
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            throw new BadRequestException("Specified ID is null");
         }
 
         LOG.debug("Deleting definition with id {}", id);

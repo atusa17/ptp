@@ -10,6 +10,7 @@ import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.List;
@@ -24,7 +25,7 @@ public class Definition extends BaseDto implements Serializable {
     @Size(min = 1, max = 200, message = "Must be between 1 and 200 characters")
     private String name;
 
-    @NotBlank(groups = Insert.class, message = "At least one (1) definition must be specified")
+    @NotNull(groups = Insert.class, message = "At least one (1) definition must be specified")
     @Type(type = "json") @Column(columnDefinition = "jsonb") private List<String> definition;
 
     @Type(type = "json") @Column(columnDefinition = "jsonb") private List<String> notation;

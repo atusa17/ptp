@@ -1,6 +1,8 @@
 package edu.msudenver.tsp.persistence.controller;
 
 import edu.msudenver.tsp.persistence.dto.Proof;
+import edu.msudenver.tsp.persistence.exception.BadRequestException;
+import edu.msudenver.tsp.persistence.exception.UnprocessableEntityException;
 import edu.msudenver.tsp.persistence.repository.ProofRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -45,7 +47,7 @@ public class ProofControllerTest {
     }
 
     @Test
-    public void testGetAllProofsByBranch() {
+    public void testGetAllProofsByBranch() throws BadRequestException {
         final Proof proofDto = createProof();
         final List<Proof> listOfProofs = new ArrayList<>();
         listOfProofs.add(proofDto);
@@ -63,18 +65,13 @@ public class ProofControllerTest {
         responseEntity.getBody().forEach(proof -> assertEquals(proofDto, proof));
     }
 
-    @Test
-    public void testGetAllProfsByBranch_nullBranch() {
-        final ResponseEntity<List<Proof>> responseEntity = proofController.getAllProofsByBranch(null);
-
-        assertNotNull(responseEntity);
-        assertFalse(responseEntity.hasBody());
-        assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
-        verifyZeroInteractions(proofRepository);
+    @Test(expected = BadRequestException.class)
+    public void testGetAllProfsByBranch_nullBranch() throws BadRequestException {
+        proofController.getAllProofsByBranch(null);
     }
 
     @Test
-    public void testGetAllProofsByBranch_noProofsFound() {
+    public void testGetAllProofsByBranch_noProofsFound() throws BadRequestException {
         when(proofRepository.findByBranch(anyString())).thenReturn(Collections.emptyList());
 
         final ResponseEntity<List<Proof>> responseEntity = proofController.getAllProofsByBranch("test-nonexistent-branch");
@@ -85,7 +82,7 @@ public class ProofControllerTest {
     }
 
     @Test
-    public void testGetAllProofsByTheoremName() {
+    public void testGetAllProofsByTheoremName() throws BadRequestException {
         final Proof proofDto = createProof();
         final List<Proof> listOfProofs = new ArrayList<>();
         listOfProofs.add(proofDto);
@@ -103,18 +100,13 @@ public class ProofControllerTest {
         responseEntity.getBody().forEach(proof -> assertEquals(proofDto, proof));
     }
 
-    @Test
-    public void testGetAllProofsByTheoremName_nullTheoremName() {
-        final ResponseEntity<List<Proof>> responseEntity = proofController.getAllProofsByTheoremName(null);
-
-        assertNotNull(responseEntity);
-        assertFalse(responseEntity.hasBody());
-        assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
-        verifyZeroInteractions(proofRepository);
+    @Test(expected = BadRequestException.class)
+    public void testGetAllProofsByTheoremName_nullTheoremName() throws BadRequestException {
+        proofController.getAllProofsByTheoremName(null);
     }
 
     @Test
-    public void testGetAllProofsByTheoremName_noProofsFound() {
+    public void testGetAllProofsByTheoremName_noProofsFound() throws BadRequestException {
         when(proofRepository.findByTheoremName(anyString())).thenReturn(Collections.emptyList());
 
         final ResponseEntity<List<Proof>> responseEntity = proofController.getAllProofsByTheoremName("test-nonexistent-proof");
@@ -125,7 +117,7 @@ public class ProofControllerTest {
     }
 
     @Test
-    public void testGetProofById() {
+    public void testGetProofById() throws BadRequestException {
         final Proof proof = createProof();
         when(proofRepository.findById(anyInt())).thenReturn(Optional.ofNullable(proof));
 
@@ -139,18 +131,13 @@ public class ProofControllerTest {
         verify(proofRepository).findById(anyInt());
     }
 
-    @Test
-    public void testGetProofById_nullId() {
-        final ResponseEntity responseEntity = proofController.getProofById(null);
-
-        assertNotNull(responseEntity);
-        assertFalse(responseEntity.hasBody());
-        assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
-        verifyZeroInteractions(proofRepository);
+    @Test(expected = BadRequestException.class)
+    public void testGetProofById_nullId() throws BadRequestException {
+        proofController.getProofById(null);
     }
 
     @Test
-    public void testGetProofById_noProofFound() {
+    public void testGetProofById_noProofFound() throws BadRequestException {
         when(proofRepository.findById(anyInt())).thenReturn(Optional.empty());
 
         final ResponseEntity responseEntity = proofController.getProofById(1);
@@ -162,7 +149,7 @@ public class ProofControllerTest {
     }
 
     @Test
-    public void testInsertProof() {
+    public void testInsertProof() throws BadRequestException, UnprocessableEntityException {
         final Proof proof = createProof();
         when(proofRepository.save(any(Proof.class))).thenReturn(proof);
 
@@ -176,31 +163,21 @@ public class ProofControllerTest {
         verify(proofRepository).save(any(Proof.class));
     }
 
-    @Test
-    public void testInsertProof_proofDtoIsNull() {
-        final ResponseEntity responseEntity = proofController.insertProof(null, bindingResult);
-
-        assertNotNull(responseEntity);
-        assertFalse(responseEntity.hasBody());
-        assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
-        verifyZeroInteractions(proofRepository);
+    @Test(expected = BadRequestException.class)
+    public void testInsertProof_proofDtoIsNull() throws BadRequestException, UnprocessableEntityException {
+        proofController.insertProof(null, bindingResult);
     }
 
-    @Test
-    public void testInsertProof_bindingResultHasErrors() {
+    @Test(expected = UnprocessableEntityException.class)
+    public void testInsertProof_bindingResultHasErrors() throws BadRequestException, UnprocessableEntityException {
         final Proof proof = createProof();
         when(bindingResult.hasErrors()).thenReturn(true);
 
-        final ResponseEntity responseEntity = proofController.insertProof(proof, bindingResult);
-
-        assertNotNull(responseEntity);
-        assertFalse(responseEntity.hasBody());
-        assertEquals(HttpStatus.UNPROCESSABLE_ENTITY, responseEntity.getStatusCode());
-        verifyZeroInteractions(proofRepository);
+        proofController.insertProof(proof, bindingResult);
     }
 
     @Test
-    public void testUpdateProof() {
+    public void testUpdateProof() throws BadRequestException, UnprocessableEntityException {
         final Proof existingProof = createProof();
         existingProof.setId(1);
         existingProof.setVersion(1);
@@ -221,52 +198,37 @@ public class ProofControllerTest {
         verify(proofRepository).save(any(Proof.class));
     }
 
-    @Test
-    public void testUpdateProof_bindingResultHasErrors() {
+    @Test(expected = UnprocessableEntityException.class)
+    public void testUpdateProof_bindingResultHasErrors() throws BadRequestException, UnprocessableEntityException {
         when(bindingResult.hasErrors()).thenReturn(true);
 
-        final ResponseEntity<Proof> responseEntity = proofController.updateProof(1, createProof(), bindingResult);
+        proofController.updateProof(1, createProof(), bindingResult);
+    }
 
-        assertNotNull(responseEntity);
-        assertFalse(responseEntity.hasBody());
-        assertEquals(HttpStatus.UNPROCESSABLE_ENTITY, responseEntity.getStatusCode());
-        verifyZeroInteractions(proofRepository);
+    @Test(expected = BadRequestException.class)
+    public void testUpdateProof_proofDtoIsNull() throws BadRequestException, UnprocessableEntityException {
+        proofController.updateProof(1, null, bindingResult);
+    }
+
+    @Test(expected = BadRequestException.class)
+    public void testUpdateProof_idIsNull() throws BadRequestException, UnprocessableEntityException {
+        proofController.updateProof(null, createProof(), bindingResult);
     }
 
     @Test
-    public void testUpdateProof_proofDtoIsNull() {
-        final ResponseEntity<Proof> responseEntity = proofController.updateProof(1, null, bindingResult);
-
-        assertNotNull(responseEntity);
-        assertFalse(responseEntity.hasBody());
-        assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
-        verifyZeroInteractions(proofRepository);
-    }
-
-    @Test
-    public void testUpdateProof_idIsNull() {
-        final ResponseEntity<Proof> responseEntity = proofController.updateProof(null, createProof(), bindingResult);
-
-        assertNotNull(responseEntity);
-        assertFalse(responseEntity.hasBody());
-        assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
-        verifyZeroInteractions(proofRepository);
-    }
-
-    @Test
-    public void testUpdateProof_theoremDoesNotExist() {
+    public void testUpdateProof_theoremDoesNotExist() throws BadRequestException, UnprocessableEntityException {
         when(proofRepository.findById(anyInt())).thenReturn(Optional.empty());
 
         final ResponseEntity<Proof> responseEntity = proofController.updateProof(1, createProof(), bindingResult);
 
         assertNotNull(responseEntity);
         assertFalse(responseEntity.hasBody());
-        assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
+        assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
         verify(proofRepository, times(0)).save(any(Proof.class));
     }
 
     @Test
-    public void testDeleteProofById() {
+    public void testDeleteProofById() throws BadRequestException {
         doNothing().when(proofRepository).deleteById(anyInt());
 
         final ResponseEntity responseEntity = proofController.deleteProofById(1);
@@ -277,14 +239,9 @@ public class ProofControllerTest {
         verify(proofRepository).deleteById(anyInt());
     }
 
-    @Test
-    public void testDeleteProofById_idIsNull() {
-        final ResponseEntity responseEntity = proofController.deleteProofById(null);
-
-        assertNotNull(responseEntity);
-        assertFalse(responseEntity.hasBody());
-        assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
-        verifyZeroInteractions(proofRepository);
+    @Test(expected = BadRequestException.class)
+    public void testDeleteProofById_idIsNull() throws BadRequestException {
+        proofController.deleteProofById(null);
     }
 
     private Proof createProof() {
