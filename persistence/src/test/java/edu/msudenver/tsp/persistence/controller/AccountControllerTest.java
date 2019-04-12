@@ -236,7 +236,7 @@ public class AccountControllerTest {
         final Account account = new Account();
         account.setUsername("Test username");
         account.setPassword("test password");
-        account.setAdministratorStatus(true);
+        account.setAdministrator(true);
 
         return account;
     }
