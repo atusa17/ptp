@@ -16,7 +16,7 @@ import java.util.Date;
 public class Account extends BaseDto implements Serializable {
     @Size(max = 50) private String username;
     @Size(max = 256) private String password;
-    @NotNull @SerializedName("administrator_status") private boolean administratorStatus;
+    @NotNull private boolean administrator;
     @Temporal(TemporalType.DATE) @SerializedName("last_login") private Date lastLogin;
 
     private static final long serialVersionUID = 7095627971593953734L;

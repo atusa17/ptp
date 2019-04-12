@@ -18,8 +18,7 @@ import static org.junit.Assert.*;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = PersistenceTestConfig.class)
 public class ProofsIntegrationTest {
-    @Autowired
-    private ProofRepository proofRepository;
+    @Autowired private ProofRepository proofRepository;
 
     @Test
     public void testCRUDFunctionality() {
