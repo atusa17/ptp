@@ -1,6 +1,8 @@
 package edu.msudenver.tsp.persistence.controller;
 
 import edu.msudenver.tsp.persistence.dto.Definition;
+import edu.msudenver.tsp.persistence.exception.BadRequestException;
+import edu.msudenver.tsp.persistence.exception.UnprocessableEntityException;
 import edu.msudenver.tsp.persistence.repository.DefinitionRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -48,7 +50,7 @@ public class DefinitionControllerTest {
     }
 
     @Test
-    public void testGetDefinitionsById() {
+    public void testGetDefinitionsById() throws BadRequestException {
         final Definition definition = createDefinition();
         when(definitionRepository.findById(anyInt())).thenReturn(Optional.ofNullable(definition));
 
@@ -62,18 +64,13 @@ public class DefinitionControllerTest {
         verify(definitionRepository).findById(anyInt());
     }
 
-    @Test
-    public void testGetDefinitionById_nullId() {
-        final ResponseEntity responseEntity = definitionController.getDefinitionById(null);
-
-        assertNotNull(responseEntity);
-        assertFalse(responseEntity.hasBody());
-        assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
-        verifyZeroInteractions(definitionRepository);
+    @Test(expected = BadRequestException.class)
+    public void testGetDefinitionById_nullId() throws BadRequestException {
+        definitionController.getDefinitionById(null);
     }
 
     @Test
-    public void testGetDefinitionById_noDefinitionFound() {
+    public void testGetDefinitionById_noDefinitionFound() throws BadRequestException {
         when(definitionRepository.findById(anyInt())).thenReturn(Optional.empty());
 
         final ResponseEntity responseEntity = definitionController.getDefinitionById(1);
@@ -85,7 +82,7 @@ public class DefinitionControllerTest {
     }
 
     @Test
-    public void testInsertDefinition() {
+    public void testInsertDefinition() throws BadRequestException, UnprocessableEntityException {
         final Definition definition = createDefinition();
         when(definitionRepository.save(any(Definition.class))).thenReturn(definition);
 
@@ -99,31 +96,21 @@ public class DefinitionControllerTest {
         verify(definitionRepository).save(any(Definition.class));
     }
 
-    @Test
-    public void testInsertDefinition_definitionDtoIsNull() {
-        final ResponseEntity responseEntity = definitionController.insertDefinition(null, bindingResult);
-
-        assertNotNull(responseEntity);
-        assertFalse(responseEntity.hasBody());
-        assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
-        verifyZeroInteractions(definitionRepository);
+    @Test(expected = BadRequestException.class)
+    public void testInsertDefinition_definitionDtoIsNull() throws BadRequestException, UnprocessableEntityException {
+        definitionController.insertDefinition(null, bindingResult);
     }
 
-    @Test
-    public void testInsertDefinition_bindingResultHasErrors() {
+    @Test(expected = UnprocessableEntityException.class)
+    public void testInsertDefinition_bindingResultHasErrors() throws BadRequestException, UnprocessableEntityException {
         final Definition definition = createDefinition();
         when(bindingResult.hasErrors()).thenReturn(true);
 
-        final ResponseEntity responseEntity = definitionController.insertDefinition(definition, bindingResult);
-
-        assertNotNull(responseEntity);
-        assertFalse(responseEntity.hasBody());
-        assertEquals(HttpStatus.UNPROCESSABLE_ENTITY, responseEntity.getStatusCode());
-        verifyZeroInteractions(definitionRepository);
+        definitionController.insertDefinition(definition, bindingResult);
     }
 
     @Test
-    public void testUpdateDefinition() {
+    public void testUpdateDefinition() throws BadRequestException, UnprocessableEntityException {
         final Definition existingDefinition = createDefinition();
         existingDefinition.setId(1);
         existingDefinition.setVersion(1);
@@ -144,52 +131,37 @@ public class DefinitionControllerTest {
         verify(definitionRepository).save(any(Definition.class));
     }
 
-    @Test
-    public void testUpdateDefinition_bindingResultErrors() {
+    @Test(expected = UnprocessableEntityException.class)
+    public void testUpdateDefinition_bindingResultErrors() throws BadRequestException, UnprocessableEntityException {
         when(bindingResult.hasErrors()).thenReturn(true);
 
-        final ResponseEntity<Definition> responseEntity = definitionController.updateDefinition(1, createDefinition(), bindingResult);
+        definitionController.updateDefinition(1, createDefinition(), bindingResult);
+    }
 
-        assertNotNull(responseEntity);
-        assertFalse(responseEntity.hasBody());
-        assertEquals(HttpStatus.UNPROCESSABLE_ENTITY, responseEntity.getStatusCode());
-        verifyZeroInteractions(definitionRepository);
+    @Test(expected = BadRequestException.class)
+    public void testUpdateDefinition_definitionDtoIsNull() throws BadRequestException, UnprocessableEntityException {
+        definitionController.updateDefinition(1, null, bindingResult);
+    }
+
+    @Test(expected = BadRequestException.class)
+    public void testUpdateDefinition_idIsNull() throws BadRequestException, UnprocessableEntityException {
+        definitionController.updateDefinition(null, createDefinition(), bindingResult);
     }
 
     @Test
-    public void testUpdateDefinition_definitionDtoIsNull() {
-        final ResponseEntity<Definition> responseEntity = definitionController.updateDefinition(1, null, bindingResult);
-
-        assertNotNull(responseEntity);
-        assertFalse(responseEntity.hasBody());
-        assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
-        verifyZeroInteractions(definitionRepository);
-    }
-
-    @Test
-    public void testUpdateDefinition_idIsNull() {
-        final ResponseEntity<Definition> responseEntity = definitionController.updateDefinition(null, createDefinition(), bindingResult);
-
-        assertNotNull(responseEntity);
-        assertFalse(responseEntity.hasBody());
-        assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
-        verifyZeroInteractions(definitionRepository);
-    }
-
-    @Test
-    public void testUpdateDefinition_definitionDoesntExist() {
+    public void testUpdateDefinition_definitionDoesntExist() throws BadRequestException, UnprocessableEntityException {
         when(definitionRepository.findById(anyInt())).thenReturn(Optional.empty());
 
         final ResponseEntity<Definition> responseEntity = definitionController.updateDefinition(1, createDefinition(), bindingResult);
 
         assertNotNull(responseEntity);
         assertFalse(responseEntity.hasBody());
-        assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
+        assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
         verify(definitionRepository, times(0)).save(any(Definition.class));
     }
 
     @Test
-    public void testDeleteDefinitionById() {
+    public void testDeleteDefinitionById() throws BadRequestException {
         doNothing().when(definitionRepository).deleteById(anyInt());
 
         final ResponseEntity responseEntity = definitionController.deleteDefinitionById(1);
@@ -200,14 +172,9 @@ public class DefinitionControllerTest {
         verify(definitionRepository).deleteById(anyInt());
     }
 
-    @Test
-    public void testDeleteDefinitionById_nullId() {
-        final ResponseEntity responseEntity = definitionController.deleteDefinitionById(null);
-
-        assertNotNull(responseEntity);
-        assertFalse(responseEntity.hasBody());
-        assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
-        verifyZeroInteractions(definitionRepository);
+    @Test(expected = BadRequestException.class)
+    public void testDeleteDefinitionById_nullId() throws BadRequestException {
+        definitionController.deleteDefinitionById(null);
     }
 
     private Definition createDefinition() {
