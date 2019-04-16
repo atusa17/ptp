@@ -204,9 +204,9 @@ public class ParserServiceTest {
         final String expected = "0: \n";
         final String actual;
 
-        when(parserService.parseRawInput("")).thenReturn(new Node("", null));
-
-        actual = parserService.parseRawInput("").toString();
+        final ParserService spy = spy(new ParserService());
+        when(spy.parseRawInput("")).thenReturn(new Node("", null));
+        actual = spy.parseRawInput("").toString();
 
         assertEquals(expected, actual);
     }
