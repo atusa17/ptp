@@ -5,11 +5,11 @@ create table accounts (
 id int not null auto_increment primary key unique,
 username varchar(50) not null unique,
 password varchar(256) not null,
-administrator_status boolean default false,
+administrator boolean default false,
 last_login date,
 version int default 1
 );
-insert into accounts (username, password, administrator_status)
+insert into accounts (username, password, administrator)
 values ('admin', 'secret', true),
 ('atusa', 'secret', true),
 ('dantanxiaotian', 'secret', true),
@@ -34,17 +34,17 @@ referenced_theorems json,
 proven_status boolean default false,
 version int default 1
 );
-CREATE TABLE proofs
+create table proofs
 (
-  id        INT NOT NULL AUTO_INCREMENT,
-  theorem_name      VARCHAR(512) NOT NULL,
-  proof VARCHAR(4096) NOT NULL,
-  branch    VARCHAR(512) NOT NULL,
-  theorem   INT NOT NULL,
-  referenced_definitions JSON,
-  referenced_theorems JSON,
-  date_added DATE,
-  last_updated DATE,
-  version INT DEFAULT 1,
-  PRIMARY KEY (id)
+  id int not null auto_increment,
+  theorem_name varchar(512) not null,
+  proof varchar(4096) not null,
+  branch varchar(512) not null,
+  theorem int not null,
+  referenced_definitions json,
+  referenced_theorems json,
+  date_added date,
+  last_updated date,
+  version int default 1,
+  primary key (id)
 );
