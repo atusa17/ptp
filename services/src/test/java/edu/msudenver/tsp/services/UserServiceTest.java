@@ -306,7 +306,7 @@ public class UserServiceTest {
         final Account account = new Account();
         account.setUsername("Test username");
         account.setPassword("test password");
-        account.setAdministratorStatus(true);
+        account.setAdministrator(true);
         account.setLastLogin(new Date());
         return account;
     }

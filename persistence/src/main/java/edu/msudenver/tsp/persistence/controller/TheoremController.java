@@ -1,6 +1,8 @@
 package edu.msudenver.tsp.persistence.controller;
 
 import edu.msudenver.tsp.persistence.dto.Theorem;
+import edu.msudenver.tsp.persistence.exception.BadRequestException;
+import edu.msudenver.tsp.persistence.exception.UnprocessableEntityException;
 import edu.msudenver.tsp.persistence.repository.TheoremRepository;
 import edu.msudenver.tsp.utilities.PersistenceUtilities;
 import lombok.AllArgsConstructor;
@@ -45,11 +47,11 @@ public class TheoremController {
 
     @GetMapping("/branch")
     public @ResponseBody
-    ResponseEntity<List<Theorem>> getAllTheoremsByBranch(@RequestParam("branch") String branch) {
+    ResponseEntity<List<Theorem>> getAllTheoremsByBranch(@RequestParam("branch") String branch) throws BadRequestException {
         LOG.info("Received request to query for theorems related to the {} branch of mathematics", branch);
         if (branch == null) {
             LOG.error("ERROR: branch was null");
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            throw new BadRequestException("Specified branch is null");
         }
 
         if (branch.contains("_") || branch.contains("-")) {
@@ -80,11 +82,11 @@ public class TheoremController {
 
     @GetMapping("/proven_status")
     public @ResponseBody
-    ResponseEntity<List<Theorem>> getAllTheoremsByProvenStatus(@RequestParam("proven_status") final String provenStatus) {
+    ResponseEntity<List<Theorem>> getAllTheoremsByProvenStatus(@RequestParam("proven_status") final String provenStatus) throws BadRequestException {
         LOG.info("Received request to query for theorems whose proven status is {}", provenStatus);
         if (provenStatus == null) {
             LOG.error("ERROR: status was null");
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            throw new BadRequestException("Specified status is null");
         }
 
         final Boolean isProven = Boolean.parseBoolean(provenStatus);
@@ -112,11 +114,11 @@ public class TheoremController {
 
     @GetMapping("/name")
     public @ResponseBody
-    ResponseEntity<List<Theorem>> getAllTheoremsByName(@RequestParam("name") String name) {
+    ResponseEntity<List<Theorem>> getAllTheoremsByName(@RequestParam("name") String name) throws BadRequestException {
         LOG.info("Received request to query for theorems whose name is {}", name);
         if (name == null) {
             LOG.error("ERROR: name was null");
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            throw new BadRequestException("Specified name is null");
         }
 
         if (name.contains("_") || name.contains("-")) {
@@ -147,11 +149,11 @@ public class TheoremController {
 
     @GetMapping("/id")
     public @ResponseBody
-    ResponseEntity<Theorem> getTheoremById(@RequestParam("id") final Integer id) {
+    ResponseEntity<Theorem> getTheoremById(@RequestParam("id") final Integer id) throws BadRequestException {
         LOG.info("Received request to query for theorem with id {}", id);
         if (id == null) {
             LOG.error("ERROR: ID was null");
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            throw new BadRequestException("Specified ID is null");
         }
 
         LOG.debug("Querying for theorem with id {}", id);
@@ -179,16 +181,16 @@ public class TheoremController {
     @Validated({Theorem.Insert.class, Default.class})
     public @ResponseBody ResponseEntity<Theorem> insertTheorem(
             @Valid @RequestBody final Theorem theorem,
-            final BindingResult bindingResult) {
+            final BindingResult bindingResult) throws UnprocessableEntityException, BadRequestException {
         LOG.info("Received request to insert a new theorem");
         if (bindingResult.hasErrors()) {
             LOG.error("Binding result is unprocessable");
-            return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
+            throw new UnprocessableEntityException(bindingResult.getAllErrors().toString());
         }
 
         if (theorem == null) {
             LOG.error("Passed entity is null");
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            throw new BadRequestException("Passed theorem is null");
         }
 
         LOG.debug("Saving new theorem");
@@ -208,22 +210,22 @@ public class TheoremController {
     @PatchMapping("/{id}")
     public @ResponseBody ResponseEntity<Theorem> updateTheorem(
             @PathVariable("id") final Integer id,
-            @RequestBody final Theorem theorem, final BindingResult bindingResult) {
+            @RequestBody final Theorem theorem, final BindingResult bindingResult) throws UnprocessableEntityException, BadRequestException {
 
         LOG.info("Received request to update a theorem");
         if (bindingResult.hasErrors()) {
             LOG.error("Binding result is unprocessable");
-            return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
+            throw new UnprocessableEntityException(bindingResult.getAllErrors().toString());
         }
 
         if (theorem == null) {
             LOG.error("Passed entity is null");
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            throw new BadRequestException("Passed theorem is null");
         }
 
         if (id == null) {
             LOG.error("Theorem ID must be specified");
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            throw new BadRequestException("Specified ID is null");
         }
 
         LOG.debug("Checking for existence of theorem with id {}", id);
@@ -239,7 +241,7 @@ public class TheoremController {
 
         if (!existingTheorem.isPresent()) {
             LOG.error("No theorem associated with id {}", id);
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
         PersistenceUtilities.copyNonNullProperties(theorem, existingTheorem.get());
@@ -260,11 +262,11 @@ public class TheoremController {
     }
 
     @DeleteMapping("/{id}")
-    public @ResponseBody ResponseEntity<Void> deleteTheoremById(@PathVariable("id") final Integer id) {
+    public @ResponseBody ResponseEntity<Void> deleteTheoremById(@PathVariable("id") final Integer id) throws BadRequestException {
         LOG.info("Received request to delete theorem with id {}", id);
         if (id == null) {
             LOG.error("Specified id is null");
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            throw new BadRequestException("Specified ID is null");
         }
 
         LOG.debug("Deleting theorem with id {}", id);

@@ -1,6 +1,8 @@
 package edu.msudenver.tsp.persistence.controller;
 
 import edu.msudenver.tsp.persistence.dto.Account;
+import edu.msudenver.tsp.persistence.exception.BadRequestException;
+import edu.msudenver.tsp.persistence.exception.UnprocessableEntityException;
 import edu.msudenver.tsp.persistence.repository.AccountsRepository;
 import edu.msudenver.tsp.utilities.PersistenceUtilities;
 import lombok.AllArgsConstructor;
@@ -23,6 +25,7 @@ import java.util.Optional;
 @RestController
 @AllArgsConstructor
 @RequestMapping("/accounts")
+@Validated
 public class AccountController {
     private final AccountsRepository accountsRepository;
 
@@ -48,11 +51,11 @@ public class AccountController {
 
     @GetMapping("/id")
     public @ResponseBody
-    ResponseEntity<Account> getAccountById(@RequestParam("id") final Integer id) {
+    ResponseEntity<Account> getAccountById(@RequestParam("id") final Integer id) throws BadRequestException {
         LOG.info("Received request to query for account with id {}", id);
         if (id == null) {
             LOG.error("ERROR: ID was null");
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            throw new BadRequestException("ERROR: ID cannot be null");
         }
 
         LOG.debug("Querying for account with id {}", id);
@@ -77,11 +80,11 @@ public class AccountController {
 
     @GetMapping("/username")
     public @ResponseBody
-    ResponseEntity<Account> getAccountByUsername(@RequestParam("username") final String username) {
+    ResponseEntity<Account> getAccountByUsername(@RequestParam("username") final String username) throws BadRequestException {
         LOG.info("Received request to query for account with username {}", username);
         if (username == null) {
             LOG.error("ERROR: username was null");
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            throw new BadRequestException("ERROR: Username cannot be null");
         }
 
         LOG.debug("Querying for account with username {}", username);
@@ -107,17 +110,18 @@ public class AccountController {
     @PostMapping({"","/"})
     @Validated({Account.Insert.class, Default.class})
     public @ResponseBody ResponseEntity<Account> insertAccount(
-            @Valid @RequestBody final Account account, final BindingResult bindingResult) {
+            @Valid @RequestBody final Account account, final BindingResult bindingResult)
+            throws UnprocessableEntityException, BadRequestException {
 
         LOG.info("Received request to insert a new account");
         if (bindingResult.hasErrors()) {
             LOG.error("Binding result is unprocessable");
-            return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
+            throw new UnprocessableEntityException(bindingResult.getAllErrors().toString());
         }
 
         if (account == null) {
             LOG.error("Passed account is unprocessable");
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            throw new BadRequestException("Passed account is unprocessable");
         }
 
         LOG.info("Checking for any existing users with username {}", account.getUsername());
@@ -152,22 +156,23 @@ public class AccountController {
     @PatchMapping("/{id}")
     public @ResponseBody ResponseEntity<Account> updateAccount(
             @PathVariable("id") final Integer id,
-            @RequestBody final Account account, final BindingResult bindingResult) {
+            @RequestBody final Account account, final BindingResult bindingResult)
+            throws UnprocessableEntityException, BadRequestException {
 
         LOG.info("Received request to update an account");
         if (bindingResult.hasErrors()) {
             LOG.error("Binding result is unprocessable");
-            return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
+            throw new UnprocessableEntityException(bindingResult.getAllErrors().toString());
         }
 
         if (account == null) {
             LOG.error("Passed entity is null");
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            throw new BadRequestException("Passed account is null");
         }
 
         if (id == null) {
             LOG.error("Account ID must be specified");
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            throw new BadRequestException("Account ID must be specified");
         }
 
         LOG.debug("Checking for existence of account with id {}", id);
@@ -204,11 +209,11 @@ public class AccountController {
     }
 
     @DeleteMapping("/{id}")
-    public @ResponseBody ResponseEntity<Void> deleteAccountById(@PathVariable("id") final Integer id) {
+    public @ResponseBody ResponseEntity<Void> deleteAccountById(@PathVariable("id") final Integer id) throws BadRequestException {
         LOG.info("Received request to delete account with id {}", id);
         if (id == null) {
             LOG.error("Specified Id is null");
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            throw new BadRequestException("Specified ID is null");
         }
 
         LOG.debug("Deleting account with id {}", id);
