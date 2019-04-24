@@ -1,11 +1,8 @@
 package edu.msudenver.tsp.website.controller;
 
-import edu.msudenver.tsp.services.UserService;
-import edu.msudenver.tsp.services.dto.Account;
 import edu.msudenver.tsp.website.forms.UserCreationForm;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.annotation.Validated;
@@ -19,7 +16,7 @@ import org.springframework.web.servlet.ModelAndView;
 @AllArgsConstructor
 @RequestMapping("/createuser")
 public class UserCreationController {
-    @Autowired private final UserService userService;
+    //@Autowired private final UserService userService;
 
     @GetMapping({"/",""})
     public ModelAndView createUserPage() {
@@ -29,21 +26,24 @@ public class UserCreationController {
 
     @PostMapping({"/",""})
     public String registerUser(@Validated final UserCreationForm userCreationForm, final Model model) {
-        model.addAttribute("userID", userCreationForm.getUserID());
+        //model.addAttribute("userID", userCreationForm.getUserID());
         model.addAttribute("username", userCreationForm.getUsername());
         model.addAttribute("password", userCreationForm.getPassword());
-        model.addAttribute("confirmPassword", userCreationForm.getConfirmPassword());
+        //model.addAttribute("confirmPassword", userCreationForm.getConfirmPassword());
         model.addAttribute("emailAddress", userCreationForm.getEmailAddress());
-        model.addAttribute("firstName", userCreationForm.getFirstName());
-        model.addAttribute("lastName", userCreationForm.getLastName());
-        model.addAttribute("referrer", userCreationForm.getReferrer());
-        model.addAttribute("TnCAgreement", userCreationForm.isAgreedToTerms());
+        //model.addAttribute("firstName", userCreationForm.getFirstName());
+        //model.addAttribute("lastName", userCreationForm.getLastName());
+        //model.addAttribute("referrer", userCreationForm.getReferrer());
+        //model.addAttribute("TnCAgreement", userCreationForm.isAgreedToTerms());
 
+        LOG.info("Saving user {}...", userCreationForm);
+
+        /*
         final Account newUser = new Account();
         newUser.setUsername(userCreationForm.getUsername());
         newUser.setPassword(userCreationForm.getPassword());
         userService.createAccount(newUser);
-
+        */
 
         return "successfulRegistration";
     }
