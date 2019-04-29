@@ -14,7 +14,6 @@ import static org.mockito.Mockito.mock;
 public class UserCreationControllerTest {
 
     private final UserService userService = mock(UserService.class);
-    //@Autowired
     private final UserCreationController userCreationController = new UserCreationController();//userService);
 
     @Test

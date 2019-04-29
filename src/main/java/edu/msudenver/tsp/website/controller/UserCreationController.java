@@ -16,8 +16,6 @@ import org.springframework.web.servlet.ModelAndView;
 @AllArgsConstructor
 @RequestMapping("/createuser")
 public class UserCreationController {
-    //@Autowired private final UserService userService;
-
     @GetMapping({"/",""})
     public ModelAndView createUserPage() {
         LOG.info("Received request to display the user creation page: returning model with name 'User'");
