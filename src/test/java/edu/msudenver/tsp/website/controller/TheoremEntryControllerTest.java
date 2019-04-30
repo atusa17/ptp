@@ -17,11 +17,10 @@ public class TheoremEntryControllerTest {
    @Test
     public void saveTheorem(){
 
-        final ModelAndView modelAndView= theoremEntryController.enterTheoremPage();
+        ModelAndView modelAndView= theoremEntryController.enterTheoremPage();
 
-    @Test
-    public void testEnterTheoremPage() {
-        final ModelAndView modelAndView = theoremEntryController.enterTheoremPage();
+       public void testEnterTheoremPage() {
+           modelAndView = theoremEntryController.enterTheoremPage();
 
 
         assertNotNull(modelAndView);
