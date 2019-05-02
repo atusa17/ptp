@@ -13,20 +13,11 @@ public class TheoremEntryControllerTest {
 
     private final TheoremEntryController theoremEntryController = new TheoremEntryController();
 
-
-   @Test
-    public void saveTheorem(){
-
-        ModelAndView modelAndView= theoremEntryController.enterTheoremPage();
-
-       public void testEnterTheoremPage() {
-           modelAndView = theoremEntryController.enterTheoremPage();
-
+    @Test
+    public void testEnterTheoremPage() {
+        final ModelAndView modelAndView = theoremEntryController.enterTheoremPage();
 
         assertNotNull(modelAndView);
         assertEquals("Theorem", modelAndView.getViewName());
     }
-
-
-}
 }
