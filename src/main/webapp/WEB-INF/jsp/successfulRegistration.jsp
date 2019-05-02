@@ -4,7 +4,8 @@
     <title>You're Registered!</title>
 </head>
 <body>
+    Thank you for joining!
     <br><b>Username: </b><%= request.getParameter("username")%>
-    <br><b>Theorem: </b><%= request.getParameter("emailAddress")%>
+    <br><b>Email Address: </b><%= request.getParameter("emailAddress")%>
 </body>
 </html>

@@ -116,11 +116,6 @@
     <body>
         New User Registration:
         <form method="post" action="" enctype="utf8">
-            <label for="userID">User ID:
-                <input type="text" name="userID" id="userID" onchange="checkIDBeginsWith900()"/>
-                <div class="error-messages" id="errorUserID">Invalid MSU student ID</div>
-            </label>
-            <br>
             <label for="username">Username:
                 <input type="text" name="username" id="username" onchange="checkValidUsername()"/>
                 <div class="error-messages" id="errorUsername">Username must contain only letters, numbers, and underscores</div>
@@ -139,21 +134,6 @@
             <label for="emailAddress">Email Address:
                 <input type="text" name="emailAddress" id="emailAddress" />
                 <div class="error-messages" id="errorEmailAddress">Invalid email address</div>
-            </label>
-            <br>
-            <label for="firstName">First Name:
-                <input type="text" name="firstName" id="firstName"/>
-                <div class="error-messages"></div>
-            </label>
-            <br>
-            <label for="lastName">Last Name:
-                <input type="text" name="lastName" id="lastName"/>
-                <div class="error-messages"></div>
-            </label>
-            <br>
-            <label for="referrer">Referrer:
-                <input type="text" name="referrer" id="referrer" />
-                <div class="error-messages" id="errorReferrer">Username must contain only letters, numbers, and underscores, and cannot be your own!</div>
             </label>
             <br>
             <label for="agreedToTerms">I agree to the terms and conditions.

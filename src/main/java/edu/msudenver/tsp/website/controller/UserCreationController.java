@@ -30,15 +30,9 @@ public class UserCreationController {
 
     @PostMapping({"/",""})
     public String registerUser(@Validated final UserCreationForm userCreationForm, final Model model) {
-        //model.addAttribute("userID", userCreationForm.getUserID());
         model.addAttribute("username", userCreationForm.getUsername());
         model.addAttribute("password", userCreationForm.getPassword());
-        //model.addAttribute("confirmPassword", userCreationForm.getConfirmPassword());
         model.addAttribute("emailAddress", userCreationForm.getEmailAddress());
-        //model.addAttribute("firstName", userCreationForm.getFirstName());
-        //model.addAttribute("lastName", userCreationForm.getLastName());
-        //model.addAttribute("referrer", userCreationForm.getReferrer());
-        //model.addAttribute("TnCAgreement", userCreationForm.isAgreedToTerms());
 
         LOG.info("Saving user {}...", userCreationForm);
 
