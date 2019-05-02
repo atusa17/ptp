@@ -22,7 +22,7 @@
 
     Click on this <strong><a href="/theorem/">link</a></strong> to visit theorem entering page.
     <h4 class="text-center"><a href="/login">Sign In</a></h4>
-    <h4 class="text-center"><a href="/createuser">New here? Register</a></h4>
+    <h4 class="text-center"><a href="/registration">New here? Register</a></h4>
   </div>
 </div>
 </body>

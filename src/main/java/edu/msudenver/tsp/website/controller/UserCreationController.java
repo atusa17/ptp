@@ -17,7 +17,7 @@ import org.springframework.web.servlet.ModelAndView;
 @Slf4j
 @Controller
 @AllArgsConstructor
-@RequestMapping("/createuser")
+@RequestMapping("/registration")
 public class UserCreationController {
     @Autowired
     private final UserService userService;

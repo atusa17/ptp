@@ -7,5 +7,7 @@
     Thank you for joining!
     <br><b>Username: </b><%= request.getParameter("username")%>
     <br><b>Email Address: </b><%= request.getParameter("emailAddress")%>
+
+    <br><a href="/index">Return Home</a>
 </body>
 </html>
