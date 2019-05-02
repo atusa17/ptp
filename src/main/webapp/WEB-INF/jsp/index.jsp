@@ -21,6 +21,7 @@
     <h2>Hello! Welcome to Pandamonium™ Theorem Prover!!</h2>
 
     Click on this <strong><a href="/theorem/">link</a></strong> to visit theorem entering page.
+    <h4 class="text-center"><a href="/login">Sign In</a></h4>
   </div>
 </div>
 </body>
