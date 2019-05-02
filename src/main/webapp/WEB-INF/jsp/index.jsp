@@ -12,19 +12,26 @@
 <html>
 
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-  <title>Pandamonium™ Theorem Prover</title>
-  <link type="text/css" href="/css/bootstrap.css" rel="stylesheet" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Pandamonium™ Theorem Prover</title>
+    <link type="text/css" href="/css/bootstrap.css" rel="stylesheet" />
 </head>
 
 <center>
-  <div id="example1">
-    <h1>Theorem Prover</h1>
-    <h2>Hello! Welcome to Pandamonium™ Theorem Prover!!</h2>
-    <h4>
-      Click on this <strong><a href="/theorem/">link</a></strong> to visit theorem entering page.
-    </h4>
+    <div id="example1">
+        <h1>Theorem Prover</h1>
+        <h2>Hello! Welcome to Pandamonium™ Theorem Prover!!</h2>
+
+        <h4>
+            Click on this <strong><a href="/theorem/">link</a></strong> to visit theorem entering page.
+        </h4>
 </center>
+
+
+Click on this <strong><a href="/theorem/">link</a></strong> to visit theorem entering page.
+<h4 class="text-center"><a href="/login">Sign In</a></h4>
+</div>
+
 </div>
 </body>
 
