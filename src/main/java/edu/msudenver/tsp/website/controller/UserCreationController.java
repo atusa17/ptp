@@ -1,8 +1,11 @@
 package edu.msudenver.tsp.website.controller;
 
+import edu.msudenver.tsp.services.UserService;
+import edu.msudenver.tsp.services.dto.Account;
 import edu.msudenver.tsp.website.forms.UserCreationForm;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.annotation.Validated;
@@ -16,6 +19,9 @@ import org.springframework.web.servlet.ModelAndView;
 @AllArgsConstructor
 @RequestMapping("/createuser")
 public class UserCreationController {
+    @Autowired
+    private final UserService userService;
+
     @GetMapping({"/",""})
     public ModelAndView createUserPage() {
         LOG.info("Received request to display the user creation page: returning model with name 'User'");
@@ -36,12 +42,10 @@ public class UserCreationController {
 
         LOG.info("Saving user {}...", userCreationForm);
 
-        /*
         final Account newUser = new Account();
         newUser.setUsername(userCreationForm.getUsername());
         newUser.setPassword(userCreationForm.getPassword());
         userService.createAccount(newUser);
-        */
 
         return "successfulRegistration";
     }
