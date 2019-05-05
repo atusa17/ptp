@@ -109,6 +109,54 @@ public class DefinitionServiceTest {
     }
 
     @Test
+    public void testFindByName() {
+        final String testName = "testName";
+        final Definition testDefinition = createDefinition();
+        testDefinition.setName(testName);
+        final List<Definition> testList = new ArrayList<>();
+        testList.add(testDefinition);
+        when(restService.get(anyString(), any(), anyInt(), anyInt(), anyString()))
+                .thenReturn(Optional.of(testList));
+
+        final Optional<Definition> foundDefinition = definitionService.findByName(testDefinition.getName());
+
+        assertTrue(foundDefinition.isPresent());
+        assertThat(foundDefinition.get().getName(), is(equalTo(testName)));
+        assertThat(foundDefinition.get(), is(equalTo(testDefinition)));
+        verify(restService).get(anyString(), any(), anyInt(), anyInt(), anyString());
+    }
+
+    @Test
+    public void testFindByName_RequestReturnsEmptyOptional() {
+        when(restService.get(anyString(), any(), anyInt(), anyInt(), anyString()))
+                .thenReturn(Optional.empty());
+
+        final Optional<Definition> nonExistentDefinition = definitionService.findByName("testName");
+
+        assertFalse(nonExistentDefinition.isPresent());
+        verify(restService).get(anyString(), any(), anyInt(), anyInt(), anyString());
+    }
+
+    @Test
+    public void testFindByName_ExceptionThrownWhenSendingRequest() {
+        when(restService.get(anyString(), any(), anyInt(), anyInt(), anyString()))
+                .thenThrow(new UnsupportedOperationException("test exception"));
+
+        final Optional<Definition> exceptionThrowingDefinition = definitionService.findByName("testName");
+
+        assertFalse(exceptionThrowingDefinition.isPresent());
+        verify(restService).get(anyString(), any(), anyInt(), anyInt(), anyString());
+    }
+
+    @Test
+    public void testFindByName_NameIsNull() {
+        final Optional<Definition> impossibleDefinition = definitionService.findByName(null);
+
+        assertFalse(impossibleDefinition.isPresent());
+        verifyZeroInteractions(restService);
+    }
+
+    @Test
     public void testCreateDefinition() {
         final Definition testDefinition = createDefinition();
         final String testDefinitionJson = new GsonBuilder().create().toJson(testDefinition);
