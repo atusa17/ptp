@@ -1,21 +1,28 @@
 package edu.msudenver.tsp.services.parser;
 
+import edu.msudenver.tsp.services.DefinitionService;
+import edu.msudenver.tsp.services.dto.Definition;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Slf4j
 @Service
 class ParserService {
+    @Autowired
+    DefinitionService definitionService;
 
     public boolean parseUserInput(final String userInput)
     {
         try {
             final Node tree = parseRawInput(userInput);
-            retrieveStatements(tree);
-
+            final List<String> statements = retrieveStatements(tree);
+            collectDefinitions(statements); // returns a map of definitions
+            // issue: which statement(s) is the goal?
+            // if i traverse the tree to its rightmost leaf, that should be it?
+            //       esp. since they're not split by 'and'.
             return true;
         } catch(final Exception e) {
             LOG.error(e.getMessage());
@@ -122,7 +129,7 @@ class ParserService {
         return populateStatementList(parsedTree, new ArrayList<>());
     }
 
-    public ArrayList<String> populateStatementList(final Node node, final ArrayList<String> statementList)
+    public List<String> populateStatementList(final Node node, final List<String> statementList)
     {
         if(node == null)
         {
@@ -140,5 +147,29 @@ class ParserService {
         populateStatementList(node.getRight(), statementList);
 
         return statementList;
+    }
+
+    public Map<String, Definition> collectDefinitions(final List<String> statements) {
+        String[] words;
+        final Map<String, Definition> definitionMap = new HashMap<>();
+
+        for(int i=0; i<statements.size(); i++) {
+            words = statements.get(i).split(" ");
+
+            for(final String w : words) {
+                if(!definitionMap.containsKey(w)) {
+                    final Optional<Definition> def = queryDefinitionService(w);
+                    if(def.isPresent()){
+                        definitionMap.put(w, def.get());
+                    }
+                }
+            }
+        }
+
+        return definitionMap;
+    }
+
+    public Optional<Definition> queryDefinitionService(final String w) {
+        return definitionService.findByName(w);
     }
 }

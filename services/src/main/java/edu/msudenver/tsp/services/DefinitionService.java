@@ -51,6 +51,41 @@ public class DefinitionService {
         }
     }
 
+    public Optional<Definition> findByName(final String name) {
+        if (name == null) {
+            LOG.error("Null name specified; returning {}");
+            return Optional.empty();
+        }
+
+        LOG.info("Sending request to find definition by name {}", name);
+        final Instant start = Instant.now();
+
+        try{
+            Optional<Definition> result = null;
+
+            final Optional<List<Definition>> potentialDefinitionList = getAllDefinitions();
+
+            if(potentialDefinitionList.isPresent()) {
+                final List<Definition> definitionList = potentialDefinitionList.get();
+
+                for (final Definition d : definitionList) {
+                    if(d.getName().equals(name)) {
+                        result = Optional.of(d);
+
+                        LOG.info("Returning {}", d);
+                        break;
+                    }
+                }
+            }
+            return result;
+        } catch (final Exception e) {
+            LOG.error("Error finding definition by name", e);
+            return Optional.empty();
+        } finally {
+            LOG.info("Find definition by name request took {}ms", Duration.between(start, Instant.now()).toMillis());
+        }
+    }
+
     public Optional<Definition> findById(final int id) {
         if (id == 0) {
             LOG.error("Null id specified; returning {}");
