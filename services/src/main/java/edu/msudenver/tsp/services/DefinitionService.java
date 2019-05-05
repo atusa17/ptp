@@ -61,7 +61,7 @@ public class DefinitionService {
         final Instant start = Instant.now();
 
         try{
-            Optional<Definition> result = null;
+            Optional<Definition> result = Optional.empty();
 
             final Optional<List<Definition>> potentialDefinitionList = getAllDefinitions();
 
