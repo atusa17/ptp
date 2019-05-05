@@ -1,23 +1,27 @@
 package edu.msudenver.tsp.services.parser;
 
+import edu.msudenver.tsp.services.DefinitionService;
+import edu.msudenver.tsp.services.dto.Definition;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.*;
 
+//@ActiveProfiles("ParserService-test")
+//@RunWith(SpringJUnit4ClassRunner.class)
 @RunWith(MockitoJUnitRunner.class)
 public class ParserServiceTest {
 
-    @Mock private ParserService mockParserService;
+    @Mock        private ParserService mockParserService;
     @InjectMocks private ParserService parserService;
+    @Mock        private DefinitionService mockDefinitionService;
 
     @Test
     public void testParseUserInput_noErrors() {
@@ -183,7 +187,7 @@ public class ParserServiceTest {
     @Test
     public void testPopulateStatementList_NodeIsNull(){
         final ArrayList<String> list = new ArrayList<>();
-        final ArrayList<String> result = (ArrayList)parserService.populateStatementList(null, list);
+        final ArrayList<String> result = (ArrayList<String>)parserService.populateStatementList(null, list);
 
         assertEquals(list, result);
     }
@@ -194,7 +198,7 @@ public class ParserServiceTest {
         final String statement = "this is a statement   ";
         final Node input = new Node(statement, null);
 
-        final ArrayList<String> result = (ArrayList)parserService.populateStatementList(input, list);
+        final ArrayList<String> result = (ArrayList<String>)parserService.populateStatementList(input, list);
 
         assertTrue(result.contains("this is a statement"));
     }
@@ -207,6 +211,42 @@ public class ParserServiceTest {
         final ParserService spy = spy(new ParserService());
         when(spy.parseRawInput("")).thenReturn(new Node("", null));
         actual = spy.parseRawInput("").toString();
+
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void testCollectDefinitions_EmptyList() {
+        final Map<String, Definition> actual = parserService.collectDefinitions(new ArrayList<>());
+        final Map<String, Definition> expected = new HashMap<>();
+
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void testCollectDefinitions_OneStatement() {
+        final List<String> statementList = new ArrayList<>();
+        statementList.add("x is even");
+
+        final List<String> temp = new ArrayList<>();
+        temp.add("temp");
+
+        final Definition definition = new Definition();
+        definition.setName("temp");
+        definition.setDefinition(temp);
+        definition.setNotation(temp);
+        definition.setId(1);
+        definition.setVersion(1);
+
+        when(parserService.queryDefinitionService(anyString())).thenReturn(Optional.of(definition));
+        final Map<String, Definition> actual = parserService.collectDefinitions(statementList);
+
+
+        final Map<String, Definition> expected = new HashMap<>();
+        expected.put("x", definition);
+        expected.put("is", definition);
+        expected.put("even", definition);
+
 
         assertEquals(expected, actual);
     }
