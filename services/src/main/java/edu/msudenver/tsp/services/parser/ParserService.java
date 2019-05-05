@@ -19,13 +19,11 @@ class ParserService {
         try {
             final Node tree = parseRawInput(userInput);
             final List<String> statements = retrieveStatements(tree);
-            collectDefinitions(statements); // returns a map of definitions
-            // issue: which statement(s) is the goal?
-            // if i traverse the tree to its rightmost leaf, that should be it?
-            //       esp. since they're not split by 'and'.
+            final Map<String, Definition> definitions = collectDefinitions(statements);
             return true;
         } catch(final Exception e) {
             LOG.error(e.getMessage());
+            System.out.println(e.getMessage());
         }
         return false;
     }

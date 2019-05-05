@@ -14,8 +14,6 @@ import static org.junit.Assert.*;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.*;
 
-//@ActiveProfiles("ParserService-test")
-//@RunWith(SpringJUnit4ClassRunner.class)
 @RunWith(MockitoJUnitRunner.class)
 public class ParserServiceTest {
 
@@ -27,13 +25,15 @@ public class ParserServiceTest {
     public void testParseUserInput_noErrors() {
         final String userInput = "string";
         final Node root = new Node(userInput, null);
+        final List<String> list = new ArrayList<>();
 
         final ParserService parse = mock(ParserService.class);
         when(parse.parseRawInput(anyString())).thenReturn(root);
-        when(parse.retrieveStatements(root)).thenReturn(new ArrayList<>());
+        when(parse.retrieveStatements(root)).thenReturn(list);
+        when(parse.collectDefinitions(list)).thenReturn(new HashMap<>());
         when(parse.parseUserInput(userInput)).thenCallRealMethod();
 
-        assertTrue(parserService.parseUserInput(userInput));
+        assertTrue(parse.parseUserInput(userInput));
     }
 
     @Test
@@ -354,16 +354,5 @@ public class ParserServiceTest {
         final List<String> actualList = parserService.retrieveStatements(mockParserService.parseRawInput("baseCase"));
 
         assertEquals(expectedList, actualList);
-    }
-
-    @Test
-    public void testDriveParseUserInput() {
-        final Node testNode = new Node("", null);
-        when(mockParserService.parseRawInput(anyString())).thenReturn(testNode);
-        when(mockParserService.retrieveStatements(testNode)).thenReturn(new ArrayList<>());
-
-        final boolean successfulTestDrive = parserService.parseUserInput("");
-
-        assertTrue(successfulTestDrive);
     }
 }
